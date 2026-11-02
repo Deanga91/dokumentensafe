@@ -43,8 +43,8 @@ button:disabled{opacity:.4}
 .cp{display:flex;justify-content:space-between;gap:8px;padding:10px 12px;margin:5px 0}.cp b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cp span{color:var(--mu);white-space:nowrap}
 </style></head><body>
 <div id="lock"><h1 id="lt"></h1><p id="lm" class="mu"></p>
-<input id="pw" type="password" placeholder="Passwort" autocomplete="off"><div style="height:8px"></div>
-<input id="pw2" type="password" placeholder="Passwort wiederholen" autocomplete="off"><input id="sm" type="email" placeholder="E-Mail des Server-Kontos (nur zum Laden vom Server)" hidden style="margin-top:8px"><p id="le" class="er"></p><button id="lb">Weiter</button><button id="lr" class="b2" style="margin-top:8px" hidden>Aus Backup wiederherstellen</button><button id="ls" class="b2" style="margin-top:8px" hidden>☁️ Vom Server laden</button><button id="lbio" class="b2" style="margin-top:8px" hidden>👆 Mit Fingerabdruck entsperren</button></div>
+<input id="sm" type="email" placeholder="E-Mail-Adresse" autocomplete="email" style="margin-bottom:8px"><input id="pw" type="password" placeholder="Passwort" autocomplete="off"><div style="height:8px"></div>
+<input id="pw2" type="password" placeholder="Passwort wiederholen" autocomplete="off"><p id="le" class="er"></p><button id="lb">Anmelden</button><button id="lmode" class="b2" style="margin-top:8px">Neu hier? Registrieren</button><button id="lr" class="b2" style="margin-top:8px" hidden>Aus Backup wiederherstellen</button><button id="lbio" class="b2" style="margin-top:8px" hidden>👆 Mit Fingerabdruck entsperren</button></div>
 <main id="app" hidden>
 <header><h1>🔒 Dokumentensafe</h1><span style="display:flex;gap:6px"><button class="b2" style="width:auto" data-a="sy" aria-label="Server-Sync">☁️</button><button class="b2" style="width:auto" data-a="bio" aria-label="Fingerabdruck">👆</button><button class="b2" style="width:auto" data-a="lock">Sperren</button><button class="b2" style="width:auto" data-a="cl">🚪 Beenden</button></span></header>
 <div id="sst" class="mu" style="font-size:13px;margin:-4px 0 8px"></div>
@@ -54,6 +54,7 @@ button:disabled{opacity:.4}
 <div class="row"><button data-a="scan">📷 Scannen</button><button data-a="up">📁 Hochladen</button><button class="b2" data-a="nf">+ Ordner</button></div>
 <div class="row" id="fo" hidden><button class="b2" data-a="rf">Ordner umbenennen</button><button class="b2" data-a="df">Ordner löschen</button></div>
 <div class="row"><button class="b2" data-a="bk">💾 Backup exportieren</button><button class="b2" data-a="bi">📥 Backup importieren</button></div>
+<div class="row" id="mg" hidden><button class="b2" data-a="mg">✉️ E-Mail zum Login hinzufügen</button></div>
 <div id="list"></div></main>
 <div id="fs" hidden><div id="fsb"><button class="b2" data-a="fr" data-i="-90">↺</button><button class="b2" data-a="fr" data-i="90">↻</button><button class="b2" data-a="fp" data-i="-1">‹</button><span id="fsn"></span><button class="b2" data-a="fp" data-i="1">›</button><button class="b2" data-a="fh">🏠 Start</button><button class="dg" data-a="fc">✕ Schließen</button></div><div id="fsi"><img id="fsm" alt=""></div></div>
 <div id="dlg" hidden></div>
@@ -66,7 +67,8 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 let db,key,meta,cur=null,pend=[],timer,vid=null;
 const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open('docsafe',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
 const tx=(m,f)=>new Promise((res,rej)=>{const t=db.transaction('kv',m);const r=f(t.objectStore('kv'));t.oncomplete=()=>res(r.result);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)});
-const get=k=>tx('readonly',s=>s.get(k)),put=(k,v)=>tx('readwrite',s=>s.put(v,k)),del=k=>tx('readwrite',s=>s.delete(k));
+let NS='';
+const get=k=>tx('readonly',s=>s.get(NS+k)),put=(k,v)=>tx('readwrite',s=>s.put(v,NS+k)),del=k=>tx('readwrite',s=>s.delete(NS+k));
 async function derive(pw,salt){const b=await crypto.subtle.importKey('raw',te.encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},b,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
 async function enc(o){const iv=crypto.getRandomValues(new Uint8Array(12));return{iv,ct:await crypto.subtle.encrypt({name:'AES-GCM',iv},key,te.encode(JSON.stringify(o)))}}
 async function dec(r){return JSON.parse(td.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:r.iv},key,r.ct)))}
@@ -79,18 +81,62 @@ const opts=(sel,root)=>(root?`<option value="">${root}</option>`:'')+meta.folder
 const D=$('#dlg'),show=h=>{D.innerHTML='<div class="box"><div class="row"><button class="b2" data-a="x">← Zurück</button><button class="b2" data-a="hx">🏠 Startseite</button></div>'+h+'</div>';D.hidden=false},hide=()=>{D.hidden=true;D.innerHTML=''};
 const nz=v=>v||null;
 
-async function boot(){db=await idb();try{navigator.storage?.persist?.()}catch(e){}lockUI(!(await get('cfg')))}
-let first=false;
-function lockUI(f){first=f;key=null;meta=null;SS=null;pend=[];pendF=[];vp=[];vf=[];fsA=[];$('#fs').hidden=true;hide();$('#app').hidden=true;$('#lock').hidden=false;$('#lt').textContent=f?'Passwort festlegen':'Entsperren';$('#pw2').hidden=!f;$('#lr').hidden=!f;$('#ls').hidden=!(f&&SBC());$('#sm').hidden=!(f&&SBC());$('#lbio').hidden=true;if(!f&&db)bioOK().then(async ok=>{if(ok&&await get('bio')&&!key)$('#lbio').hidden=false}).catch(()=>{});$('#lm').textContent=f?'Mindestens 8 Zeichen. Es gibt keine Wiederherstellung: ohne Passwort sind die Daten unlesbar. Neues Handy? Passwort des Backups eingeben und „Aus Backup wiederherstellen“ tippen.'+(SBC()?' Schon ein Server-Konto? Dann Passwort und E-Mail eingeben und „Vom Server laden“ tippen.':''):'';$('#pw').value='';$('#pw2').value='';$('#le').textContent=''}
-async function unlock(){const pw=$('#pw').value,er=m=>$('#le').textContent=m;er('');$('#lb').disabled=true;
-try{if(first){if(pw.length<8)return er('Mindestens 8 Zeichen.');if(pw!==$('#pw2').value)return er('Passwörter stimmen nicht überein.');
-const salt=crypto.getRandomValues(new Uint8Array(16));key=await derive(pw,salt);const chk=await enc({ok:1});
-meta={folders:['Rentenbescheide','Lohnabrechnungen','Steuer','Versicherung','Verträge'].map(n=>({id:uid(),name:n,parent:null})),docs:[]};
-await saveMeta();await put('cfg',{salt,chk})}
-else{const cfg=await get('cfg');key=await derive(pw,cfg.salt);try{await dec(cfg.chk)}catch(e){key=null;await new Promise(r=>setTimeout(r,1200));return er('Falsches Passwort.')}
-const m=await get('meta');meta=m?await dec(m):{folders:[],docs:[]}}
-}catch(e){key=null;return er('Fehler: '+e.message)}finally{$('#lb').disabled=false}
-$('#lock').hidden=true;$('#app').hidden=false;cur=null;$('#q').value='';render();bump();schedSync(800)}
+async function boot(){db=await idb();try{navigator.storage?.persist?.()}catch(e){}try{NS=localStorage.getItem('ds_ns')||''}catch(e){}const c0=await get('cfg');cfgV=c0?(c0.v||1):2;lockUI(!c0&&!SBC()&&!(await rawGet('cfg')))}
+let first=false,cfgV=2,loginMail='';
+const lastNS=()=>{try{return localStorage.getItem('ds_ns')||''}catch(e){return ''}};
+function lockUI(f){first=f;key=null;meta=null;SS=null;loginMail='';pend=[];pendF=[];vp=[];vf=[];fsA=[];$('#fs').hidden=true;hide();$('#app').hidden=true;$('#lock').hidden=false;
+$('#lt').textContent=f?'Registrieren':'Anmelden';$('#lb').textContent=f?'Registrieren':'Anmelden';$('#lmode').textContent=f?'Schon ein Konto? Anmelden':'Neu hier? Registrieren';
+$('#pw2').hidden=!f;$('#lr').hidden=f;$('#sm').hidden=false;$('#lbio').hidden=true;NS=lastNS();
+if(!f&&db)bioOK().then(async ok=>{if(ok&&await get('bio')&&!key)$('#lbio').hidden=false}).catch(()=>{});
+$('#lm').textContent=f?'Registriere dich mit E-Mail-Adresse und Passwort (mindestens 8 Zeichen, besser 12). Jeder Benutzer hat eigene, getrennte Dokumente. Es gibt keine Wiederherstellung: ohne Passwort sind die Daten unlesbar.'+(SBC()?'':' Ohne Server bleiben die Daten nur auf diesem Gerät.'):'Melde dich mit E-Mail und Passwort an.'+(SBC()?' Neues Handy? Einfach anmelden, deine Dokumente werden vom Server geladen.':'')+' Mit Backup: E-Mail und Passwort des Backups eingeben und „Aus Backup wiederherstellen“ tippen.';
+$('#pw').value='';$('#pw2').value='';$('#le').textContent=''}
+const rawGet=k=>tx('readonly',s=>s.get(k));
+async function nsOf(e){const h=await crypto.subtle.digest('SHA-256',te.encode('dokumentensafe-user|'+e.trim().toLowerCase()));return 'u'+Array.from(new Uint8Array(h).slice(0,10)).map(b=>b.toString(16).padStart(2,'0')).join('')+'/'}
+const adoptLegacy=nns=>new Promise((res,rej)=>{const t=db.transaction('kv','readwrite'),s=t.objectStore('kv'),rq=s.openCursor();
+rq.onsuccess=e=>{const c=e.target.result;if(!c)return;const k=c.key;if(typeof k==='string'&&!k.includes('/')){s.put(c.value,nns+k);c.delete()}c.continue()};
+t.oncomplete=()=>res();t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)});
+async function doRegister(mail,pw,er){
+if(pw.length<8){er('Mindestens 8 Zeichen.');return false}
+if(pw!==$('#pw2').value){er('Passwörter stimmen nicht überein.');return false}
+if(await get('cfg')){er('Diese E-Mail ist auf diesem Gerät schon registriert. Bitte anmelden.');return false}
+let note='';
+if(SBC()){er('Registriere am Server …');try{SS=await sbAuth(mail,pw,true)}catch(e){SS=null;
+if(/already|registered|exists/i.test(e.message)){er('Diese E-Mail ist schon registriert. Bitte anmelden.');return false}
+if(/signups? not allowed|sign ?up.*(disabled|not allowed)/i.test(e.message)){er('Die Registrierung ist auf diesem Server ausgeschaltet.');return false}
+if(/Bestätigungs/.test(e.message))note=e.message;else{er(e.message==='Failed to fetch'?'Keine Verbindung zum Server.':e.message);return false}}}
+const salt=crypto.getRandomValues(new Uint8Array(16));key=await derive(cred(mail,pw,2),salt);const chk=await enc({ok:1});
+meta={folders:['Rentenbescheide','Lohnabrechnungen','Steuer','Versicherung','Verträge'].map(n=>({id:uid(),name:n,parent:null,m:Date.now()})),docs:[]};
+await saveMeta();await put('cfg',{salt,chk,v:2});cfgV=2;loginMail=mail;if(SS)await put('sess',await enc(SS));
+if(note)setTimeout(()=>st('☁️ '+note),500);return true}
+async function doLogin(mail,pw,er){
+let cfg=await get('cfg');
+if(!cfg){const lg=await rawGet('cfg');
+if(lg){try{const k=await derive(cred(mail,pw,lg.v||1),lg.salt);await crypto.subtle.decrypt({name:'AES-GCM',iv:lg.chk.iv},k,lg.chk.ct);await adoptLegacy(NS);cfg=await get('cfg')}catch(e){}}}
+if(!cfg){if(!SBC()){er('Für diese E-Mail gibt es hier kein Konto. Bitte registrieren.');return false}return await pullFromServer(mail,pw,er)}
+cfgV=cfg.v||1;key=await derive(cred(mail,pw,cfgV),cfg.salt);
+try{await dec(cfg.chk)}catch(e){key=null;await new Promise(r=>setTimeout(r,1200));er('Falsche E-Mail oder falsches Passwort.');return false}
+loginMail=mail;const m=await get('meta');meta=m?await dec(m):{folders:[],docs:[]};return true}
+async function pullFromServer(mail,pw,er){er('Melde am Server an …');
+try{SS=await sbAuth(mail,pw,false)}catch(e){SS=null;er(/Invalid login|invalid_credentials/i.test(e.message)?'Konto nicht gefunden oder Passwort falsch. Neu hier? Dann bitte registrieren.':(e.message==='Failed to fetch'?'Keine Verbindung zum Server.':e.message));return false}
+const c=await sGet('cfg.json');if(!c){SS=null;er('Dieses Konto hat noch keine Daten auf dem Server.');return false}
+const cj=JSON.parse(await c.text()),chk=upk(cj.chk),cv=cj.v||1,k=await derive(cred(mail,pw,cv),unb(cj.salt));
+try{await crypto.subtle.decrypt({name:'AES-GCM',iv:chk.iv},k,chk.ct)}catch(e){SS=null;er('Falsche E-Mail oder falsches Passwort.');return false}
+const docs=(await sList()).map(o=>o.name).filter(n=>/^doc-.+\.bin$/.test(n));let i=0;
+for(const n of docs){i++;er('Lade Dokumente '+i+'/'+docs.length+' …');const b=await sGet(n);if(b)await put('doc:'+n.slice(4,-4),fromBin(await b.arrayBuffer()))}
+const mb=await sGet('meta.bin');if(!mb){SS=null;er('Keine Daten auf dem Server.');return false}
+await put('meta',fromBin(await mb.arrayBuffer()));await put('cfg',{salt:unb(cj.salt),chk,v:cv});
+cfgV=cv;key=k;loginMail=mail;meta=await dec(await get('meta'));await put('sess',await enc(SS));return true}
+async function unlock(){const pw=$('#pw').value,mail=$('#sm').value.trim().toLowerCase(),er=m=>{$('#le').textContent=m};er('');
+if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail))return er('Bitte eine gültige E-Mail-Adresse eingeben.');
+if(!pw)return er('Bitte Passwort eingeben.');
+$('#lb').disabled=true;let ok=false;
+try{NS=await nsOf(mail);ok=first?await doRegister(mail,pw,er):await doLogin(mail,pw,er)}
+catch(e){key=null;meta=null;SS=null;er(e.message==='Failed to fetch'?'Keine Verbindung zum Server.':'Fehler: '+e.message)}
+finally{$('#lb').disabled=false}
+if(!ok||!key)return;
+try{localStorage.setItem('ds_ns',NS)}catch(e){}
+$('#lock').hidden=true;$('#app').hidden=false;cur=null;$('#q').value='';render();bump();st(loginMail?'👤 '+loginMail:'');schedSync(800)}
+$('#lmode').onclick=()=>lockUI(!first);
 function bump(){clearTimeout(timer);if(key)timer=setTimeout(()=>lockUI(false),10*60*1000)}
 ['click','keydown','touchstart'].forEach(e=>document.addEventListener(e,bump,{passive:true}));
 $('#lb').onclick=unlock;$('#pw').onkeydown=$('#pw2').onkeydown=e=>{if(e.key==='Enter')unlock()};
@@ -103,7 +149,7 @@ meta.folders.filter(f=>(f.parent||null)===cur).sort((a,b)=>a.name.localeCompare(
 const docs=meta.docs.filter(d=>q?(d.name+' '+path(d.folder)).toLowerCase().includes(q):(d.folder||null)===cur).sort(sorter());
 h+=docHtml(docs);
 if(!docs.length&&!h.includes('class="it"'))h+='<p class="mu">Noch nichts vorhanden.</p>';
-$('#list').innerHTML=h;$('#fo').hidden=!cur||!!q;$('#nv').firstElementChild.disabled=!cur&&!q;if(V.v==='kacheln')ensureTh(docs)}
+$('#list').innerHTML=h;$('#fo').hidden=!cur||!!q;$('#mg').hidden=cfgV===2;$('#nv').firstElementChild.disabled=!cur&&!q;if(V.v==='kacheln')ensureTh(docs)}
 
 const A={
 open:i=>{cur=nz(i);$('#q').value='';render()},
@@ -141,7 +187,7 @@ $('#fi').onchange=$('#fu').onchange=async e=>{for(const f of e.target.files){try
 const b64=u=>{const a=new Uint8Array(u);let s='';for(let i=0;i<a.length;i+=8192)s+=String.fromCharCode.apply(null,a.subarray(i,i+8192));return btoa(s)};
 const unb=s=>{const b=atob(s),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a};
 const pk=r=>({iv:b64(r.iv),ct:b64(r.ct)}),upk=r=>({iv:unb(r.iv),ct:unb(r.ct).buffer});
-let fbMode=null,pwTmp='';
+let fbMode=null,pwTmp='',mailTmp='';
 let bkBlob=null,bkFn='',bkEnd=false,bkDone=false;
 async function bkSave(mode,noEnd){const em=$('#em'),blob=bkBlob,fn=bkFn;if(!blob||!em)return;
 const say=(m,bad)=>{em.className=bad?'er':'mu';em.textContent=m};
@@ -160,7 +206,7 @@ if(bkEnd&&!noEnd){say(msg+' Die App wird jetzt gesperrt und beendet.');setTimeou
 catch(e){say(e.code==='declined'?'Abgebrochen. Bitte erneut versuchen.':'Speichern fehlgeschlagen ('+(e.code||e.message||'Fehler')+').',1)}}
 A.bk=async end=>{bkEnd=end===true;bkBlob=null;bkDone=false;show('<h3>'+(bkEnd?'App beenden':'Backup exportieren')+'</h3><p class="mu">Erstellt eine Datei mit allen Ordnern und Dokumenten, verschlüsselt mit deinem aktuellen Passwort. Danach wählst du, wo sie gespeichert wird.</p><p id="em" class="mu">Wird erstellt …</p><div id="bb" class="row" style="flex-direction:column"></div>');const em=$('#em');
 try{const cfg=await get('cfg'),docs={};for(const d of meta.docs){const r=await get('doc:'+d.id);if(r)docs[d.id]=pk(r)}
-const out={app:'dokumentensafe',v:1,cfg:{salt:b64(cfg.salt),chk:pk(cfg.chk)},meta:pk(await get('meta')),docs};
+const out={app:'dokumentensafe',v:1,cfg:{salt:b64(cfg.salt),chk:pk(cfg.chk),v:cfg.v||1},meta:pk(await get('meta')),docs};
 bkBlob=new Blob([JSON.stringify(out)],{type:'application/json'});
 bkFn='Dokumentensafe-Backup-'+(()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'_'+p(d.getHours())+'-'+p(d.getMinutes())})()+'.json';
 em.textContent='Backup ist fertig ('+(bkBlob.size>1048576?(bkBlob.size/1048576).toFixed(1)+' MB':Math.max(1,Math.round(bkBlob.size/1024))+' KB')+'). Tippe auf „Speichern (Ort wählen)“.';
@@ -169,16 +215,16 @@ catch(e){em.className='er';em.textContent='Backup fehlgeschlagen ('+(e.code||e.m
 A.bsave=()=>bkSave('auto');
 A.cl=()=>A.bk(true);
 A.ex=()=>{lockUI(false);$('#lm').textContent='App gesperrt. Du kannst sie jetzt schließen.';try{window.close()}catch(e){}};
-A.bi=()=>{show('<h3>Backup importieren</h3><label>Passwort des Backups<input id="bp" type="password"></label><p class="mu">Vorhandene Dokumente bleiben erhalten. Ordner mit gleichem Namen werden zusammengeführt.</p><p id="em" class="er"></p><div class="row"><button class="b2" data-a="x">Abbrechen</button><button data-a="bf">Datei wählen</button></div>')};
-A.bf=()=>{if(!$('#bp').value)return $('#em').textContent='Bitte Passwort eingeben.';fbMode='merge';pwTmp=$('#bp').value;$('#fb').click()};
-$('#lr').onclick=()=>{if(!$('#pw').value)return $('#le').textContent='Bitte zuerst das Passwort des Backups eingeben.';fbMode='restore';$('#fb').click()};
-$('#fb').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const mode=fbMode,pw=mode==='merge'?pwTmp:$('#pw').value;fbMode=null;pwTmp='';
+A.bi=()=>{show('<h3>Backup importieren</h3><label>E-Mail des Backups (falls vorhanden)<input id="bme" type="email" autocomplete="email"></label><label>Passwort des Backups<input id="bp" type="password"></label><p class="mu">Vorhandene Dokumente bleiben erhalten. Ordner mit gleichem Namen werden zusammengeführt.</p><p id="em" class="er"></p><div class="row"><button class="b2" data-a="x">Abbrechen</button><button data-a="bf">Datei wählen</button></div>')};
+A.bf=()=>{if(!$('#bp').value)return $('#em').textContent='Bitte Passwort eingeben.';fbMode='merge';pwTmp=$('#bp').value;mailTmp=($('#bme')||{}).value||'';$('#fb').click()};
+$('#lr').onclick=()=>{if(!$('#pw').value||!$('#sm').value.trim())return $('#le').textContent='Bitte zuerst E-Mail und Passwort des Backups eingeben.';fbMode='restore';$('#fb').click()};
+$('#fb').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const mode=fbMode,pw=mode==='merge'?pwTmp:$('#pw').value;fbMode=null;pwTmp='';const bm0=(mode==='merge'?mailTmp:$('#sm').value).trim().toLowerCase();mailTmp='';
 const em=mode==='merge'?$('#em'):$('#le');const say=(m,ok)=>{if(em){em.textContent=m;em.style.color=ok?'var(--mu)':''}};
 try{if(!mode)return;const j=JSON.parse(await f.text());if(j.app!=='dokumentensafe')throw new Error('Keine gültige Backup-Datei.');
-const k=await derive(pw,unb(j.cfg.salt));
+const cv=j.cfg.v||1,k=await derive(cred(bm0,pw,cv),unb(j.cfg.salt));
 const bdec=async r=>{const x=upk(r);return JSON.parse(td.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:x.iv},k,x.ct)))};
-try{await bdec(j.cfg.chk)}catch(x){throw new Error('Falsches Backup-Passwort.')}
-if(mode==='restore'){say('Stelle wieder her …',1);for(const id in j.docs)await put('doc:'+id,upk(j.docs[id]));await put('meta',upk(j.meta));await put('cfg',{salt:unb(j.cfg.salt),chk:upk(j.cfg.chk)});first=false;await unlock();return}
+try{await bdec(j.cfg.chk)}catch(x){throw new Error('Falsches Backup-Passwort oder falsche E-Mail.')}
+if(mode==='restore'){NS=await nsOf(bm0);if(await get('cfg'))throw new Error('Für diese E-Mail gibt es hier schon ein Konto. Bitte anmelden und das Backup über „Backup importieren“ zusammenführen.');say('Stelle wieder her …',1);for(const id in j.docs)await put('doc:'+id,upk(j.docs[id]));await put('meta',upk(j.meta));await put('cfg',{salt:unb(j.cfg.salt),chk:upk(j.cfg.chk),v:cv});cfgV=cv;first=false;await unlock();return}
 say('Importiere …',1);const bm=await bdec(j.meta),map={};
 const mf=id=>{if(!id)return null;if(map[id])return map[id];const b=bm.folders.find(x=>x.id===id);if(!b)return null;const p=mf(b.parent);let l=meta.folders.find(x=>(x.parent||null)===p&&x.name.toLowerCase()===b.name.toLowerCase());if(!l){l={id:uid(),name:b.name,parent:p};meta.folders.push(l)}return map[id]=l.id};
 let n=0;for(const d of bm.docs){if(meta.docs.some(x=>x.id===d.id)||!j.docs[d.id])continue;const pg=await bdec(j.docs[d.id]);await put('doc:'+d.id,await enc(pg));meta.docs.push({...d,folder:mf(d.folder)});n++}
@@ -230,7 +276,7 @@ catch(e){em.textContent=e.m||(e.name==='NotAllowedError'||e.name==='SecurityErro
 async function bioUnlock(){const er=m=>$('#le').textContent=m;er('');
 try{const b=await get('bio');if(!b)return er('Nicht eingerichtet.');
 await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),allowCredentials:[{type:'public-key',id:b.cid,transports:['internal']}],userVerification:'required',timeout:60000}});
-key=b.key;const cfg=await get('cfg');await dec(cfg.chk);const m=await get('meta');meta=m?await dec(m):{folders:[],docs:[]}}
+key=b.key;const cfg=await get('cfg');cfgV=cfg.v||1;await dec(cfg.chk);const m=await get('meta');meta=m?await dec(m):{folders:[],docs:[]}}
 catch(e){key=null;meta=null;if(e&&e.name==='OperationError')await del('bio').catch(()=>{});return er(e&&e.name==='NotAllowedError'?'Abgebrochen oder Fingerabdruck nicht erkannt.':'Fingerabdruck-Login fehlgeschlagen. Bitte Passwort verwenden.')}
 $('#lock').hidden=true;$('#app').hidden=false;cur=null;$('#q').value='';render();bump();schedSync(800)}
 $('#lbio').onclick=bioUnlock;
@@ -264,10 +310,10 @@ catch(x){say(x.code==='declined'?'':'Speichern nicht möglich ('+(x.code||x.mess
 let SS=null,syT=null,syBusy=false,metaRev=0,lastSync='';
 const SBC=()=>{const c=window.DS_CONFIG;return c&&c.url&&c.key?c:null};
 const st=m=>{const e=$('#sst');if(e)e.textContent=m};
-const has=k=>tx('readonly',s=>s.count(k));
+const has=k=>tx('readonly',s=>s.count(NS+k));
 const toBin=r=>{const c=new Uint8Array(r.ct),u=new Uint8Array(12+c.length);u.set(new Uint8Array(r.iv),0);u.set(c,12);return u};
 const fromBin=b=>{const u=new Uint8Array(b);return{iv:u.slice(0,12),ct:u.slice(12).buffer}};
-async function sbFetch(path,opt,tok){const c=SBC();opt=opt||{};const h=Object.assign({apikey:c.key,Authorization:'Bearer '+(tok||c.key)},opt.headers||{});return fetch(c.url.replace(/\/+$/,'')+path,Object.assign({},opt,{headers:h}))}
+async function sbFetch(path,opt,tok){const c=SBC();opt=opt||{};const h=Object.assign({apikey:c.key},opt.headers||{});if(tok)h.Authorization='Bearer '+tok;else if(!/^sb_/.test(c.key))h.Authorization='Bearer '+c.key;return fetch(c.url.replace(/\/+$/,'')+path,Object.assign({},opt,{headers:h}))}
 async function authPw(email,pw){const k=await crypto.subtle.importKey('raw',te.encode(pw),'PBKDF2',false,['deriveBits']);const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:te.encode('dokumentensafe-auth|'+email),iterations:250000,hash:'SHA-256'},k,256);return b64(bits).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 async function sbAuth(email,pw,create){const ap=await authPw(email,pw);
 const r=await sbFetch(create?'/auth/v1/signup':'/auth/v1/token?grant_type=password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:ap})});
@@ -287,7 +333,7 @@ async function sList(){const s=await sessGet();if(!s)throw new Error('Nicht ange
 for(let off=0;;off+=1000){const r=await sbFetch('/storage/v1/object/list/vault',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prefix:s.uid,limit:1000,offset:off,sortBy:{column:'name',order:'asc'}})},s.at);
 if(!r.ok)throw new Error('Server-Fehler '+r.status+' (Storage-Einrichtung prüfen)');const j=await r.json();out.push(...j);if(j.length<1000)break}return out}
 async function sDel(ns){if(!ns.length)return;const s=await sessGet();const r=await sbFetch('/storage/v1/object/vault',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({prefixes:ns.map(n=>s.uid+'/'+n)})},s.at);if(!r.ok)throw new Error('Löschen fehlgeschlagen ('+r.status+')')}
-async function pwOK(pw){const cfg=await get('cfg');try{const k=await derive(pw,cfg.salt);await crypto.subtle.decrypt({name:'AES-GCM',iv:cfg.chk.iv},k,cfg.chk.ct);return true}catch(e){return false}}
+async function pwOK(pw,email){const cfg=await get('cfg');try{const k=await derive(cred(email||loginMail,pw,cfg.v||1),cfg.salt);await crypto.subtle.decrypt({name:'AES-GCM',iv:cfg.chk.iv},k,cfg.chk.ct);return true}catch(e){return false}}
 function mergeMeta(l,r){const tb={};for(const t of (l.tomb||[]).concat(r.tomb||[]))tb[t.id]=Math.max(tb[t.id]||0,t.t);
 const mix=(a,b)=>{if(!a)return b;if(!b)return a;const w=(b.m||0)>(a.m||0)?b:a;return Object.assign({},w,{r:Math.max(a.r||0,b.r||0)})};
 const fm=new Map(),dm=new Map();
@@ -300,7 +346,7 @@ return{folders,docs,tomb:Object.keys(tb).map(id=>({id,t:tb[id]}))}}
 function schedSync(ms){if(!key||!SBC())return;clearTimeout(syT);syT=setTimeout(()=>{syncNow().catch(()=>{})},ms||3000)}
 async function syncNow(){if(syBusy||!key||!meta||!SBC())return;if(!(await sessGet()))return;syBusy=true;
 try{st('☁️ Synchronisiere …');const rv0=metaRev;
-const lc=await get('cfg'),lcj={salt:b64(lc.salt),chk:pk(lc.chk)},rc=await sGet('cfg.json');
+const lc=await get('cfg'),lcj={salt:b64(lc.salt),chk:pk(lc.chk),v:lc.v||1},rc=await sGet('cfg.json');
 if(!rc)await sPut('cfg.json',new Blob([JSON.stringify(lcj)],{type:'application/json'}));
 else{const j=JSON.parse(await rc.text());if(j.salt!==lcj.salt)throw new Error('Auf dem Server liegt ein anderer Tresor. Dieses Gerät muss zuerst mit „Vom Server laden“ eingerichtet werden (siehe Anleitung).')}
 const names=new Set((await sList()).map(o=>o.name));
@@ -320,28 +366,36 @@ lastSync=new Date().toLocaleString('de-DE');st('☁️ synchronisiert '+lastSync
 catch(e){st('☁️ Sync-Fehler: '+(e.message==='Failed to fetch'?'keine Verbindung':e.message));throw e}finally{syBusy=false}}
 A.sy=async()=>{if(!SBC()){show('<h3>Server-Sync</h3><p class="mu">Der Server ist nicht eingerichtet. Trage in der Datei config.js die Adresse und den Schlüssel deines Supabase-Projekts ein (siehe ANLEITUNG-SERVER.txt).</p>');return}
 let s=null;try{s=await sessGet()}catch(e){}
-if(!s)show('<h3>Server-Sync</h3><p class="mu">Deine Dokumente werden verschlüsselt auf deinem Server gespeichert. Der Server sieht nur unlesbare Daten. Melde dich mit E-Mail und deinem App-Passwort an.</p><label>E-Mail<input id="se" type="email" autocomplete="off"></label><label>App-Passwort<input id="sp" type="password" autocomplete="off"></label><p id="em" class="er"></p><div class="row"><button data-a="sy2">Anmelden</button><button class="b2" data-a="sy1">Konto erstellen</button></div>');
+if(!s)show('<h3>Server-Sync</h3><p class="mu">Deine Dokumente werden verschlüsselt auf deinem Server gespeichert. Der Server sieht nur unlesbare Daten. Melde dich mit E-Mail und deinem App-Passwort an.</p><label>E-Mail<input id="se" type="email" autocomplete="off" value="'+esc(loginMail)+'"></label><label>App-Passwort<input id="sp" type="password" autocomplete="off"></label><p id="em" class="er"></p><div class="row"><button data-a="sy2">Anmelden</button><button class="b2" data-a="sy1">Konto erstellen</button></div>');
 else show('<h3>Server-Sync</h3><p class="mu">Angemeldet als '+esc(s.email)+'.<br>Letzte Synchronisierung: '+esc(lastSync||'–')+'</p><p id="em" class="mu"></p><div class="row" style="flex-direction:column"><button data-a="sy3">🔄 Jetzt synchronisieren</button><button class="b2" data-a="sy4">Abmelden</button></div>')};
 async function syLogin(create){const em=$('#em'),email=$('#se').value.trim().toLowerCase(),pw=$('#sp').value;if(!email||!pw){em.textContent='Bitte E-Mail und Passwort eingeben.';return}
 em.style.color='var(--mu)';em.textContent='Prüfe …';
-try{if(!(await pwOK(pw)))throw new Error('Das ist nicht dein App-Passwort.');SS=await sbAuth(email,pw,create);await put('sess',await enc(SS));em.textContent='Synchronisiere …';await syncNow();A.sy()}
+try{if(!(await pwOK(pw,email)))throw new Error(cfgV===2?'E-Mail oder Passwort stimmen nicht mit deinem App-Login überein.':'Das ist nicht dein App-Passwort.');SS=await sbAuth(email,pw,create);await put('sess',await enc(SS));em.textContent='Synchronisiere …';await syncNow();A.sy()}
 catch(e){em.style.color='';em.textContent=e.message==='Failed to fetch'?'Keine Verbindung zum Server.':(e.message||'Fehler')}}
 A.sy1=()=>syLogin(true);A.sy2=()=>syLogin(false);
 A.sy3=async()=>{const em=$('#em');em.textContent='Synchronisiere …';try{await syncNow();A.sy()}catch(e){em.className='er';em.textContent=e.message}};
 A.sy4=async()=>{SS=null;await del('sess');hide();st('')};
-$('#ls').onclick=async()=>{const er=m=>{$('#le').textContent=m},email=$('#sm').value.trim().toLowerCase(),pw=$('#pw').value;er('');
-if(!SBC())return er('Server nicht eingerichtet (config.js).');if(!email||!pw)return er('Bitte E-Mail und Passwort eingeben.');
-$('#ls').disabled=true;
-try{er('Melde an …');SS=await sbAuth(email,pw,false);
-const c=await sGet('cfg.json');if(!c)throw new Error('Auf dem Server liegt noch kein Tresor.');
-const cj=JSON.parse(await c.text()),chk=upk(cj.chk),k=await derive(pw,unb(cj.salt));
-try{await crypto.subtle.decrypt({name:'AES-GCM',iv:chk.iv},k,chk.ct)}catch(e){throw new Error('Falsches Passwort für diesen Server-Tresor.')}
-const docs=(await sList()).map(o=>o.name).filter(n=>/^doc-.+\.bin$/.test(n));let i=0;
-for(const n of docs){i++;er('Lade Dokumente '+i+'/'+docs.length+' …');const b=await sGet(n);if(b)await put('doc:'+n.slice(4,-4),fromBin(await b.arrayBuffer()))}
-const mb=await sGet('meta.bin');if(!mb)throw new Error('Keine Daten auf dem Server.');
-await put('meta',fromBin(await mb.arrayBuffer()));await put('cfg',{salt:unb(cj.salt),chk});
-first=false;er('');await unlock();if(key&&SS)await put('sess',await enc(SS))}
-catch(e){SS=null;er(e.message==='Failed to fetch'?'Keine Verbindung zum Server.':e.message)}finally{$('#ls').disabled=false}};
+const cred=(mail,pw,v)=>v===2?((mail||'').trim().toLowerCase()+'\n'+pw):pw;
+const swapTmp=ids=>new Promise((res,rej)=>{const t=db.transaction('kv','readwrite'),s=t.objectStore('kv');
+const mv=(a,b)=>{s.get(NS+a).onsuccess=e=>{if(e.target.result!==undefined)s.put(e.target.result,NS+b);s.delete(NS+a)}};
+ids.forEach(id=>mv('tmp:doc:'+id,'doc:'+id));mv('tmp:meta','meta');mv('tmp:cfg','cfg');
+t.oncomplete=()=>res();t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)});
+const cleanTmp=async ids=>{try{for(const id of ids)await del('tmp:doc:'+id);await del('tmp:meta');await del('tmp:cfg')}catch(e){}};
+A.mg=()=>{show('<h3>E-Mail zum Login hinzufügen</h3><p class="mu">Danach meldest du dich mit E-Mail und Passwort an. Dafür werden alle Dokumente neu verschlüsselt. Das kann etwas dauern. Schließe die App währenddessen nicht. Mach vorher am besten ein Backup.</p><label>E-Mail<input id="mge" type="email" autocomplete="email"></label><label>Aktuelles App-Passwort<input id="mgp" type="password" autocomplete="off"></label><p id="em" class="er"></p><div class="row"><button data-a="mg2">Jetzt umstellen</button></div>')};
+A.mg2=async()=>{const em=$('#em'),mail=$('#mge').value.trim().toLowerCase(),pw=$('#mgp').value,say=(m,ok)=>{em.style.color=ok?'var(--mu)':'';em.textContent=m};
+if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail))return say('Bitte eine gültige E-Mail-Adresse eingeben.');
+if(!(await pwOK(pw,'')))return say('Das ist nicht dein aktuelles App-Passwort.');
+if(SS||await get('sess'))return say('Bitte zuerst im Server-Sync abmelden (☁️ → Abmelden). Die Server-Daten müssen danach neu hochgeladen werden: lösche im Supabase-Dashboard unter Storage den Ordner deines Benutzers.');
+const ids=meta.docs.map(d=>d.id),rv0=metaRev;
+try{say('Verschlüssele neu … bitte warten',1);
+const nsalt=crypto.getRandomValues(new Uint8Array(16)),nk=await derive(cred(mail,pw,2),nsalt);
+const encN=async o=>{const iv=crypto.getRandomValues(new Uint8Array(12));return{iv,ct:await crypto.subtle.encrypt({name:'AES-GCM',iv},nk,te.encode(JSON.stringify(o)))}};
+let i=0;for(const id of ids){const r=await get('doc:'+id);if(!r)continue;await put('tmp:doc:'+id,await encN(await dec(r)));i++;say('Verschlüssele neu … '+i+'/'+ids.length,1)}
+if(metaRev!==rv0)throw new Error('Während der Umstellung wurde etwas geändert. Bitte erneut versuchen.');
+await put('tmp:meta',await encN(meta));await put('tmp:cfg',{salt:nsalt,chk:await encN({ok:1}),v:2});
+await swapTmp(ids);key=nk;cfgV=2;loginMail=mail;try{await del('bio')}catch(e){}
+say('Fertig. Ab jetzt meldest du dich mit E-Mail und Passwort an.',1);render()}
+catch(e){await cleanTmp(ids);say('Fehlgeschlagen: '+(e.message||e.name)+' Deine Daten sind unverändert.')}};
 let busy=false;
 const toBlob=u=>{const bin=atob(u.split(',')[1]),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:'image/jpeg'})};
 async function analyze(){const em=$('#em');if(busy||!em)return;if(!pend.length){em.textContent='Bitte zuerst eine Seite hinzufügen.';return}
