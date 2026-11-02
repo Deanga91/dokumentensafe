@@ -44,7 +44,7 @@ button:disabled{opacity:.4}
 </style></head><body>
 <div id="lock"><h1 id="lt"></h1><p id="lm" class="mu"></p>
 <input id="sm" type="email" placeholder="E-Mail-Adresse" autocomplete="email" style="margin-bottom:8px"><input id="pw" type="password" placeholder="Passwort" autocomplete="off"><div style="height:8px"></div>
-<input id="pw2" type="password" placeholder="Passwort wiederholen" autocomplete="off"><p id="le" class="er"></p><button id="lb">Anmelden</button><button id="lmode" class="b2" style="margin-top:8px">Neu hier? Registrieren</button><button id="lr" class="b2" style="margin-top:8px" hidden>Aus Backup wiederherstellen</button><button id="lbio" class="b2" style="margin-top:8px" hidden>👆 Mit Fingerabdruck entsperren</button></div>
+<input id="pw2" type="password" placeholder="Passwort wiederholen" autocomplete="off"><p id="le" class="er"></p><button id="lb">Anmelden</button><button id="lmode" class="b2" style="margin-top:8px">Neu hier? Registrieren</button><button id="lr" class="b2" style="margin-top:8px" hidden>Aus Backup wiederherstellen</button><button id="lbio" class="b2" style="margin-top:8px" hidden>👆 Mit Fingerabdruck entsperren</button><p id="ver" class="mu" style="font-size:12px;margin-top:16px"></p></div>
 <main id="app" hidden>
 <header><h1>🔒 Dokumentensafe</h1><span style="display:flex;gap:6px"><button class="b2" style="width:auto" data-a="sy" aria-label="Server-Sync">☁️</button><button class="b2" style="width:auto" data-a="bio" aria-label="Fingerabdruck">👆</button><button class="b2" style="width:auto" data-a="lock">Sperren</button><button class="b2" style="width:auto" data-a="cl">🚪 Beenden</button></span></header>
 <div id="sst" class="mu" style="font-size:13px;margin:-4px 0 8px"></div>
@@ -89,7 +89,7 @@ $('#lt').textContent=f?'Registrieren':'Anmelden';$('#lb').textContent=f?'Registr
 $('#pw2').hidden=!f;$('#lr').hidden=f;$('#sm').hidden=false;$('#lbio').hidden=true;NS=lastNS();
 if(!f&&db)bioOK().then(async ok=>{if(ok&&await get('bio')&&!key)$('#lbio').hidden=false}).catch(()=>{});
 $('#lm').textContent=f?'Registriere dich mit E-Mail-Adresse und Passwort (mindestens 8 Zeichen, besser 12). Jeder Benutzer hat eigene, getrennte Dokumente. Es gibt keine Wiederherstellung: ohne Passwort sind die Daten unlesbar.'+(SBC()?'':' Ohne Server bleiben die Daten nur auf diesem Gerät.'):'Melde dich mit E-Mail und Passwort an.'+(SBC()?' Neues Handy? Einfach anmelden, deine Dokumente werden vom Server geladen.':'')+' Mit Backup: E-Mail und Passwort des Backups eingeben und „Aus Backup wiederherstellen“ tippen.';
-$('#pw').value='';$('#pw2').value='';$('#le').textContent=''}
+$('#pw').value='';$('#pw2').value='';$('#le').textContent='';$('#ver').textContent='Version 17 · '+(SBC()?'Server: '+sbBase(SBC().url).replace('https://',''):'kein Server eingetragen')}
 const rawGet=k=>tx('readonly',s=>s.get(k));
 async function nsOf(e){const h=await crypto.subtle.digest('SHA-256',te.encode('dokumentensafe-user|'+e.trim().toLowerCase()));return 'u'+Array.from(new Uint8Array(h).slice(0,10)).map(b=>b.toString(16).padStart(2,'0')).join('')+'/'}
 const adoptLegacy=nns=>new Promise((res,rej)=>{const t=db.transaction('kv','readwrite'),s=t.objectStore('kv'),rq=s.openCursor();
@@ -318,7 +318,7 @@ async function sbFetch(path,opt,tok){const c=SBC();opt=opt||{};const h=Object.as
 async function authPw(email,pw){const k=await crypto.subtle.importKey('raw',te.encode(pw),'PBKDF2',false,['deriveBits']);const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:te.encode('dokumentensafe-auth|'+email),iterations:250000,hash:'SHA-256'},k,256);return b64(bits).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 async function sbAuth(email,pw,create){const ap=await authPw(email,pw);
 const r=await sbFetch(create?'/auth/v1/signup':'/auth/v1/token?grant_type=password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:ap})});
-const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.msg||j.error_description||j.message||('Server-Fehler '+r.status));
+const j=await r.json().catch(()=>({}));if(!r.ok){let m=j.msg||j.error_description||j.message||('Server-Fehler '+r.status);if(/Invalid path specified/i.test(m))m='Die Server-Adresse in config.js stimmt nicht. Verwendet wird: '+sbBase(SBC().url)+' – sie muss genau https://DEINE-ID.supabase.co lauten.';throw new Error(m)}
 if(!j.access_token)throw new Error('Konto angelegt. Bitte erst die Bestätigungs-E-Mail öffnen (oder in Supabase „Confirm email“ ausschalten), danach „Anmelden“.');
 return{email,uid:j.user.id,at:j.access_token,rt:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000}}
 async function sessGet(){if(!SS&&key){const r=await get('sess');if(r){try{SS=await dec(r)}catch(e){}}}
