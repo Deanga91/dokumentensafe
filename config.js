@@ -4,6 +4,6 @@
 // Der anon-Schlüssel ist öffentlich gedacht. Geschützt sind die Daten durch Anmeldung und Zugriffsregeln.
 // NIEMALS den "service_role"-Schlüssel hier eintragen!
 window.DS_CONFIG = {
-  url: "",   // z. B. "https://abcdefghijkl.supabase.co"
-  key: ""    // z. B. "eyJhbGciOi..." oder "sb_publishable_..."
+  url: "https://pxadcigypsmquavporye.supabase.co/rest/v1/",   // z. B. "https://abcdefghijkl.supabase.co"
+  key: "sb_publishable_VZPghK4uxwQ3Pb_lbzvxnw_UnuiZiN4",    // z. B. "eyJhbGciOi..." oder "sb_publishable_..."
 };
