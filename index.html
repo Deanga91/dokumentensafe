@@ -2,8 +2,9 @@
 <script src="config.js"></script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ef0"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{--bg:#f5f6f8;--fg:#1b1f24;--cd:#fff;--ac:#1a6ef0;--mu:#6b7480;--bd:#dde1e6;--rd:#d33;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121417;--fg:#e8eaed;--cd:#1c2025;--ac:#6ba3ff;--mu:#9aa3ad;--bd:#2d333a;--rd:#ff7b7b}}
-:root[data-theme="dark"]{--bg:#121417;--fg:#e8eaed;--cd:#1c2025;--ac:#6ba3ff;--mu:#9aa3ad;--bd:#2d333a;--rd:#ff7b7b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#121417;--fg:#e8eaed;--cd:#1c2025;--ac:#6ba3ff;--mu:#9aa3ad;--bd:#2d333a;--rd:#ff7b7b}}
+:root[data-theme="light"]{color-scheme:light}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#121417;--fg:#e8eaed;--cd:#1c2025;--ac:#6ba3ff;--mu:#9aa3ad;--bd:#2d333a;--rd:#ff7b7b}
 html,body{margin:0;background:var(--bg);color:var(--fg);font:16px system-ui,sans-serif}
 *{box-sizing:border-box}[hidden]{display:none!important}
 main{max-width:640px;margin:0 auto;padding:12px}
@@ -44,12 +45,12 @@ button:disabled{opacity:.4}
 </style></head><body>
 <div id="lock"><h1 id="lt"></h1><p id="lm" class="mu"></p>
 <input id="sm" type="email" placeholder="E-Mail-Adresse" autocomplete="email" style="margin-bottom:8px"><input id="pw" type="password" placeholder="Passwort" autocomplete="off"><div style="height:8px"></div>
-<input id="pw2" type="password" placeholder="Passwort wiederholen" autocomplete="off"><p id="le" class="er"></p><button id="lb">Anmelden</button><button id="lmode" class="b2" style="margin-top:8px">Neu hier? Registrieren</button><button id="lfp" class="b2" style="margin-top:8px">Passwort vergessen?</button><button id="lr" class="b2" style="margin-top:8px" hidden>Aus Backup wiederherstellen</button><button id="lbio" class="b2" style="margin-top:8px" hidden>👆 Mit Fingerabdruck entsperren</button><p id="ver" class="mu" style="font-size:12px;margin-top:16px"></p></div>
+<input id="pw2" type="password" placeholder="Passwort wiederholen" autocomplete="off"><p id="le" class="er"></p><button id="lb">Anmelden</button><button id="lmode" class="b2" style="margin-top:8px">Neu hier? Registrieren</button><button id="lfp" class="b2" style="margin-top:8px">Passwort vergessen?</button><button id="lr" class="b2" style="margin-top:8px" hidden>Aus Backup wiederherstellen</button><button id="lbio" class="b2" style="margin-top:8px" hidden>👆 Mit Fingerabdruck entsperren</button><button id="lth" class="b2" style="margin-top:8px">Darstellung</button><p id="ver" class="mu" style="font-size:12px;margin-top:16px"></p></div>
 <main id="app" hidden>
-<header><h1>🔒 Dokumentensafe</h1><span style="display:flex;gap:6px"><button class="b2" style="width:auto" data-a="sy" aria-label="Server-Sync">☁️</button><button class="b2" style="width:auto" data-a="bio" aria-label="Fingerabdruck">👆</button><button class="b2" style="width:auto" data-a="lock">Sperren</button><button class="b2" style="width:auto" data-a="cl">🚪 Beenden</button></span></header>
+<header><h1>🔒 Dokumentensafe</h1><span style="display:flex;gap:6px"><button class="b2" style="width:auto" data-a="th" id="hth" aria-label="Darstellung">🌓</button><button class="b2" style="width:auto" data-a="sy" aria-label="Server-Sync">☁️</button><button class="b2" style="width:auto" data-a="bio" aria-label="Fingerabdruck">👆</button><button class="b2" style="width:auto" data-a="lock">Sperren</button><button class="b2" style="width:auto" data-a="cl">🚪 Beenden</button></span></header>
 <div id="sst" class="mu" style="font-size:13px;margin:-4px 0 8px"></div>
 <input id="q" placeholder="🔍 Suchen (Name oder Kategorie)">
-<div class="row" id="nv"><button class="b2" data-a="back">← Zurück</button><button class="b2" data-a="home">🏠 Startseite</button></div>
+<div class="row" id="nv"><button class="b2" data-a="home">🏠 Startseite</button><button class="b2" data-a="back">← Zurück</button></div>
 <div class="row vw"><select id="sv"><option value="liste">Ansicht: Liste</option><option value="kompakt">Ansicht: Kompakt</option><option value="kacheln">Ansicht: Kacheln</option></select><select id="ss"><option value="dn">Datum: neueste zuerst</option><option value="da">Datum: älteste zuerst</option><option value="na">Name A–Z</option><option value="nz">Name Z–A</option><option value="cn">Erstellt: neueste zuerst</option><option value="ca">Erstellt: älteste zuerst</option></select><select id="sg"><option value="">Gruppierung: keine</option><option value="j">Gruppiert nach Jahr</option><option value="m">Gruppiert nach Monat</option></select></div>
 <div class="row"><button data-a="scan">📷 Scannen</button><button data-a="up">📁 Hochladen</button><button class="b2" data-a="nf">+ Ordner</button></div>
 <div class="row" id="fo" hidden><button class="b2" data-a="rf">Ordner umbenennen</button><button class="b2" data-a="df">Ordner löschen</button></div>
@@ -63,6 +64,11 @@ button:disabled{opacity:.4}
 if(!window.claude)document.documentElement.classList.add('noai');
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 const $=s=>document.querySelector(s),te=new TextEncoder(),td=new TextDecoder();
+const THEMES=['auto','light','dark'],THL={auto:'🌓 Automatisch',light:'☀️ Hell',dark:'🌙 Dunkel'},THI={auto:'🌓',light:'☀️',dark:'🌙'};
+function getTheme(){try{const t=localStorage.getItem('ds_theme');return THEMES.includes(t)?t:'auto'}catch(e){return 'auto'}}
+function applyTheme(t){const r=document.documentElement;if(t==='auto')r.removeAttribute('data-theme');else r.setAttribute('data-theme',t);const b=$('#lth');if(b)b.textContent='Darstellung: '+THL[t];const h=$('#hth');if(h)h.textContent=THI[t]}
+function cycleTheme(){const t=THEMES[(THEMES.indexOf(getTheme())+1)%3];try{localStorage.setItem('ds_theme',t)}catch(e){}applyTheme(t)}
+applyTheme(getTheme());
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let db,key,meta,cur=null,pend=[],timer,vid=null;
 const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open('docsafe',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
@@ -78,7 +84,7 @@ const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOStr
 const fd=d=>d?new Date(d+'T00:00').toLocaleDateString('de-DE'):'–',fdt=d=>new Date(d).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'});
 const path=id=>{const p=[];while(id){const f=meta.folders.find(x=>x.id===id);if(!f)break;p.unshift(f.name);id=f.parent}return p.join(' / ')};
 const opts=(sel,root)=>(root?`<option value="">${root}</option>`:'')+meta.folders.map(f=>({id:f.id,p:path(f.id)})).sort((a,b)=>a.p.localeCompare(b.p)).map(o=>`<option value="${o.id}"${o.id===sel?' selected':''}>${esc(o.p)}</option>`).join('');
-const D=$('#dlg'),show=h=>{D.innerHTML='<div class="box"><div class="row"><button class="b2" data-a="x">← Zurück</button><button class="b2" data-a="hx">🏠 Startseite</button></div>'+h+'</div>';D.hidden=false},hide=()=>{D.hidden=true;D.innerHTML=''};
+const D=$('#dlg'),show=h=>{D.innerHTML='<div class="box"><div class="row"><button class="b2" data-a="hx">🏠 Startseite</button><button class="b2" data-a="x">← Zurück</button></div>'+h+'</div>';D.hidden=false},hide=()=>{D.hidden=true;D.innerHTML=''};
 const nz=v=>v||null;
 
 async function boot(){db=await idb();try{navigator.storage?.persist?.()}catch(e){}try{NS=localStorage.getItem('ds_ns')||''}catch(e){}const c0=await get('cfg');cfgV=c0?(c0.v||1):2;lockUI(!c0&&!SBC()&&!(await rawGet('cfg')))}
@@ -89,7 +95,7 @@ $('#lt').textContent=f?'Registrieren':'Anmelden';$('#lb').textContent=f?'Registr
 $('#pw2').hidden=!f;$('#lr').hidden=f;$('#lfp').hidden=f;$('#sm').hidden=false;$('#lbio').hidden=true;NS=lastNS();
 if(!f&&db)bioOK().then(async ok=>{if(ok&&await get('bio')&&!key)$('#lbio').hidden=false}).catch(()=>{});
 $('#lm').textContent=f?'Registriere dich mit E-Mail-Adresse und Passwort (mindestens 8 Zeichen, besser 12). Jeder Benutzer hat eigene, getrennte Dokumente. Es gibt keine Wiederherstellung: ohne Passwort sind die Daten unlesbar.'+(SBC()?'':' Ohne Server bleiben die Daten nur auf diesem Gerät.'):'Melde dich mit E-Mail und Passwort an.'+(SBC()?' Neues Handy? Einfach anmelden, deine Dokumente werden vom Server geladen.':'')+' Mit Backup: E-Mail und Passwort des Backups eingeben und „Aus Backup wiederherstellen“ tippen.';
-$('#pw').value='';$('#pw2').value='';$('#le').textContent='';$('#ver').textContent='Version 19 · '+(SBC()?'Server: '+sbBase(SBC().url).replace('https://',''):'kein Server eingetragen')}
+$('#pw').value='';$('#pw2').value='';$('#le').textContent='';$('#ver').textContent='Version 21'}
 const rawGet=k=>tx('readonly',s=>s.get(k));
 async function nsOf(e){const h=await crypto.subtle.digest('SHA-256',te.encode('dokumentensafe-user|'+e.trim().toLowerCase()));return 'u'+Array.from(new Uint8Array(h).slice(0,10)).map(b=>b.toString(16).padStart(2,'0')).join('')+'/'}
 const adoptLegacy=nns=>new Promise((res,rej)=>{const t=db.transaction('kv','readwrite'),s=t.objectStore('kv'),rq=s.openCursor();
@@ -149,7 +155,7 @@ meta.folders.filter(f=>(f.parent||null)===cur).sort((a,b)=>a.name.localeCompare(
 const docs=meta.docs.filter(d=>q?(d.name+' '+path(d.folder)).toLowerCase().includes(q):(d.folder||null)===cur).sort(sorter());
 h+=docHtml(docs);
 if(!docs.length&&!h.includes('class="it"'))h+='<p class="mu">Noch nichts vorhanden.</p>';
-$('#list').innerHTML=h;$('#fo').hidden=!cur||!!q;$('#mg').hidden=cfgV===2;$('#nv').firstElementChild.disabled=!cur&&!q;if(V.v==='kacheln')ensureTh(docs)}
+$('#list').innerHTML=h;$('#fo').hidden=!cur||!!q;$('#mg').hidden=cfgV===2;$('#nv').lastElementChild.disabled=!cur&&!q;if(V.v==='kacheln')ensureTh(docs)}
 
 const A={
 open:i=>{cur=nz(i);$('#q').value='';render()},
@@ -318,7 +324,7 @@ async function sbFetch(path,opt,tok){const c=SBC();opt=opt||{};const h=Object.as
 async function authPw(email,pw){const k=await crypto.subtle.importKey('raw',te.encode(pw),'PBKDF2',false,['deriveBits']);const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:te.encode('dokumentensafe-auth|'+email),iterations:250000,hash:'SHA-256'},k,256);return b64(bits).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 async function sbAuth(email,pw,create){const ap=await authPw(email,pw);
 const r=await sbFetch(create?'/auth/v1/signup':'/auth/v1/token?grant_type=password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:ap})});
-const j=await r.json().catch(()=>({}));if(!r.ok){let m=j.msg||j.error_description||j.message||('Server-Fehler '+r.status);if(/Invalid path specified/i.test(m))m='Die Server-Adresse in config.js stimmt nicht. Verwendet wird: '+sbBase(SBC().url)+' – sie muss genau https://DEINE-ID.supabase.co lauten.';throw new Error(m)}
+const j=await r.json().catch(()=>({}));if(!r.ok){let m=j.msg||j.error_description||j.message||('Server-Fehler '+r.status);if(/Invalid path specified/i.test(m))m='Die Server-Adresse in config.js stimmt nicht. Sie muss genau https://DEINE-ID.supabase.co lauten (ohne Zusatz).';throw new Error(m)}
 if(!j.access_token)throw new Error('Konto angelegt. Bitte erst die Bestätigungs-E-Mail öffnen (oder in Supabase „Confirm email“ ausschalten), danach „Anmelden“.');
 return{email,uid:j.user.id,at:j.access_token,rt:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000}}
 async function sessGet(){if(!SS&&key){const r=await get('sess');if(r){try{SS=await dec(r)}catch(e){}}}
@@ -443,6 +449,7 @@ A.sy6=async(i,b)=>{const em=$('#em');if(!b.dataset.s){b.dataset.s='1';b.textCont
 em.className='mu';em.textContent='Überschreibe …';try{await syncPush();em.textContent='Fertig. Der Server entspricht jetzt diesem Gerät.'}catch(e){em.className='er';em.textContent=e.message==='Failed to fetch'?'Keine Verbindung zum Server.':e.message}};
 A.sy7=async(i,b)=>{const em=$('#em');if(!b.dataset.s){b.dataset.s='1';b.textContent='Ja, dieses Gerät überschreiben';em.className='er';em.textContent='Der Stand dieses Geräts wird durch den Server-Stand ersetzt. Dokumente, die nur auf diesem Gerät liegen, werden gelöscht.';return}
 em.className='mu';em.textContent='Lade …';try{await syncPull();em.textContent='Fertig. Dieses Gerät entspricht jetzt dem Server.'}catch(e){em.className='er';em.textContent=e.message==='Failed to fetch'?'Keine Verbindung zum Server.':e.message}};
+A.th=()=>cycleTheme();$('#lth').onclick=cycleTheme;
 let busy=false;
 const toBlob=u=>{const bin=atob(u.split(',')[1]),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:'image/jpeg'})};
 async function analyze(){const em=$('#em');if(busy||!em)return;if(!pend.length){em.textContent='Bitte zuerst eine Seite hinzufügen.';return}
