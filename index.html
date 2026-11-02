@@ -39,6 +39,11 @@ label{display:block;margin:8px 0;font-size:14px;color:var(--mu)}label input,labe
 .tile b{display:block;margin-top:6px;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tile small{color:var(--mu)}
 .gh{margin:14px 0 4px;color:var(--mu)}
 button:disabled{opacity:.4}
+.sel{outline:2px solid var(--ac);background:rgba(26,110,240,.12)}
+.tile{position:relative}.ck{position:absolute;top:6px;left:8px;z-index:1;font-size:20px;background:var(--bg);border-radius:6px;padding:0 4px}
+#selbar{position:fixed;left:0;right:0;bottom:0;z-index:8;display:flex;gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:var(--cd);border-top:1px solid var(--bd)}
+#selbar button{width:auto;padding:10px 14px}#seln{flex:1;font-weight:600}
+body.selmode main{padding-bottom:100px}
 .box>.row:first-child{position:sticky;top:0;z-index:3;background:var(--bg);margin:-16px -16px 10px;padding:12px 16px 8px;border-bottom:1px solid var(--bd);border-radius:16px 16px 0 0}
 #nv{position:sticky;top:env(safe-area-inset-top,0px);z-index:4;background:var(--bg);padding:6px 0;margin:0 0 6px}
 .tile img{image-rendering:pixelated}
@@ -58,7 +63,9 @@ button:disabled{opacity:.4}
 <div class="row" id="fo" hidden><button class="b2" data-a="rf">Ordner umbenennen</button><button class="b2" data-a="df">Ordner löschen</button></div>
 <div class="row"><button class="b2" data-a="bk">💾 Backup exportieren</button><button class="b2" data-a="bi">📥 Backup importieren</button></div>
 <div class="row" id="mg" hidden><button class="b2" data-a="mg">✉️ E-Mail zum Login hinzufügen</button></div>
+<div class="row"><button class="b2" id="smb" data-a="sm">☑ Auswählen (mehrere Dokumente)</button></div>
 <div id="list"></div></main>
+<div id="selbar" hidden><span id="seln">0 ausgewählt</span><button class="b2" data-a="sall">Alle</button><button data-a="sms">📧 Senden</button><button class="b2" data-a="sx">✕</button></div>
 <div id="fs" hidden><div id="fsb"><button class="b2" data-a="fr" data-i="-90">↺</button><button class="b2" data-a="fr" data-i="90">↻</button><button class="b2" data-a="fp" data-i="-1">‹</button><span id="fsn"></span><button class="b2" data-a="fp" data-i="1">›</button><button class="b2" data-a="fh">🏠 Start</button><button class="dg" data-a="fc">✕ Schließen</button></div><div id="fsi"><img id="fsm" alt=""></div></div>
 <div id="dlg" hidden></div>
 <input id="fi" type="file" accept="image/*" capture="environment" hidden><input id="fu" type="file" multiple hidden><input id="fb" type="file" hidden>
@@ -92,12 +99,12 @@ const nz=v=>v||null;
 async function boot(){db=await idb();try{navigator.storage?.persist?.()}catch(e){}try{NS=localStorage.getItem('ds_ns')||''}catch(e){}const c0=await get('cfg');cfgV=c0?(c0.v||1):2;lockUI(!c0&&!SBC()&&!(await rawGet('cfg')))}
 let first=false,cfgV=2,loginMail='';
 const lastNS=()=>{try{return localStorage.getItem('ds_ns')||''}catch(e){return ''}};
-function lockUI(f){first=f;key=null;meta=null;SS=null;loginMail='';pend=[];pendF=[];vp=[];vf=[];fsA=[];$('#fs').hidden=true;hide();$('#app').hidden=true;$('#lock').hidden=false;
+function lockUI(f){selMode=false;sel.clear();document.body.classList.remove('selmode');$('#selbar').hidden=true;first=f;key=null;meta=null;SS=null;loginMail='';pend=[];pendF=[];vp=[];vf=[];fsA=[];$('#fs').hidden=true;hide();$('#app').hidden=true;$('#lock').hidden=false;
 $('#lt').textContent=f?'Registrieren':'Anmelden';$('#lb').textContent=f?'Registrieren':'Anmelden';$('#lmode').textContent=f?'Schon ein Konto? Anmelden':'Neu hier? Registrieren';
 $('#pw2').hidden=!f;$('#lr').hidden=f;$('#lfp').hidden=f;$('#sm').hidden=false;$('#lbio').hidden=true;NS=lastNS();
 if(!f&&db)bioOK().then(async ok=>{if(ok&&await get('bio')&&!key)$('#lbio').hidden=false}).catch(()=>{});
 $('#lm').textContent=f?'Registriere dich mit E-Mail-Adresse und Passwort (mindestens 8 Zeichen, besser 12). Jeder Benutzer hat eigene, getrennte Dokumente. Es gibt keine Wiederherstellung: ohne Passwort sind die Daten unlesbar.'+(SBC()?'':' Ohne Server bleiben die Daten nur auf diesem Gerät.'):'Melde dich mit E-Mail und Passwort an.'+(SBC()?' Neues Handy? Einfach anmelden, deine Dokumente werden vom Server geladen.':'')+' Mit Backup: E-Mail und Passwort des Backups eingeben und „Aus Backup wiederherstellen“ tippen.';
-$('#pw').value='';$('#pw2').value='';$('#le').textContent='';$('#ver').textContent='Version 22'}
+$('#pw').value='';$('#pw2').value='';$('#le').textContent='';$('#ver').textContent='Version 23'}
 const rawGet=k=>tx('readonly',s=>s.get(k));
 async function nsOf(e){const h=await crypto.subtle.digest('SHA-256',te.encode('dokumentensafe-user|'+e.trim().toLowerCase()));return 'u'+Array.from(new Uint8Array(h).slice(0,10)).map(b=>b.toString(16).padStart(2,'0')).join('')+'/'}
 const adoptLegacy=nns=>new Promise((res,rej)=>{const t=db.transaction('kv','readwrite'),s=t.objectStore('kv'),rq=s.openCursor();
@@ -154,7 +161,7 @@ function render(){const q=$('#q').value.trim().toLowerCase();let h='';
 if(!q){const ch=[];let i=cur;while(i){const f=meta.folders.find(x=>x.id===i);if(!f)break;ch.unshift(f);i=f.parent}
 h+=`<div class="cr"><a data-a="open" data-i="">Start</a>`+ch.map(f=>` › <a data-a="open" data-i="${f.id}">${esc(f.name)}</a>`).join('')+`</div>`;
 meta.folders.filter(f=>(f.parent||null)===cur).sort((a,b)=>a.name.localeCompare(b.name)).forEach(f=>{h+=`<div class="it" data-a="open" data-i="${f.id}">📁 <b>${esc(f.name)}</b></div>`})}
-const docs=meta.docs.filter(d=>q?(d.name+' '+path(d.folder)).toLowerCase().includes(q):(d.folder||null)===cur).sort(sorter());
+const docs=meta.docs.filter(d=>q?(d.name+' '+path(d.folder)).toLowerCase().includes(q):(d.folder||null)===cur).sort(sorter());curDocIds=docs.map(d=>d.id);
 h+=docHtml(docs);
 if(!docs.length&&!h.includes('class="it"'))h+='<p class="mu">Noch nichts vorhanden.</p>';
 $('#list').innerHTML=h;$('#fo').hidden=!cur||!!q;$('#mg').hidden=cfgV===2;$('#nv').lastElementChild.disabled=!cur&&!q;if(V.v==='kacheln')ensureTh(docs)}
@@ -183,8 +190,8 @@ sd:async()=>{const n=$('#n').value.trim(),em=m=>$('#em').textContent=m;if(!n)ret
 const id=uid(),d={id,name:n,folder:nz($('#f').value),date:$('#d').value||today(),created:new Date().toISOString(),n:pend.length,f:pendF.length,m:Date.now(),r:0};d.th=(await mkth(pend[0]))||'';d.thv=2;
 try{await put('doc:'+id,await enc({pages:pend,files:pendF}));meta.docs.push(d);await saveMeta()}catch(e){await del('doc:'+id).catch(()=>{});meta.docs=meta.docs.filter(x=>x.id!==id);return em('Speichern fehlgeschlagen: '+e.message)}
 pend=[];pendF=[];hide();render()},
-vd:async i=>{const d=meta.docs.find(x=>x.id===i);vid=i;let pg=[],fl=[];try{const o=await dec(await get('doc:'+i));pg=o.pages||[];fl=o.files||[]}catch(e){}vp=pg;vf=fl;
-show(`<h3>${esc(d.name)}</h3><p class="mu">Erstellt: ${fdt(d.created)}<br>Bild antippen: Vollbild &amp; drehen</p><p id="dm" class="er"></p><label>Name<input id="n" value="${esc(d.name)}"></label><label>Kategorie<select id="f">${opts(d.folder,'Ohne Kategorie')}</select></label><label>Datum des Dokuments<input id="d" type="date" value="${d.date}"></label><div class="row"><button class="b2" data-a="x">Schließen</button><button data-a="ud">Änderungen speichern</button></div>`+pg.map((p,k)=>`<img class="pg" id="pg${k}" data-a="fs" data-i="${k}" src="${p}"><a class="mu" id="dl${k}" href="${p}" download="${esc(d.name)}-${k+1}.jpg">Seite ${k+1} herunterladen</a>`).join('')+(fl.length?'<h4 class="gh">Dateien</h4>'+fl.map(f=>`<a class="mu" style="display:block;margin:6px 0" href="${f.data}" download="${esc(f.name)}">⬇ ${esc(f.name)}</a>`).join(''):'')+`<div class="row"><button class="dg" data-a="dd">Dokument löschen</button></div>`)},
+vd:async i=>{if(selMode){if(sel.has(i))sel.delete(i);else sel.add(i);selUI();return}const d=meta.docs.find(x=>x.id===i);vid=i;let pg=[],fl=[];try{const o=await dec(await get('doc:'+i));pg=o.pages||[];fl=o.files||[]}catch(e){}vp=pg;vf=fl;
+show(`<h3>${esc(d.name)}</h3><p class="mu">Erstellt: ${fdt(d.created)}<br>Bild antippen: Vollbild &amp; drehen</p><p id="dm" class="er"></p><label>Name<input id="n" value="${esc(d.name)}"></label><label>Kategorie<select id="f">${opts(d.folder,'Ohne Kategorie')}</select></label><label>Datum des Dokuments<input id="d" type="date" value="${d.date}"></label><div class="row"><button class="b2" data-a="x">Schließen</button><button data-a="ud">Änderungen speichern</button></div>`+pg.map((p,k)=>`<img class="pg" id="pg${k}" data-a="fs" data-i="${k}" src="${p}"><a class="mu" id="dl${k}" href="${p}" download="${esc(d.name)}-${k+1}.jpg">Seite ${k+1} herunterladen</a>`).join('')+(fl.length?'<h4 class="gh">Dateien</h4>'+fl.map(f=>`<a class="mu" style="display:block;margin:6px 0" href="${f.data}" download="${esc(f.name)}">⬇ ${esc(f.name)}</a>`).join(''):'')+`<div class="row"><button class="b2" data-a="sm1">📧 Dokument per E-Mail senden</button></div><div class="row"><button class="dg" data-a="dd">Dokument löschen</button></div>`)},
 ud:async()=>{const d=meta.docs.find(x=>x.id===vid),n=$('#n').value.trim();if(!n)return;d.name=n;d.folder=nz($('#f').value);d.date=$('#d').value||d.date;d.m=Date.now();await saveMeta();hide();render()},
 dd:(i,b)=>{if(!b.dataset.s){b.dataset.s=1;b.textContent='Wirklich endgültig löschen?';return}A.dd2()},
 dd2:async()=>{await del('doc:'+vid);(meta.tomb=meta.tomb||[]).push({id:vid,t:Date.now()});meta.docs=meta.docs.filter(x=>x.id!==vid);await saveMeta();hide();render()}
@@ -259,9 +266,9 @@ const gl=k=>V.g==='j'?k:new Date(k+'-01T00:00').toLocaleDateString('de-DE',{mont
 function sorter(){const c={dn:(a,b)=>b.date.localeCompare(a.date),da:(a,b)=>a.date.localeCompare(b.date),na:(a,b)=>a.name.localeCompare(b.name,'de'),nz:(a,b)=>b.name.localeCompare(a.name,'de'),cn:(a,b)=>b.created.localeCompare(a.created),ca:(a,b)=>a.created.localeCompare(b.created)}[V.s]||((a,b)=>b.date.localeCompare(a.date));
 if(!V.g)return c;const asc=V.s==='da'||V.s==='ca';return(a,b)=>{const x=gk(a),y=gk(b);return x!==y?(asc?x.localeCompare(y):y.localeCompare(x)):c(a,b)}}
 function card(d){const nm=esc(d.name);
-if(V.v==='kompakt')return `<div class="it cp" data-a="vd" data-i="${d.id}">📄 <b>${nm}</b><span>${fd(d.date)}</span></div>`;
-if(V.v==='kacheln')return `<div class="tile" data-a="vd" data-i="${d.id}">${d.thv===2&&d.th?`<img src="${d.th}" alt="">`:'<div class="ph">📄</div>'}<b>${nm}</b><small>${fd(d.date)}</small></div>`;
-return `<div class="it" data-a="vd" data-i="${d.id}">📄 <b>${nm}</b><small>${esc(path(d.folder)||'Ohne Kategorie')}<br>Datum des Dokuments: ${fd(d.date)}<br>Erstellt: ${fdt(d.created)} · ${d.n} Seite(n)${d.f?' · '+d.f+' Datei(en)':''}</small></div>`}
+if(V.v==='kompakt')return `<div class="it cp${isel(d)}" data-a="vd" data-i="${d.id}">${selMark(d)}📄 <b>${nm}</b><span>${fd(d.date)}</span></div>`;
+if(V.v==='kacheln')return `<div class="tile${isel(d)}" data-a="vd" data-i="${d.id}">${selMode?'<span class="ck">'+(sel.has(d.id)?'☑':'☐')+'</span>':''}${d.thv===2&&d.th?`<img src="${d.th}" alt="">`:'<div class="ph">📄</div>'}<b>${nm}</b><small>${fd(d.date)}</small></div>`;
+return `<div class="it${isel(d)}" data-a="vd" data-i="${d.id}">${selMark(d)}📄 <b>${nm}</b><small>${esc(path(d.folder)||'Ohne Kategorie')}<br>Datum des Dokuments: ${fd(d.date)}<br>Erstellt: ${fdt(d.created)} · ${d.n} Seite(n)${d.f?' · '+d.f+' Datei(en)':''}</small></div>`}
 function docHtml(docs){let h='',last=null,open=false;const t=V.v==='kacheln';
 for(const d of docs){if(V.g){const k=gk(d);if(k!==last){if(open){h+='</div>';open=false}h+=`<h4 class="gh">${esc(gl(k))}</h4>`;last=k}}
 if(t&&!open){h+='<div class="grid">';open=true}h+=card(d)}
@@ -452,6 +459,46 @@ em.className='mu';em.textContent='Überschreibe …';try{await syncPush();em.tex
 A.sy7=async(i,b)=>{const em=$('#em');if(!b.dataset.s){b.dataset.s='1';b.textContent='Ja, dieses Gerät überschreiben';em.className='er';em.textContent='Der Stand dieses Geräts wird durch den Server-Stand ersetzt. Dokumente, die nur auf diesem Gerät liegen, werden gelöscht.';return}
 em.className='mu';em.textContent='Lade …';try{await syncPull();em.textContent='Fertig. Dieses Gerät entspricht jetzt dem Server.'}catch(e){em.className='er';em.textContent=e.message==='Failed to fetch'?'Keine Verbindung zum Server.':e.message}};
 A.th=()=>cycleTheme();$('#lth').onclick=cycleTheme;
+let selMode=false,mailSel=[],curDocIds=[];const sel=new Set();
+const isel=d=>selMode&&sel.has(d.id)?' sel':'',selMark=d=>selMode?(sel.has(d.id)?'☑ ':'☐ '):'';
+function selUI(){document.body.classList.toggle('selmode',selMode);$('#selbar').hidden=!selMode;$('#seln').textContent=sel.size+' ausgewählt';$('#smb').textContent=selMode?'✕ Auswahl beenden':'☑ Auswählen (mehrere Dokumente)';render()}
+A.sm=()=>{selMode=!selMode;if(!selMode)sel.clear();selUI()};
+A.sx=()=>{selMode=false;sel.clear();selUI()};
+A.sall=()=>{if(curDocIds.length&&curDocIds.every(id=>sel.has(id)))curDocIds.forEach(id=>sel.delete(id));else curDocIds.forEach(id=>sel.add(id));selUI()};
+A.sms=()=>{if(!sel.size){$('#seln').textContent='Bitte erst Dokumente antippen';return}sendDocs([...sel])};
+A.sm1=()=>sendDocs([vid]);
+async function makePdf(pages){const te2=new TextEncoder(),parts=[],offs=[];let len=0;
+const push=u=>{parts.push(u);len+=u.length},str=s=>push(te2.encode(s));
+const dims=await Promise.all(pages.map(p=>new Promise(res=>{const im=new Image();im.onload=()=>res([im.naturalWidth,im.naturalHeight]);im.onerror=()=>res([595,842]);im.src=p})));
+str('%PDF-1.4\n%âãÏÓ\n');const n=pages.length,kids=[];for(let i=0;i<n;i++)kids.push((3+i*3)+' 0 R');
+offs[1]=len;str('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+offs[2]=len;str('2 0 obj\n<< /Type /Pages /Kids ['+kids.join(' ')+'] /Count '+n+' >>\nendobj\n');
+for(let i=0;i<n;i++){const w=dims[i][0],h=dims[i][1],W=595,H=Math.round(595*h/w),pid=3+i*3,iid=pid+1,cid=pid+2,jpg=unb(pages[i].split(',')[1]);
+offs[pid]=len;str(pid+' 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+W+' '+H+'] /Resources << /XObject << /Im0 '+iid+' 0 R >> >> /Contents '+cid+' 0 R >>\nendobj\n');
+offs[iid]=len;str(iid+' 0 obj\n<< /Type /XObject /Subtype /Image /Width '+w+' /Height '+h+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+jpg.length+' >>\nstream\n');push(jpg);str('\nendstream\nendobj\n');
+const cs='q '+W+' 0 0 '+H+' 0 0 cm /Im0 Do Q';offs[cid]=len;str(cid+' 0 obj\n<< /Length '+cs.length+' >>\nstream\n'+cs+'\nendstream\nendobj\n')}
+const total=2+n*3,xr=len;let x='xref\n0 '+(total+1)+'\n0000000000 65535 f \n';for(let k=1;k<=total;k++)x+=String(offs[k]).padStart(10,'0')+' 00000 n \n';
+str(x+'trailer\n<< /Size '+(total+1)+' /Root 1 0 R >>\nstartxref\n'+xr+'\n%%EOF');return new Blob(parts,{type:'application/pdf'})}
+async function mailFiles(ids,prog){const out=[],used=new Set();let i=0;
+const safe=n=>String(n).replace(/[\\\/:*?"<>|]+/g,' ').trim().slice(0,80)||'Dokument',isPdf=f=>/pdf$/i.test(f.type||'')||/\.pdf$/i.test(f.name||'');
+const add=(blob,name,type)=>{let nm=name,k=2;while(used.has(nm.toLowerCase())){const dot=name.lastIndexOf('.');nm=dot>0?name.slice(0,dot)+' ('+k+')'+name.slice(dot):name+' ('+k+')';k++}used.add(nm.toLowerCase());out.push(new File([blob],nm,{type}))};
+for(const id of ids){const d=meta.docs.find(x=>x.id===id);if(!d)continue;const r=await get('doc:'+id);if(!r)continue;const o=await dec(r),pages=o.pages||[],files=o.files||[];i++;if(prog)prog(i,ids.length);
+const hasPdf=files.some(isPdf),rot=(d.r||0)>0;
+if(pages.length&&(!hasPdf||rot))add(await makePdf(pages),safe(d.name)+'.pdf','application/pdf');
+for(const f of files){if(isPdf(f)&&rot&&pages.length)continue;add(d2b(f.data),safe(f.name),f.type||'application/octet-stream')}}
+return out}
+async function sendDocs(ids){show('<h3>Per E-Mail senden</h3><p id="em" class="mu">Bereite Dateien vor …</p><div id="bb" class="row" style="flex-direction:column"></div>');const em=$('#em'),bb=$('#bb');
+try{mailSel=await mailFiles(ids,(i,n)=>{em.textContent='Bereite Dateien vor … '+i+'/'+n});
+if(!mailSel.length){em.className='er';em.textContent='Keine Dateien gefunden.';return}
+const tot=mailSel.reduce((a,f)=>a+f.size,0);
+em.textContent=ids.length+' Dokument(e), '+mailSel.length+' Datei(en), '+(tot/1048576).toFixed(1)+' MB bereit. Achtung: Die Dateien verlassen die verschlüsselte App und werden unverschlüsselt versendet.'+(tot>18*1048576?' Hinweis: über 18 MB. Gmail legt sehr große Anhänge automatisch als Google-Drive-Link an, andere Mail-Apps lehnen sie evtl. ab.':'');
+bb.innerHTML='<button data-a="smsend">📧 E-Mail-App wählen &amp; senden</button><button class="b2" data-a="smsave">📥 Dateien herunterladen</button>'}
+catch(e){em.className='er';em.textContent='Fehlgeschlagen: '+(e.message||e.name)}}
+A.smsend=async()=>{const em=$('#em'),fs=mailSel;if(!fs||!fs.length)return;
+if(!(navigator.canShare&&navigator.canShare({files:fs}))){em.className='er';em.textContent='Dein Browser kann diese Dateien nicht direkt an die E-Mail-App übergeben. Nutze „Dateien herunterladen“ und hänge sie in der E-Mail an.';return}
+try{await navigator.share({files:fs,title:'Dokumente',text:'Dokumente aus dem Dokumentensafe'});em.className='mu';em.textContent='An die E-Mail-App übergeben. Dort noch auf „Senden“ tippen.'}
+catch(e){const ab=e&&e.name==='AbortError';em.className=ab?'mu':'er';em.textContent=ab?'Abgebrochen.':'Teilen fehlgeschlagen ('+(e&&e.name||'Fehler')+').'}};
+A.smsave=async()=>{const em=$('#em');try{for(const f of mailSel){const a=document.createElement('a');a.dataset.n=1;a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),60000);await new Promise(r=>setTimeout(r,400))}em.className='mu';em.textContent='Download gestartet. Hänge die Dateien aus dem Ordner „Download“ in einer E-Mail an.'}catch(e){em.className='er';em.textContent='Fehlgeschlagen: '+(e.message||e.name)}};
 let busy=false;
 const toBlob=u=>{const bin=atob(u.split(',')[1]),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:'image/jpeg'})};
 async function analyze(){const em=$('#em');if(busy||!em)return;if(!pend.length){em.textContent='Bitte zuerst eine Seite hinzufügen.';return}
