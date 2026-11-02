@@ -1,0 +1,361 @@
+<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Dokumentensafe</title>
+<script src="config.js"></script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ef0"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#f5f6f8;--fg:#1b1f24;--cd:#fff;--ac:#1a6ef0;--mu:#6b7480;--bd:#dde1e6;--rd:#d33;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121417;--fg:#e8eaed;--cd:#1c2025;--ac:#6ba3ff;--mu:#9aa3ad;--bd:#2d333a;--rd:#ff7b7b}}
+:root[data-theme="dark"]{--bg:#121417;--fg:#e8eaed;--cd:#1c2025;--ac:#6ba3ff;--mu:#9aa3ad;--bd:#2d333a;--rd:#ff7b7b}
+html,body{margin:0;background:var(--bg);color:var(--fg);font:16px system-ui,sans-serif}
+*{box-sizing:border-box}[hidden]{display:none!important}
+main{max-width:640px;margin:0 auto;padding:12px}
+h1{font-size:20px;margin:0}h3{margin:0 0 8px}
+header{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;margin-bottom:10px}
+input,select,button{font:inherit;padding:11px;border-radius:10px;border:1px solid var(--bd);background:var(--cd);color:var(--fg);width:100%}
+button{background:var(--ac);color:#fff;border:0;font-weight:600;cursor:pointer}
+button.b2{background:var(--cd);color:var(--fg);border:1px solid var(--bd)}
+button.dg{background:var(--rd)}
+label{display:block;margin:8px 0;font-size:14px;color:var(--mu)}label input,label select{margin-top:4px;color:var(--fg)}
+.row{display:flex;gap:8px;margin:8px 0}.row>*{flex:1}
+.it{background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer}
+.it small{display:block;color:var(--mu);margin-top:4px}
+.cr{margin:8px 0;color:var(--mu)}.cr a{color:var(--ac);cursor:pointer}
+.mu{color:var(--mu)}.er{color:var(--rd);min-height:1.2em}
+#dlg{position:fixed;inset:0;background:#0009;display:flex;align-items:flex-end;justify-content:center;z-index:9}
+.box{background:var(--bg);width:100%;max-width:640px;max-height:92vh;overflow:auto;padding:16px;border-radius:16px 16px 0 0}
+#th{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.t{position:relative}.t img{height:80px;border-radius:8px}
+.t button{position:absolute;top:2px;right:2px;width:26px;padding:2px;border-radius:50%;background:#000a}
+.pg{width:100%;border-radius:8px;margin:6px 0;border:1px solid var(--bd)}
+#lock{max-width:360px;margin:12vh auto;padding:16px}
+#fs{position:fixed;inset:0;background:#000;z-index:20;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+#fsb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px;background:#111}#fsb button{width:auto;flex:0 0 auto;padding:10px 14px}#fsb .dg{margin-left:auto}#fsn{color:#fff}
+#fsi{flex:1;min-height:0;overflow:auto;display:flex;align-items:center;justify-content:center}#fsm{max-width:100%;max-height:calc(100vh - 90px);object-fit:contain}
+.pg,.t img{cursor:zoom-in}
+.noai .ai{display:none}
+.vw{flex-wrap:wrap}.vw select{flex:1 1 40%;min-width:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin:8px 0}
+.tile{background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:8px;cursor:pointer;overflow:hidden}
+.tile img,.ph{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;display:block;background:var(--bg)}
+.ph{display:flex;align-items:center;justify-content:center;font-size:32px}
+.tile b{display:block;margin-top:6px;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tile small{color:var(--mu)}
+.gh{margin:14px 0 4px;color:var(--mu)}
+button:disabled{opacity:.4}
+.tile img{image-rendering:pixelated}
+.fc{display:flex;align-items:center;gap:6px;background:var(--cd);border:1px solid var(--bd);border-radius:8px;padding:4px 8px;max-width:100%}.fc button{width:26px;padding:2px;margin-left:auto}
+.cp{display:flex;justify-content:space-between;gap:8px;padding:10px 12px;margin:5px 0}.cp b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cp span{color:var(--mu);white-space:nowrap}
+</style></head><body>
+<div id="lock"><h1 id="lt"></h1><p id="lm" class="mu"></p>
+<input id="pw" type="password" placeholder="Passwort" autocomplete="off"><div style="height:8px"></div>
+<input id="pw2" type="password" placeholder="Passwort wiederholen" autocomplete="off"><input id="sm" type="email" placeholder="E-Mail des Server-Kontos (nur zum Laden vom Server)" hidden style="margin-top:8px"><p id="le" class="er"></p><button id="lb">Weiter</button><button id="lr" class="b2" style="margin-top:8px" hidden>Aus Backup wiederherstellen</button><button id="ls" class="b2" style="margin-top:8px" hidden>☁️ Vom Server laden</button><button id="lbio" class="b2" style="margin-top:8px" hidden>👆 Mit Fingerabdruck entsperren</button></div>
+<main id="app" hidden>
+<header><h1>🔒 Dokumentensafe</h1><span style="display:flex;gap:6px"><button class="b2" style="width:auto" data-a="sy" aria-label="Server-Sync">☁️</button><button class="b2" style="width:auto" data-a="bio" aria-label="Fingerabdruck">👆</button><button class="b2" style="width:auto" data-a="lock">Sperren</button><button class="b2" style="width:auto" data-a="cl">🚪 Beenden</button></span></header>
+<div id="sst" class="mu" style="font-size:13px;margin:-4px 0 8px"></div>
+<input id="q" placeholder="🔍 Suchen (Name oder Kategorie)">
+<div class="row" id="nv"><button class="b2" data-a="back">← Zurück</button><button class="b2" data-a="home">🏠 Startseite</button></div>
+<div class="row vw"><select id="sv"><option value="liste">Ansicht: Liste</option><option value="kompakt">Ansicht: Kompakt</option><option value="kacheln">Ansicht: Kacheln</option></select><select id="ss"><option value="dn">Datum: neueste zuerst</option><option value="da">Datum: älteste zuerst</option><option value="na">Name A–Z</option><option value="nz">Name Z–A</option><option value="cn">Erstellt: neueste zuerst</option><option value="ca">Erstellt: älteste zuerst</option></select><select id="sg"><option value="">Gruppierung: keine</option><option value="j">Gruppiert nach Jahr</option><option value="m">Gruppiert nach Monat</option></select></div>
+<div class="row"><button data-a="scan">📷 Scannen</button><button data-a="up">📁 Hochladen</button><button class="b2" data-a="nf">+ Ordner</button></div>
+<div class="row" id="fo" hidden><button class="b2" data-a="rf">Ordner umbenennen</button><button class="b2" data-a="df">Ordner löschen</button></div>
+<div class="row"><button class="b2" data-a="bk">💾 Backup exportieren</button><button class="b2" data-a="bi">📥 Backup importieren</button></div>
+<div id="list"></div></main>
+<div id="fs" hidden><div id="fsb"><button class="b2" data-a="fr" data-i="-90">↺</button><button class="b2" data-a="fr" data-i="90">↻</button><button class="b2" data-a="fp" data-i="-1">‹</button><span id="fsn"></span><button class="b2" data-a="fp" data-i="1">›</button><button class="b2" data-a="fh">🏠 Start</button><button class="dg" data-a="fc">✕ Schließen</button></div><div id="fsi"><img id="fsm" alt=""></div></div>
+<div id="dlg" hidden></div>
+<input id="fi" type="file" accept="image/*" capture="environment" hidden><input id="fu" type="file" multiple hidden><input id="fb" type="file" hidden>
+<script>
+if(!window.claude)document.documentElement.classList.add('noai');
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+const $=s=>document.querySelector(s),te=new TextEncoder(),td=new TextDecoder();
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let db,key,meta,cur=null,pend=[],timer,vid=null;
+const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open('docsafe',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+const tx=(m,f)=>new Promise((res,rej)=>{const t=db.transaction('kv',m);const r=f(t.objectStore('kv'));t.oncomplete=()=>res(r.result);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)});
+const get=k=>tx('readonly',s=>s.get(k)),put=(k,v)=>tx('readwrite',s=>s.put(v,k)),del=k=>tx('readwrite',s=>s.delete(k));
+async function derive(pw,salt){const b=await crypto.subtle.importKey('raw',te.encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},b,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+async function enc(o){const iv=crypto.getRandomValues(new Uint8Array(12));return{iv,ct:await crypto.subtle.encrypt({name:'AES-GCM',iv},key,te.encode(JSON.stringify(o)))}}
+async function dec(r){return JSON.parse(td.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:r.iv},key,r.ct)))}
+const saveMeta=async()=>{metaRev++;await put('meta',await enc(meta));schedSync()};
+const uid=()=>crypto.randomUUID();
+const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const fd=d=>d?new Date(d+'T00:00').toLocaleDateString('de-DE'):'–',fdt=d=>new Date(d).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'});
+const path=id=>{const p=[];while(id){const f=meta.folders.find(x=>x.id===id);if(!f)break;p.unshift(f.name);id=f.parent}return p.join(' / ')};
+const opts=(sel,root)=>(root?`<option value="">${root}</option>`:'')+meta.folders.map(f=>({id:f.id,p:path(f.id)})).sort((a,b)=>a.p.localeCompare(b.p)).map(o=>`<option value="${o.id}"${o.id===sel?' selected':''}>${esc(o.p)}</option>`).join('');
+const D=$('#dlg'),show=h=>{D.innerHTML='<div class="box"><div class="row"><button class="b2" data-a="x">← Zurück</button><button class="b2" data-a="hx">🏠 Startseite</button></div>'+h+'</div>';D.hidden=false},hide=()=>{D.hidden=true;D.innerHTML=''};
+const nz=v=>v||null;
+
+async function boot(){db=await idb();try{navigator.storage?.persist?.()}catch(e){}lockUI(!(await get('cfg')))}
+let first=false;
+function lockUI(f){first=f;key=null;meta=null;SS=null;pend=[];pendF=[];vp=[];vf=[];fsA=[];$('#fs').hidden=true;hide();$('#app').hidden=true;$('#lock').hidden=false;$('#lt').textContent=f?'Passwort festlegen':'Entsperren';$('#pw2').hidden=!f;$('#lr').hidden=!f;$('#ls').hidden=!(f&&SBC());$('#sm').hidden=!(f&&SBC());$('#lbio').hidden=true;if(!f&&db)bioOK().then(async ok=>{if(ok&&await get('bio')&&!key)$('#lbio').hidden=false}).catch(()=>{});$('#lm').textContent=f?'Mindestens 8 Zeichen. Es gibt keine Wiederherstellung: ohne Passwort sind die Daten unlesbar. Neues Handy? Passwort des Backups eingeben und „Aus Backup wiederherstellen“ tippen.'+(SBC()?' Schon ein Server-Konto? Dann Passwort und E-Mail eingeben und „Vom Server laden“ tippen.':''):'';$('#pw').value='';$('#pw2').value='';$('#le').textContent=''}
+async function unlock(){const pw=$('#pw').value,er=m=>$('#le').textContent=m;er('');$('#lb').disabled=true;
+try{if(first){if(pw.length<8)return er('Mindestens 8 Zeichen.');if(pw!==$('#pw2').value)return er('Passwörter stimmen nicht überein.');
+const salt=crypto.getRandomValues(new Uint8Array(16));key=await derive(pw,salt);const chk=await enc({ok:1});
+meta={folders:['Rentenbescheide','Lohnabrechnungen','Steuer','Versicherung','Verträge'].map(n=>({id:uid(),name:n,parent:null})),docs:[]};
+await saveMeta();await put('cfg',{salt,chk})}
+else{const cfg=await get('cfg');key=await derive(pw,cfg.salt);try{await dec(cfg.chk)}catch(e){key=null;await new Promise(r=>setTimeout(r,1200));return er('Falsches Passwort.')}
+const m=await get('meta');meta=m?await dec(m):{folders:[],docs:[]}}
+}catch(e){key=null;return er('Fehler: '+e.message)}finally{$('#lb').disabled=false}
+$('#lock').hidden=true;$('#app').hidden=false;cur=null;$('#q').value='';render();bump();schedSync(800)}
+function bump(){clearTimeout(timer);if(key)timer=setTimeout(()=>lockUI(false),10*60*1000)}
+['click','keydown','touchstart'].forEach(e=>document.addEventListener(e,bump,{passive:true}));
+$('#lb').onclick=unlock;$('#pw').onkeydown=$('#pw2').onkeydown=e=>{if(e.key==='Enter')unlock()};
+$('#q').oninput=render;
+
+function render(){const q=$('#q').value.trim().toLowerCase();let h='';
+if(!q){const ch=[];let i=cur;while(i){const f=meta.folders.find(x=>x.id===i);if(!f)break;ch.unshift(f);i=f.parent}
+h+=`<div class="cr"><a data-a="open" data-i="">Start</a>`+ch.map(f=>` › <a data-a="open" data-i="${f.id}">${esc(f.name)}</a>`).join('')+`</div>`;
+meta.folders.filter(f=>(f.parent||null)===cur).sort((a,b)=>a.name.localeCompare(b.name)).forEach(f=>{h+=`<div class="it" data-a="open" data-i="${f.id}">📁 <b>${esc(f.name)}</b></div>`})}
+const docs=meta.docs.filter(d=>q?(d.name+' '+path(d.folder)).toLowerCase().includes(q):(d.folder||null)===cur).sort(sorter());
+h+=docHtml(docs);
+if(!docs.length&&!h.includes('class="it"'))h+='<p class="mu">Noch nichts vorhanden.</p>';
+$('#list').innerHTML=h;$('#fo').hidden=!cur||!!q;$('#nv').firstElementChild.disabled=!cur&&!q;if(V.v==='kacheln')ensureTh(docs)}
+
+const A={
+open:i=>{cur=nz(i);$('#q').value='';render()},
+x:hide,lock:()=>lockUI(false),
+back:()=>{if($('#q').value)$('#q').value='';else{const f=meta.folders.find(x=>x.id===cur);cur=f?(f.parent||null):null}render()},
+home:()=>{cur=null;$('#q').value='';render()},
+hx:()=>{hide();A.home()},fh:()=>{A.fc();hide();A.home()},
+nf:()=>{show(`<h3>Neuer Ordner</h3><label>Name<input id="n"></label><label>Übergeordnet<select id="f">${opts(cur,'Hauptebene')}</select></label><p id="em" class="er"></p><div class="row"><button class="b2" data-a="x">Abbrechen</button><button data-a="sf">Anlegen</button></div>`)},
+sf:async()=>{const n=$('#n').value.trim();if(!n)return $('#em').textContent='Bitte einen Namen eingeben.';const p=nz($('#f').value);
+if(meta.folders.some(f=>(f.parent||null)===p&&f.name.toLowerCase()===n.toLowerCase()))return $('#em').textContent='Ordner existiert bereits.';
+meta.folders.push({id:uid(),name:n,parent:p,m:Date.now()});await saveMeta();hide();render()},
+rf:()=>{const f=meta.folders.find(x=>x.id===cur);show(`<h3>Ordner umbenennen</h3><label>Name<input id="n" value="${esc(f.name)}"></label><p id="em" class="er"></p><div class="row"><button class="b2" data-a="x">Abbrechen</button><button data-a="rs">Speichern</button></div>`)},
+rs:async()=>{const n=$('#n').value.trim();if(!n)return;{const f=meta.folders.find(x=>x.id===cur);f.name=n;f.m=Date.now()}await saveMeta();hide();render()},
+df:()=>{show(`<h3>Ordner löschen?</h3><p>„${esc(path(cur))}“ wird mit allen Unterordnern und allen darin enthaltenen Dokumenten unwiderruflich gelöscht.</p><div class="row"><button class="b2" data-a="x">Abbrechen</button><button class="dg" data-a="df2">Endgültig löschen</button></div>`)},
+df2:async()=>{const ids=new Set([cur]);let c=true;while(c){c=false;meta.folders.forEach(f=>{if(f.parent&&ids.has(f.parent)&&!ids.has(f.id)){ids.add(f.id);c=true}})}
+const gone=meta.docs.filter(d=>ids.has(d.folder));const par=meta.folders.find(f=>f.id===cur).parent||null;
+{const tn=Date.now();meta.tomb=(meta.tomb||[]).concat([...ids].map(id=>({id,t:tn})),gone.map(d=>({id:d.id,t:tn})))}meta.folders=meta.folders.filter(f=>!ids.has(f.id));meta.docs=meta.docs.filter(d=>!ids.has(d.folder));await saveMeta();
+for(const d of gone)await del('doc:'+d.id);cur=par;hide();render()},
+scan:(i,b,up)=>{pend=[];pendF=[];show(`<h3>Dokument scannen</h3><label>Name<input id="n" placeholder="z. B. Lohnabrechnung Mai"></label><label>Kategorie<select id="f">${opts(cur,'Ohne Kategorie')}</select></label><label>Datum des Dokuments<input id="d" type="date" value="${today()}"></label><div id="th"></div><div class="row"><button class="b2" data-a="add">📷 Foto</button><button class="b2" data-a="addu">📁 Datei (PDF, Text …)</button></div><div class="ai"><button class="b2" data-a="an">✨ Datum &amp; Betreff erkennen</button><label style="display:flex;gap:8px;align-items:center"><input id="au" type="checkbox" style="width:auto">Automatisch erkennen</label><small class="mu">Zum Erkennen werden die Seiten an Claude gesendet; sonst bleibt alles auf dem Gerät.</small></div><p id="em" class="er"></p><div class="row"><button class="b2" data-a="x">Abbrechen</button><button data-a="sd">Speichern</button></div>`);up?A.addu():A.add()},
+add:()=>$('#fi').click(),addu:()=>$('#fu').click(),up:()=>A.scan(0,0,true),an:()=>analyze(),
+rm:i=>{pend.splice(+i,1);thumbs()},
+sd:async()=>{const n=$('#n').value.trim(),em=m=>$('#em').textContent=m;if(!n)return em('Bitte einen Namen eingeben.');if(!pend.length&&!pendF.length)return em('Bitte mindestens eine Seite oder Datei hinzufügen.');
+const id=uid(),d={id,name:n,folder:nz($('#f').value),date:$('#d').value||today(),created:new Date().toISOString(),n:pend.length,f:pendF.length,m:Date.now(),r:0};d.th=(await mkth(pend[0]))||'';d.thv=2;
+try{await put('doc:'+id,await enc({pages:pend,files:pendF}));meta.docs.push(d);await saveMeta()}catch(e){await del('doc:'+id).catch(()=>{});meta.docs=meta.docs.filter(x=>x.id!==id);return em('Speichern fehlgeschlagen: '+e.message)}
+pend=[];pendF=[];hide();render()},
+vd:async i=>{const d=meta.docs.find(x=>x.id===i);vid=i;let pg=[],fl=[];try{const o=await dec(await get('doc:'+i));pg=o.pages||[];fl=o.files||[]}catch(e){}vp=pg;vf=fl;
+show(`<h3>${esc(d.name)}</h3><p class="mu">Erstellt: ${fdt(d.created)}<br>Bild antippen: Vollbild &amp; drehen</p><p id="dm" class="er"></p><label>Name<input id="n" value="${esc(d.name)}"></label><label>Kategorie<select id="f">${opts(d.folder,'Ohne Kategorie')}</select></label><label>Datum des Dokuments<input id="d" type="date" value="${d.date}"></label><div class="row"><button class="b2" data-a="x">Schließen</button><button data-a="ud">Änderungen speichern</button></div>`+pg.map((p,k)=>`<img class="pg" id="pg${k}" data-a="fs" data-i="${k}" src="${p}"><a class="mu" id="dl${k}" href="${p}" download="${esc(d.name)}-${k+1}.jpg">Seite ${k+1} herunterladen</a>`).join('')+(fl.length?'<h4 class="gh">Dateien</h4>'+fl.map(f=>`<a class="mu" style="display:block;margin:6px 0" href="${f.data}" download="${esc(f.name)}">⬇ ${esc(f.name)}</a>`).join(''):'')+`<div class="row"><button class="dg" data-a="dd">Dokument löschen</button></div>`)},
+ud:async()=>{const d=meta.docs.find(x=>x.id===vid),n=$('#n').value.trim();if(!n)return;d.name=n;d.folder=nz($('#f').value);d.date=$('#d').value||d.date;d.m=Date.now();await saveMeta();hide();render()},
+dd:(i,b)=>{if(!b.dataset.s){b.dataset.s=1;b.textContent='Wirklich endgültig löschen?';return}A.dd2()},
+dd2:async()=>{await del('doc:'+vid);(meta.tomb=meta.tomb||[]).push({id:vid,t:Date.now()});meta.docs=meta.docs.filter(x=>x.id!==vid);await saveMeta();hide();render()}
+};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(t&&A[t.dataset.a])A[t.dataset.a](t.dataset.i,t)});
+function thumbs(){const t=$('#th');if(t)t.innerHTML=pendF.map((f,i)=>`<div class="fc">📎 ${esc(f.name)}<button data-a="rf2" data-i="${i}">✕</button></div>`).join('')+pend.map((p,i)=>`<div class="t"><img src="${p}" data-a="fsp" data-i="${i}"><button data-a="rm" data-i="${i}">✕</button><button data-a="rp" data-i="${i}" style="top:auto;bottom:2px">↻</button></div>`).join('')}
+$('#fi').onchange=$('#fu').onchange=async e=>{for(const f of e.target.files){try{if(!(f.type||'').startsWith('image/')){await addFile(f);continue}const b=await createImageBitmap(f),s=Math.min(1,1800/Math.max(b.width,b.height)),c=document.createElement('canvas');c.width=Math.round(b.width*s);c.height=Math.round(b.height*s);c.getContext('2d').drawImage(b,0,0,c.width,c.height);pend.push(c.toDataURL('image/jpeg',.75))}catch(x){const em=$('#em');if(em)em.textContent='Foto konnte nicht verarbeitet werden.'}}e.target.value='';thumbs();if($('#au')?.checked&&pend.length)analyze()};
+const b64=u=>{const a=new Uint8Array(u);let s='';for(let i=0;i<a.length;i+=8192)s+=String.fromCharCode.apply(null,a.subarray(i,i+8192));return btoa(s)};
+const unb=s=>{const b=atob(s),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a};
+const pk=r=>({iv:b64(r.iv),ct:b64(r.ct)}),upk=r=>({iv:unb(r.iv),ct:unb(r.ct).buffer});
+let fbMode=null,pwTmp='';
+let bkBlob=null,bkFn='',bkEnd=false,bkDone=false;
+async function bkSave(mode,noEnd){const em=$('#em'),blob=bkBlob,fn=bkFn;if(!blob||!em)return;
+const say=(m,bad)=>{em.className=bad?'er':'mu';em.textContent=m};
+try{let how='';
+if(mode==='pick'||mode==='auto'){
+if(window.showSaveFilePicker){const t0=Date.now();try{const h=await showSaveFilePicker({suggestedName:fn,types:[{description:'Dokumentensafe-Backup',accept:{'application/json':['.json']}}]});const w=await h.createWritable();await w.write(blob);await w.close();how='picker'}catch(e){if(e&&e.name==='AbortError'&&Date.now()-t0>1000)return say('Abgebrochen.',1);if(mode==='pick')return say('„Speichern unter“ ist hier nicht möglich ('+(e.name||'Fehler')+'). Versuche „Herunterladen“.',1)}}
+else if(mode==='pick')return say('„Speichern unter“ gibt es in dieser Ansicht nicht. Nutze „Herunterladen“ oder „Teilen“.',1)}
+if(!how&&mode==='share'){const file=new File([blob],fn,{type:'text/plain'});
+if(!(navigator.canShare&&navigator.canShare({files:[file]})))return say('Teilen mit Datei geht in dieser Ansicht nicht. Nutze „Herunterladen“.',1);
+try{await navigator.share({files:[file],title:fn});how='share'}catch(e){return say(e&&e.name==='AbortError'?'Teilen wurde abgebrochen oder ist in dieser Ansicht nicht möglich. Nutze „Herunterladen“.':'Teilen fehlgeschlagen ('+(e.name||'Fehler')+').',1)}}
+if(!how){let dl=null;try{dl=window.claude?await claude.use('downloads'):null}catch(x){}
+if(dl){await dl.save({filename:fn,data:blob});how='claude'}
+else{const a=document.createElement('a');a.dataset.n=1;const wv=/; wv\)/.test(navigator.userAgent);a.href=wv?await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error);r.readAsDataURL(blob)}):URL.createObjectURL(blob);a.download=fn;document.body.appendChild(a);a.click();a.remove();if(!wv)setTimeout(()=>URL.revokeObjectURL(a.href),60000);how='dl'}}
+const msg={picker:'Backup am gewählten Ort gespeichert.',share:'Backup übergeben. Gespeichert ist es dort, wo du es in der Auswahl abgelegt hast.',claude:'Backup gespeichert. Den Ort bestimmt dein Browser bzw. die Claude-App.',dl:'Download gestartet (Datei '+fn+'). Prüfe den Ordner „Download“. Kommt nichts an, erlaubt diese Ansicht keine Downloads: dann die App in Chrome über eine https-Adresse öffnen.'}[how];
+if(bkEnd&&!noEnd){say(msg+' Die App wird jetzt gesperrt und beendet.');setTimeout(A.ex,2500)}else say(msg);bkDone=true;return true}
+catch(e){say(e.code==='declined'?'Abgebrochen. Bitte erneut versuchen.':'Speichern fehlgeschlagen ('+(e.code||e.message||'Fehler')+').',1)}}
+A.bk=async end=>{bkEnd=end===true;bkBlob=null;bkDone=false;show('<h3>'+(bkEnd?'App beenden':'Backup exportieren')+'</h3><p class="mu">Erstellt eine Datei mit allen Ordnern und Dokumenten, verschlüsselt mit deinem aktuellen Passwort. Danach wählst du, wo sie gespeichert wird.</p><p id="em" class="mu">Wird erstellt …</p><div id="bb" class="row" style="flex-direction:column"></div>');const em=$('#em');
+try{const cfg=await get('cfg'),docs={};for(const d of meta.docs){const r=await get('doc:'+d.id);if(r)docs[d.id]=pk(r)}
+const out={app:'dokumentensafe',v:1,cfg:{salt:b64(cfg.salt),chk:pk(cfg.chk)},meta:pk(await get('meta')),docs};
+bkBlob=new Blob([JSON.stringify(out)],{type:'application/json'});
+bkFn='Dokumentensafe-Backup-'+(()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'_'+p(d.getHours())+'-'+p(d.getMinutes())})()+'.json';
+em.textContent='Backup ist fertig ('+(bkBlob.size>1048576?(bkBlob.size/1048576).toFixed(1)+' MB':Math.max(1,Math.round(bkBlob.size/1024))+' KB')+'). Tippe auf „Speichern (Ort wählen)“.';
+$('#bb').innerHTML='<button data-a="bsave">📂 Speichern (Ort wählen)</button>'+(bkEnd?'<button class="dg" data-a="ex">Ohne Backup beenden</button>':'')}
+catch(e){em.className='er';em.textContent='Backup fehlgeschlagen ('+(e.code||e.message||'Fehler')+').';if(bkEnd)$('#bb').innerHTML='<button class="dg" data-a="ex">Trotzdem ohne Backup beenden</button>'}};
+A.bsave=()=>bkSave('auto');
+A.cl=()=>A.bk(true);
+A.ex=()=>{lockUI(false);$('#lm').textContent='App gesperrt. Du kannst sie jetzt schließen.';try{window.close()}catch(e){}};
+A.bi=()=>{show('<h3>Backup importieren</h3><label>Passwort des Backups<input id="bp" type="password"></label><p class="mu">Vorhandene Dokumente bleiben erhalten. Ordner mit gleichem Namen werden zusammengeführt.</p><p id="em" class="er"></p><div class="row"><button class="b2" data-a="x">Abbrechen</button><button data-a="bf">Datei wählen</button></div>')};
+A.bf=()=>{if(!$('#bp').value)return $('#em').textContent='Bitte Passwort eingeben.';fbMode='merge';pwTmp=$('#bp').value;$('#fb').click()};
+$('#lr').onclick=()=>{if(!$('#pw').value)return $('#le').textContent='Bitte zuerst das Passwort des Backups eingeben.';fbMode='restore';$('#fb').click()};
+$('#fb').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const mode=fbMode,pw=mode==='merge'?pwTmp:$('#pw').value;fbMode=null;pwTmp='';
+const em=mode==='merge'?$('#em'):$('#le');const say=(m,ok)=>{if(em){em.textContent=m;em.style.color=ok?'var(--mu)':''}};
+try{if(!mode)return;const j=JSON.parse(await f.text());if(j.app!=='dokumentensafe')throw new Error('Keine gültige Backup-Datei.');
+const k=await derive(pw,unb(j.cfg.salt));
+const bdec=async r=>{const x=upk(r);return JSON.parse(td.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:x.iv},k,x.ct)))};
+try{await bdec(j.cfg.chk)}catch(x){throw new Error('Falsches Backup-Passwort.')}
+if(mode==='restore'){say('Stelle wieder her …',1);for(const id in j.docs)await put('doc:'+id,upk(j.docs[id]));await put('meta',upk(j.meta));await put('cfg',{salt:unb(j.cfg.salt),chk:upk(j.cfg.chk)});first=false;await unlock();return}
+say('Importiere …',1);const bm=await bdec(j.meta),map={};
+const mf=id=>{if(!id)return null;if(map[id])return map[id];const b=bm.folders.find(x=>x.id===id);if(!b)return null;const p=mf(b.parent);let l=meta.folders.find(x=>(x.parent||null)===p&&x.name.toLowerCase()===b.name.toLowerCase());if(!l){l={id:uid(),name:b.name,parent:p};meta.folders.push(l)}return map[id]=l.id};
+let n=0;for(const d of bm.docs){if(meta.docs.some(x=>x.id===d.id)||!j.docs[d.id])continue;const pg=await bdec(j.docs[d.id]);await put('doc:'+d.id,await enc(pg));meta.docs.push({...d,folder:mf(d.folder)});n++}
+bm.folders.forEach(f=>mf(f.id));await saveMeta();render();say(n+' Dokument(e) importiert.',1)}
+catch(x){say(String(x.message||x).startsWith('Falsches')||String(x.message).startsWith('Keine')?x.message:'Import fehlgeschlagen: '+(x.message||x))}};
+let vp=[],fsA=[],fsI=0,fsId=null,fsBusy=false,fsChain=Promise.resolve();
+function fsShow(){$('#fsm').src=fsA[fsI];$('#fsn').textContent=(fsI+1)+' / '+fsA.length}
+const rot=(u,deg)=>new Promise((res,rej)=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=im.height;c.height=im.width;const x=c.getContext('2d');x.translate(c.width/2,c.height/2);x.rotate(deg*Math.PI/180);x.drawImage(im,-im.width/2,-im.height/2);res(c.toDataURL('image/jpeg',.8))};im.onerror=rej;im.src=u});
+A.fs=i=>{fsA=vp;fsId=vid;fsI=+i;$('#fs').hidden=false;fsShow()};
+A.fsp=i=>{fsA=pend;fsId=null;fsI=+i;$('#fs').hidden=false;fsShow()};
+A.fc=()=>{$('#fs').hidden=true;$('#fsm').removeAttribute('src')};
+A.fp=i=>{if(!fsA.length)return;fsI=(fsI+Number(i)+fsA.length)%fsA.length;fsShow()};
+A.fr=async i=>{if(fsBusy||!fsA.length)return;fsBusy=true;const k=fsI,arr=fsA,id=fsId,fl0=vf;
+try{arr[k]=await rot(arr[k],Number(i))}catch(e){fsBusy=false;return}
+if(fsA===arr&&fsI===k)fsShow();
+const im=$('#pg'+k),dl=$('#dl'+k);if(id&&im&&vid===id){im.src=arr[k];if(dl)dl.href=arr[k]}
+if(k===0&&id){const dd=meta.docs.find(x=>x.id===id);if(dd)mkth(arr[0]).then(async t=>{if(t&&meta){dd.th=t;dd.thv=2;try{await saveMeta()}catch(e){}render()}})}
+if(!id)thumbs();else fsChain=fsChain.then(async()=>{try{await put('doc:'+id,await enc({pages:arr,files:fl0}));const dd=meta&&meta.docs.find(x=>x.id===id);if(dd){dd.r=(dd.r||0)+1;dd.m=Date.now();await saveMeta()}}catch(e){$('#fsn').textContent='Speichern fehlgeschlagen'}});
+fsBusy=false};
+A.rp=async i=>{if(fsBusy)return;fsBusy=true;try{pend[+i]=await rot(pend[+i],90)}catch(e){}fsBusy=false;thumbs()};
+let V={v:'liste',s:'dn',g:''};try{Object.assign(V,JSON.parse(localStorage.getItem('ds_view')||'{}'))}catch(e){}
+const gk=d=>V.g==='j'?d.date.slice(0,4):d.date.slice(0,7);
+const gl=k=>V.g==='j'?k:new Date(k+'-01T00:00').toLocaleDateString('de-DE',{month:'long',year:'numeric'});
+function sorter(){const c={dn:(a,b)=>b.date.localeCompare(a.date),da:(a,b)=>a.date.localeCompare(b.date),na:(a,b)=>a.name.localeCompare(b.name,'de'),nz:(a,b)=>b.name.localeCompare(a.name,'de'),cn:(a,b)=>b.created.localeCompare(a.created),ca:(a,b)=>a.created.localeCompare(b.created)}[V.s]||((a,b)=>b.date.localeCompare(a.date));
+if(!V.g)return c;const asc=V.s==='da'||V.s==='ca';return(a,b)=>{const x=gk(a),y=gk(b);return x!==y?(asc?x.localeCompare(y):y.localeCompare(x)):c(a,b)}}
+function card(d){const nm=esc(d.name);
+if(V.v==='kompakt')return `<div class="it cp" data-a="vd" data-i="${d.id}">📄 <b>${nm}</b><span>${fd(d.date)}</span></div>`;
+if(V.v==='kacheln')return `<div class="tile" data-a="vd" data-i="${d.id}">${d.thv===2&&d.th?`<img src="${d.th}" alt="">`:'<div class="ph">📄</div>'}<b>${nm}</b><small>${fd(d.date)}</small></div>`;
+return `<div class="it" data-a="vd" data-i="${d.id}">📄 <b>${nm}</b><small>${esc(path(d.folder)||'Ohne Kategorie')}<br>Datum des Dokuments: ${fd(d.date)}<br>Erstellt: ${fdt(d.created)} · ${d.n} Seite(n)${d.f?' · '+d.f+' Datei(en)':''}</small></div>`}
+function docHtml(docs){let h='',last=null,open=false;const t=V.v==='kacheln';
+for(const d of docs){if(V.g){const k=gk(d);if(k!==last){if(open){h+='</div>';open=false}h+=`<h4 class="gh">${esc(gl(k))}</h4>`;last=k}}
+if(t&&!open){h+='<div class="grid">';open=true}h+=card(d)}
+if(open)h+='</div>';return h}
+const mkth=u=>new Promise(res=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas'),s=Math.min(1,224/Math.max(im.width,im.height));c.width=Math.max(1,Math.round(im.width*s));c.height=Math.max(1,Math.round(im.height*s));const x=c.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(im,0,0,c.width,c.height);const c2=document.createElement('canvas'),s2=28/Math.max(c.width,c.height);c2.width=Math.max(1,Math.round(c.width*s2));c2.height=Math.max(1,Math.round(c.height*s2));const y=c2.getContext('2d');y.imageSmoothingQuality='high';y.drawImage(c,0,0,c2.width,c2.height);res(c2.toDataURL('image/jpeg',.7))};im.onerror=()=>res(null);im.src=u});
+let thBusy=false;
+async function ensureTh(docs){if(thBusy)return;const todo=docs.filter(d=>d.thv!==2);if(!todo.length)return;thBusy=true;
+try{for(const d of todo){if(!key||!meta)break;try{const p=(await dec(await get('doc:'+d.id))).pages[0];d.th=(p&&await mkth(p))||'';d.thv=2}catch(e){d.th='';d.thv=2}}
+if(key&&meta){await saveMeta();render()}}catch(e){}finally{thBusy=false}}
+const sv=$('#sv'),ss=$('#ss'),sg=$('#sg');sv.value=V.v;ss.value=V.s;sg.value=V.g;
+if(!sv.value){V.v='liste';sv.value='liste'}if(!ss.value){V.s='dn';ss.value='dn'}if(!sg.value&&V.g){V.g='';sg.value=''}
+[sv,ss,sg].forEach(el=>el.onchange=()=>{V={v:sv.value,s:ss.value,g:sg.value};try{localStorage.setItem('ds_view',JSON.stringify(V))}catch(e){}if(meta)render()});
+const bioOK=async()=>{try{return location.protocol==='https:'&&!!window.PublicKeyCredential&&await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()}catch(e){return false}};
+A.bio=async()=>{const on=!!(await get('bio'));show('<h3>Fingerabdruck-Login</h3><p class="mu">Entsperrt die App mit dem Fingerabdruck deines Handys. Dazu wird ein Schlüssel auf diesem Gerät gespeichert, und die App verlangt dann deinen Fingerabdruck. Das ist bequemer, aber etwas weniger sicher als nur das Passwort, weil der Schlüssel im Browser-Speicher dieses Geräts liegt. Das Passwort bleibt weiterhin nötig, z. B. nach dem Löschen der Browserdaten.</p><p id="em" class="er"></p><div class="row"><button class="b2" data-a="x">Schließen</button><button data-a="'+(on?'bio0':'bio1')+'">'+(on?'Deaktivieren':'Aktivieren')+'</button></div>')};
+A.bio0=async()=>{await del('bio');const em=$('#em');if(em){em.style.color='var(--mu)';em.textContent='Fingerabdruck-Login deaktiviert.'}};
+A.bio1=async()=>{const em=$('#em');em.style.color='';try{if(!(await bioOK()))throw{m:'Fingerabdruck-Login ist in dieser Ansicht nicht verfügbar. Er braucht eine https-Adresse und einen eingerichteten Fingerabdruck.'};
+const c=await navigator.credentials.create({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),rp:{name:'Dokumentensafe'},user:{id:crypto.getRandomValues(new Uint8Array(16)),name:'safe',displayName:'Dokumentensafe'},pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'discouraged'},timeout:60000}});
+await put('bio',{cid:c.rawId,key});em.style.color='var(--mu)';em.textContent='Fingerabdruck-Login aktiviert.'}
+catch(e){em.textContent=e.m||(e.name==='NotAllowedError'||e.name==='SecurityError'?'Abgebrochen oder in dieser Ansicht nicht erlaubt.':'Aktivierung fehlgeschlagen ('+(e.name||'Fehler')+').')}};
+async function bioUnlock(){const er=m=>$('#le').textContent=m;er('');
+try{const b=await get('bio');if(!b)return er('Nicht eingerichtet.');
+await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),allowCredentials:[{type:'public-key',id:b.cid,transports:['internal']}],userVerification:'required',timeout:60000}});
+key=b.key;const cfg=await get('cfg');await dec(cfg.chk);const m=await get('meta');meta=m?await dec(m):{folders:[],docs:[]}}
+catch(e){key=null;meta=null;if(e&&e.name==='OperationError')await del('bio').catch(()=>{});return er(e&&e.name==='NotAllowedError'?'Abgebrochen oder Fingerabdruck nicht erkannt.':'Fingerabdruck-Login fehlgeschlagen. Bitte Passwort verwenden.')}
+$('#lock').hidden=true;$('#app').hidden=false;cur=null;$('#q').value='';render();bump();schedSync(800)}
+$('#lbio').onclick=bioUnlock;
+let pendF=[],vf=[];
+A.rf2=i=>{pendF.splice(+i,1);thumbs()};
+const du=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error);r.readAsDataURL(f)});
+const ldJs=u=>new Promise((res,rej)=>{const s=document.createElement('script');s.src=u;s.onload=res;s.onerror=()=>rej(new Error('PDF-Bibliothek konnte nicht geladen werden (Internet nötig)'));document.head.appendChild(s)});
+const PJ='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+async function pdfPages(f){if(!window.pdfjsLib){await ldJs(PJ+'pdf.min.js');pdfjsLib.GlobalWorkerOptions.workerSrc=PJ+'pdf.worker.min.js'}
+const pdf=await pdfjsLib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise,max=Math.min(pdf.numPages,50),pages=[];
+for(let i=1;i<=max;i++){const pg=await pdf.getPage(i),v0=pg.getViewport({scale:1}),v=pg.getViewport({scale:Math.min(4,1800/Math.max(v0.width,v0.height))}),c=document.createElement('canvas');c.width=Math.round(v.width);c.height=Math.round(v.height);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);await pg.render({canvasContext:x,viewport:v}).promise;pages.push(c.toDataURL('image/jpeg',.8));c.width=c.height=0}
+return{pages,cut:pdf.numPages>max}}
+function textPages(t){const W=1240,H=1754,P=80,lh=36,out=[];let x;const np=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,W,H);x.fillStyle='#111';x.font='26px monospace';out.push(c)};np();
+const cols=Math.floor((W-2*P)/x.measureText('M').width),per=Math.floor((H-2*P)/lh),re=new RegExp('.{1,'+cols+'}','g');let n=0;
+outer:for(const raw of t.replace(/\t/g,'    ').split(/\r?\n/)){for(const s of (raw.match(re)||[''])){if(n===per){if(out.length>=20)break outer;np();n=0}x.fillText(s,P,P+(n+1)*lh);n++}}
+return out.map(c=>c.toDataURL('image/jpeg',.8))}
+const em2=(m,bad)=>{const e=$('#em');if(e){e.style.color=bad?'':'var(--mu)';e.textContent=m}};
+async function addFile(f){const ext=(f.name.split('.').pop()||'').toLowerCase(),t=f.type||'';
+if(f.size>25*1048576){em2(f.name+': zu groß (max. 25 MB).',1);return}
+pendF.push({name:f.name,type:t||'application/octet-stream',data:await du(f)});
+try{if(t==='application/pdf'||ext==='pdf'){em2('PDF wird gelesen …');const r=await pdfPages(f);pend.push(...r.pages);em2(r.cut?'PDF hinzugefügt: Vorschau der ersten 50 Seiten, das Original ist vollständig gespeichert.':'PDF hinzugefügt.')}
+else if(t.startsWith('text/')||['txt','csv','md','json','log','xml'].includes(ext)){pend.push(...textPages(await f.text()));em2('Text hinzugefügt.')}
+else em2(f.name+' wird nur gespeichert (keine Vorschau möglich).')}
+catch(x){em2(f.name+': Vorschau nicht möglich, die Datei wird nur gespeichert ('+(x.message||'Fehler')+').',1)}}
+const d2b=u=>{const[h,b]=u.split(','),m=(h.match(/:(.*?);/)||[])[1]||'application/octet-stream',bin=atob(b),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:m})};
+document.addEventListener('click',async e=>{const a=e.target.closest('a[download]');if(!a||a.dataset.n)return;e.preventDefault();const dm=$('#dm'),say=m=>{if(dm)dm.textContent=m};say('');
+const fn=a.getAttribute('download');let dl=null;try{dl=window.claude?await claude.use('downloads'):null}catch(x){}
+try{const blob=d2b(a.getAttribute('href'));if(dl)await dl.save({filename:fn,data:blob});else{const b=document.createElement('a');b.dataset.n=1;b.href=URL.createObjectURL(blob);b.download=fn;document.body.appendChild(b);b.click();b.remove();setTimeout(()=>URL.revokeObjectURL(b.href),60000)}}
+catch(x){say(x.code==='declined'?'':'Speichern nicht möglich ('+(x.code||x.message||'Fehler')+').')}});
+/* ===== Server-Sync (Supabase, Ende-zu-Ende-verschlüsselt) ===== */
+let SS=null,syT=null,syBusy=false,metaRev=0,lastSync='';
+const SBC=()=>{const c=window.DS_CONFIG;return c&&c.url&&c.key?c:null};
+const st=m=>{const e=$('#sst');if(e)e.textContent=m};
+const has=k=>tx('readonly',s=>s.count(k));
+const toBin=r=>{const c=new Uint8Array(r.ct),u=new Uint8Array(12+c.length);u.set(new Uint8Array(r.iv),0);u.set(c,12);return u};
+const fromBin=b=>{const u=new Uint8Array(b);return{iv:u.slice(0,12),ct:u.slice(12).buffer}};
+async function sbFetch(path,opt,tok){const c=SBC();opt=opt||{};const h=Object.assign({apikey:c.key,Authorization:'Bearer '+(tok||c.key)},opt.headers||{});return fetch(c.url.replace(/\/+$/,'')+path,Object.assign({},opt,{headers:h}))}
+async function authPw(email,pw){const k=await crypto.subtle.importKey('raw',te.encode(pw),'PBKDF2',false,['deriveBits']);const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:te.encode('dokumentensafe-auth|'+email),iterations:250000,hash:'SHA-256'},k,256);return b64(bits).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+async function sbAuth(email,pw,create){const ap=await authPw(email,pw);
+const r=await sbFetch(create?'/auth/v1/signup':'/auth/v1/token?grant_type=password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:ap})});
+const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.msg||j.error_description||j.message||('Server-Fehler '+r.status));
+if(!j.access_token)throw new Error('Konto angelegt. Bitte erst die Bestätigungs-E-Mail öffnen (oder in Supabase „Confirm email“ ausschalten), danach „Anmelden“.');
+return{email,uid:j.user.id,at:j.access_token,rt:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000}}
+async function sessGet(){if(!SS&&key){const r=await get('sess');if(r){try{SS=await dec(r)}catch(e){}}}
+if(!SS)return null;
+if(SS.exp-60000<Date.now()){const r=await sbFetch('/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refresh_token:SS.rt})});const j=await r.json().catch(()=>({}));
+if(!r.ok||!j.access_token){SS=null;if(key)await del('sess');throw new Error('Sitzung abgelaufen. Bitte neu anmelden.')}
+SS={email:SS.email,uid:SS.uid,at:j.access_token,rt:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000};if(key)await put('sess',await enc(SS))}
+return SS}
+const spath=(s,n)=>'/storage/v1/object/vault/'+s.uid+'/'+n;
+async function sPut(n,blob){const s=await sessGet();if(!s)throw new Error('Nicht angemeldet.');const r=await sbFetch(spath(s,n),{method:'POST',headers:{'x-upsert':'true','Content-Type':blob.type||'application/octet-stream'},body:blob},s.at);if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('Upload fehlgeschlagen ('+r.status+')'))}}
+async function sGet(n){const s=await sessGet();if(!s)throw new Error('Nicht angemeldet.');const r=await sbFetch('/storage/v1/object/authenticated/vault/'+s.uid+'/'+n,{},s.at);if(r.status===404||r.status===400)return null;if(!r.ok)throw new Error('Server-Fehler '+r.status);return r}
+async function sList(){const s=await sessGet();if(!s)throw new Error('Nicht angemeldet.');const out=[];
+for(let off=0;;off+=1000){const r=await sbFetch('/storage/v1/object/list/vault',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prefix:s.uid,limit:1000,offset:off,sortBy:{column:'name',order:'asc'}})},s.at);
+if(!r.ok)throw new Error('Server-Fehler '+r.status+' (Storage-Einrichtung prüfen)');const j=await r.json();out.push(...j);if(j.length<1000)break}return out}
+async function sDel(ns){if(!ns.length)return;const s=await sessGet();const r=await sbFetch('/storage/v1/object/vault',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({prefixes:ns.map(n=>s.uid+'/'+n)})},s.at);if(!r.ok)throw new Error('Löschen fehlgeschlagen ('+r.status+')')}
+async function pwOK(pw){const cfg=await get('cfg');try{const k=await derive(pw,cfg.salt);await crypto.subtle.decrypt({name:'AES-GCM',iv:cfg.chk.iv},k,cfg.chk.ct);return true}catch(e){return false}}
+function mergeMeta(l,r){const tb={};for(const t of (l.tomb||[]).concat(r.tomb||[]))tb[t.id]=Math.max(tb[t.id]||0,t.t);
+const mix=(a,b)=>{if(!a)return b;if(!b)return a;const w=(b.m||0)>(a.m||0)?b:a;return Object.assign({},w,{r:Math.max(a.r||0,b.r||0)})};
+const fm=new Map(),dm=new Map();
+for(const f of l.folders.concat(r.folders))fm.set(f.id,mix(fm.get(f.id),f));
+for(const d of l.docs.concat(r.docs))dm.set(d.id,mix(dm.get(d.id),d));
+const f0=[...fm.values()].filter(f=>!tb[f.id]),fid=new Set(f0.map(f=>f.id));
+const folders=f0.map(f=>f.parent&&!fid.has(f.parent)?Object.assign({},f,{parent:null}):f);
+const docs=[...dm.values()].filter(d=>!tb[d.id]).map(d=>d.folder&&!fid.has(d.folder)?Object.assign({},d,{folder:null}):d);
+return{folders,docs,tomb:Object.keys(tb).map(id=>({id,t:tb[id]}))}}
+function schedSync(ms){if(!key||!SBC())return;clearTimeout(syT);syT=setTimeout(()=>{syncNow().catch(()=>{})},ms||3000)}
+async function syncNow(){if(syBusy||!key||!meta||!SBC())return;if(!(await sessGet()))return;syBusy=true;
+try{st('☁️ Synchronisiere …');const rv0=metaRev;
+const lc=await get('cfg'),lcj={salt:b64(lc.salt),chk:pk(lc.chk)},rc=await sGet('cfg.json');
+if(!rc)await sPut('cfg.json',new Blob([JSON.stringify(lcj)],{type:'application/json'}));
+else{const j=JSON.parse(await rc.text());if(j.salt!==lcj.salt)throw new Error('Auf dem Server liegt ein anderer Tresor. Dieses Gerät muss zuerst mit „Vom Server laden“ eingerichtet werden (siehe Anleitung).')}
+const names=new Set((await sList()).map(o=>o.name));
+let rm=null;if(names.has('meta.bin')){const mb=await sGet('meta.bin');if(mb){try{rm=await dec(fromBin(await mb.arrayBuffer()))}catch(e){throw new Error('Das Passwort passt nicht zu den Server-Daten.')}}}
+if(!key||!meta)throw new Error('Gesperrt.');
+const lm=new Map(meta.docs.map(d=>[d.id,d])),rmm=new Map((rm?rm.docs:[]).map(d=>[d.id,d])),merged=rm?mergeMeta(meta,rm):{folders:meta.folders,docs:meta.docs,tomb:meta.tomb||[]},mids=new Set(merged.docs.map(d=>d.id));
+let up=0,dn=0;
+for(const id of lm.keys())if(!mids.has(id))await del('doc:'+id);
+for(const d of merged.docs){const lh=await has('doc:'+d.id),sh=names.has('doc-'+d.id+'.bin'),lr=(lm.get(d.id)||{}).r||0,rr=(rmm.get(d.id)||{}).r||0;
+if(lh&&(!sh||lr>rr)){const rec=await get('doc:'+d.id);await sPut('doc-'+d.id+'.bin',new Blob([toBin(rec)],{type:'application/octet-stream'}));up++;st('☁️ Lade hoch … '+up)}
+else if(sh&&(!lh||rr>lr)){const b=await sGet('doc-'+d.id+'.bin');if(b){await put('doc:'+d.id,fromBin(await b.arrayBuffer()));dn++;st('☁️ Lade herunter … '+dn)}}}
+await sDel(merged.tomb.map(t=>'doc-'+t.id+'.bin').filter(n=>names.has(n)));
+if(!key||!meta)throw new Error('Gesperrt.');
+if(metaRev!==rv0){schedSync(1500);return}
+meta=merged;const rec=await enc(meta);await put('meta',rec);await sPut('meta.bin',new Blob([toBin(rec)],{type:'application/octet-stream'}));
+lastSync=new Date().toLocaleString('de-DE');st('☁️ synchronisiert '+lastSync+(up||dn?' ('+up+'↑ '+dn+'↓)':''));render()}
+catch(e){st('☁️ Sync-Fehler: '+(e.message==='Failed to fetch'?'keine Verbindung':e.message));throw e}finally{syBusy=false}}
+A.sy=async()=>{if(!SBC()){show('<h3>Server-Sync</h3><p class="mu">Der Server ist nicht eingerichtet. Trage in der Datei config.js die Adresse und den Schlüssel deines Supabase-Projekts ein (siehe ANLEITUNG-SERVER.txt).</p>');return}
+let s=null;try{s=await sessGet()}catch(e){}
+if(!s)show('<h3>Server-Sync</h3><p class="mu">Deine Dokumente werden verschlüsselt auf deinem Server gespeichert. Der Server sieht nur unlesbare Daten. Melde dich mit E-Mail und deinem App-Passwort an.</p><label>E-Mail<input id="se" type="email" autocomplete="off"></label><label>App-Passwort<input id="sp" type="password" autocomplete="off"></label><p id="em" class="er"></p><div class="row"><button data-a="sy2">Anmelden</button><button class="b2" data-a="sy1">Konto erstellen</button></div>');
+else show('<h3>Server-Sync</h3><p class="mu">Angemeldet als '+esc(s.email)+'.<br>Letzte Synchronisierung: '+esc(lastSync||'–')+'</p><p id="em" class="mu"></p><div class="row" style="flex-direction:column"><button data-a="sy3">🔄 Jetzt synchronisieren</button><button class="b2" data-a="sy4">Abmelden</button></div>')};
+async function syLogin(create){const em=$('#em'),email=$('#se').value.trim().toLowerCase(),pw=$('#sp').value;if(!email||!pw){em.textContent='Bitte E-Mail und Passwort eingeben.';return}
+em.style.color='var(--mu)';em.textContent='Prüfe …';
+try{if(!(await pwOK(pw)))throw new Error('Das ist nicht dein App-Passwort.');SS=await sbAuth(email,pw,create);await put('sess',await enc(SS));em.textContent='Synchronisiere …';await syncNow();A.sy()}
+catch(e){em.style.color='';em.textContent=e.message==='Failed to fetch'?'Keine Verbindung zum Server.':(e.message||'Fehler')}}
+A.sy1=()=>syLogin(true);A.sy2=()=>syLogin(false);
+A.sy3=async()=>{const em=$('#em');em.textContent='Synchronisiere …';try{await syncNow();A.sy()}catch(e){em.className='er';em.textContent=e.message}};
+A.sy4=async()=>{SS=null;await del('sess');hide();st('')};
+$('#ls').onclick=async()=>{const er=m=>{$('#le').textContent=m},email=$('#sm').value.trim().toLowerCase(),pw=$('#pw').value;er('');
+if(!SBC())return er('Server nicht eingerichtet (config.js).');if(!email||!pw)return er('Bitte E-Mail und Passwort eingeben.');
+$('#ls').disabled=true;
+try{er('Melde an …');SS=await sbAuth(email,pw,false);
+const c=await sGet('cfg.json');if(!c)throw new Error('Auf dem Server liegt noch kein Tresor.');
+const cj=JSON.parse(await c.text()),chk=upk(cj.chk),k=await derive(pw,unb(cj.salt));
+try{await crypto.subtle.decrypt({name:'AES-GCM',iv:chk.iv},k,chk.ct)}catch(e){throw new Error('Falsches Passwort für diesen Server-Tresor.')}
+const docs=(await sList()).map(o=>o.name).filter(n=>/^doc-.+\.bin$/.test(n));let i=0;
+for(const n of docs){i++;er('Lade Dokumente '+i+'/'+docs.length+' …');const b=await sGet(n);if(b)await put('doc:'+n.slice(4,-4),fromBin(await b.arrayBuffer()))}
+const mb=await sGet('meta.bin');if(!mb)throw new Error('Keine Daten auf dem Server.');
+await put('meta',fromBin(await mb.arrayBuffer()));await put('cfg',{salt:unb(cj.salt),chk});
+first=false;er('');await unlock();if(key&&SS)await put('sess',await enc(SS))}
+catch(e){SS=null;er(e.message==='Failed to fetch'?'Keine Verbindung zum Server.':e.message)}finally{$('#ls').disabled=false}};
+let busy=false;
+const toBlob=u=>{const bin=atob(u.split(',')[1]),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:'image/jpeg'})};
+async function analyze(){const em=$('#em');if(busy||!em)return;if(!pend.length){em.textContent='Bitte zuerst eine Seite hinzufügen.';return}
+let s=null;try{s=window.claude?await claude.use('sample'):null}catch(e){}
+if(!s){em.textContent='Automatische Erkennung ist hier nicht verfügbar. Bitte Name und Datum selbst eintragen.';return}
+busy=true;em.style.color='var(--mu)';em.textContent='Erkenne Datum und Betreff …';
+const paths=meta.folders.map(f=>path(f.id));
+try{const r=await s.json('Du liest einen Brief bzw. ein Dokument (die Bilder sind die Seiten). Antworte NUR mit JSON: {"datum":"YYYY-MM-DD oder null","betreff":"worum es geht, max. 6 Wörter, deutsch, ohne Sonderzeichen","kategorie":"genau einer der Werte aus der Liste oder null"}. datum = Ausstellungs- bzw. Briefdatum, nicht Fristen, Geburtstage oder Zeiträume. Kategorien: '+JSON.stringify(paths),{images:pend.slice(0,3).map(toBlob)});
+if(!$('#n'))return;
+const ok=/^\d{4}-\d{2}-\d{2}$/.test(r?.datum||''),b=String(r?.betreff||'').replace(/[\\\/:*?"<>|]/g,' ').replace(/\s+/g,' ').trim();
+if(ok)$('#d').value=r.datum;if(b)$('#n').value=(ok?r.datum+' ':'')+b;
+const k=meta.folders.find(f=>path(f.id)===r?.kategorie);if(k)$('#f').value=k.id;
+em.textContent=(ok||b)?'Erkannt – bitte kurz prüfen.':'Nichts erkannt, bitte selbst eintragen.'}
+catch(e){em.style.color='';em.textContent=e.code==='not_granted'?'Erkennung nicht erlaubt.':e.code==='rate_limited'?'Zu viele Anfragen, bitte später erneut.':'Erkennung fehlgeschlagen ('+(e.code||'Fehler')+').'}
+finally{busy=false}}
+boot();
+</script></body></html>
