@@ -39,6 +39,8 @@ label{display:block;margin:8px 0;font-size:14px;color:var(--mu)}label input,labe
 .tile b{display:block;margin-top:6px;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tile small{color:var(--mu)}
 .gh{margin:14px 0 4px;color:var(--mu)}
 button:disabled{opacity:.4}
+.box>.row:first-child{position:sticky;top:0;z-index:3;background:var(--bg);margin:-16px -16px 10px;padding:12px 16px 8px;border-bottom:1px solid var(--bd);border-radius:16px 16px 0 0}
+#nv{position:sticky;top:env(safe-area-inset-top,0px);z-index:4;background:var(--bg);padding:6px 0;margin:0 0 6px}
 .tile img{image-rendering:pixelated}
 .fc{display:flex;align-items:center;gap:6px;background:var(--cd);border:1px solid var(--bd);border-radius:8px;padding:4px 8px;max-width:100%}.fc button{width:26px;padding:2px;margin-left:auto}
 .cp{display:flex;justify-content:space-between;gap:8px;padding:10px 12px;margin:5px 0}.cp b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cp span{color:var(--mu);white-space:nowrap}
@@ -95,7 +97,7 @@ $('#lt').textContent=f?'Registrieren':'Anmelden';$('#lb').textContent=f?'Registr
 $('#pw2').hidden=!f;$('#lr').hidden=f;$('#lfp').hidden=f;$('#sm').hidden=false;$('#lbio').hidden=true;NS=lastNS();
 if(!f&&db)bioOK().then(async ok=>{if(ok&&await get('bio')&&!key)$('#lbio').hidden=false}).catch(()=>{});
 $('#lm').textContent=f?'Registriere dich mit E-Mail-Adresse und Passwort (mindestens 8 Zeichen, besser 12). Jeder Benutzer hat eigene, getrennte Dokumente. Es gibt keine Wiederherstellung: ohne Passwort sind die Daten unlesbar.'+(SBC()?'':' Ohne Server bleiben die Daten nur auf diesem Gerät.'):'Melde dich mit E-Mail und Passwort an.'+(SBC()?' Neues Handy? Einfach anmelden, deine Dokumente werden vom Server geladen.':'')+' Mit Backup: E-Mail und Passwort des Backups eingeben und „Aus Backup wiederherstellen“ tippen.';
-$('#pw').value='';$('#pw2').value='';$('#le').textContent='';$('#ver').textContent='Version 21'}
+$('#pw').value='';$('#pw2').value='';$('#le').textContent='';$('#ver').textContent='Version 22'}
 const rawGet=k=>tx('readonly',s=>s.get(k));
 async function nsOf(e){const h=await crypto.subtle.digest('SHA-256',te.encode('dokumentensafe-user|'+e.trim().toLowerCase()));return 'u'+Array.from(new Uint8Array(h).slice(0,10)).map(b=>b.toString(16).padStart(2,'0')).join('')+'/'}
 const adoptLegacy=nns=>new Promise((res,rej)=>{const t=db.transaction('kv','readwrite'),s=t.objectStore('kv'),rq=s.openCursor();
