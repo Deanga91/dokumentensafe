@@ -96,7 +96,7 @@ const opts=(sel,root)=>(root?`<option value="">${root}</option>`:'')+meta.folder
 const D=$('#dlg'),show=h=>{D.innerHTML='<div class="box"><div class="row"><button class="b2" data-a="hx">🏠 Startseite</button><button class="b2" data-a="x">← Zurück</button></div>'+h+'</div>';D.hidden=false},hide=()=>{D.hidden=true;D.innerHTML=''};
 const nz=v=>v||null;
 
-async function boot(){db=await idb();try{navigator.storage?.persist?.()}catch(e){}try{NS=localStorage.getItem('ds_ns')||''}catch(e){}const c0=await get('cfg');cfgV=c0?(c0.v||1):2;lockUI(!c0&&!SBC()&&!(await rawGet('cfg')))}
+async function boot(){db=await idb();try{navigator.storage?.persist?.()}catch(e){}try{NS=localStorage.getItem('ds_ns')||''}catch(e){}const c0=await get('cfg');cfgV=c0?(c0.v||1):2;lockUI(!c0&&!SBC()&&!(await rawGet('cfg')));await recoveryCheck()}
 let first=false,cfgV=2,loginMail='';
 const lastNS=()=>{try{return localStorage.getItem('ds_ns')||''}catch(e){return ''}};
 function lockUI(f){selMode=false;sel.clear();document.body.classList.remove('selmode');$('#selbar').hidden=true;first=f;key=null;meta=null;SS=null;loginMail='';pend=[];pendF=[];vp=[];vf=[];fsA=[];$('#fs').hidden=true;hide();$('#app').hidden=true;$('#lock').hidden=false;
@@ -104,7 +104,7 @@ $('#lt').textContent=f?'Registrieren':'Anmelden';$('#lb').textContent=f?'Registr
 $('#pw2').hidden=!f;$('#lr').hidden=f;$('#lfp').hidden=f;$('#sm').hidden=false;$('#lbio').hidden=true;NS=lastNS();
 if(!f&&db)bioOK().then(async ok=>{if(ok&&await get('bio')&&!key)$('#lbio').hidden=false}).catch(()=>{});
 $('#lm').textContent=f?'Registriere dich mit E-Mail-Adresse und Passwort (mindestens 8 Zeichen, besser 12). Jeder Benutzer hat eigene, getrennte Dokumente. Es gibt keine Wiederherstellung: ohne Passwort sind die Daten unlesbar.'+(SBC()?'':' Ohne Server bleiben die Daten nur auf diesem Gerät.'):'Melde dich mit E-Mail und Passwort an.'+(SBC()?' Neues Handy? Einfach anmelden, deine Dokumente werden vom Server geladen.':'')+' Mit Backup: E-Mail und Passwort des Backups eingeben und „Aus Backup wiederherstellen“ tippen.';
-$('#pw').value='';$('#pw2').value='';$('#le').textContent='';$('#ver').textContent='Version 23'}
+$('#pw').value='';$('#pw2').value='';$('#le').textContent='';$('#ver').textContent='Version 24'}
 const rawGet=k=>tx('readonly',s=>s.get(k));
 async function nsOf(e){const h=await crypto.subtle.digest('SHA-256',te.encode('dokumentensafe-user|'+e.trim().toLowerCase()));return 'u'+Array.from(new Uint8Array(h).slice(0,10)).map(b=>b.toString(16).padStart(2,'0')).join('')+'/'}
 const adoptLegacy=nns=>new Promise((res,rej)=>{const t=db.transaction('kv','readwrite'),s=t.objectStore('kv'),rq=s.openCursor();
@@ -416,7 +416,7 @@ const delKeys=test=>new Promise((res,rej)=>{const t=db.transaction('kv','readwri
 rq.onsuccess=e=>{const c=e.target.result;if(!c)return;if(typeof c.key==='string'&&test(c.key)){c.delete();n++}c.continue()};
 t.oncomplete=()=>res(n);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)});
 A.fp=async()=>{const mail=$('#sm').value.trim(),lg=await rawGet('cfg');
-show('<h3>Passwort vergessen?</h3><p class="mu">Dein Passwort wird nirgends gespeichert. Deine Dokumente sind damit verschlüsselt. Deshalb kann niemand das Passwort zurücksetzen, auch nicht der Server. Eine E-Mail zum Zurücksetzen würde die Dokumente nicht wieder lesbar machen.</p><p class="mu"><b>Das kannst du tun:</b><br>1. Probiere deine üblichen Passwörter. Achte auf Groß-/Kleinschreibung und auf die richtige E-Mail-Adresse.<br>2. Hast du den Fingerabdruck-Login eingerichtet, melde dich damit an.<br>3. Findest du das Passwort nicht, kannst du neu anfangen: Die Daten dieses Benutzers werden auf diesem Gerät gelöscht, und du registrierst dich neu. Die alten Dokumente sind dann unwiederbringlich verloren.</p><label>E-Mail des Benutzers<input id="fpm" type="email" value="'+esc(mail)+'"></label><p id="em" class="er"></p><div class="row" style="flex-direction:column"><button class="dg" data-a="fp2">Daten dieses Benutzers auf diesem Gerät löschen</button>'+(lg?'<button class="dg" data-a="fp3">Alten Tresor ohne E-Mail löschen</button>':'')+'</div>')};
+show('<h3>Passwort vergessen?</h3><p class="mu">Dein Passwort wird nirgends gespeichert. Deine Dokumente sind damit verschlüsselt. Deshalb kann niemand das Passwort zurücksetzen, auch nicht der Server. Eine E-Mail zum Zurücksetzen würde die Dokumente nicht wieder lesbar machen.</p><p class="mu"><b>Das kannst du tun:</b><br>1. Probiere deine üblichen Passwörter. Achte auf Groß-/Kleinschreibung und auf die richtige E-Mail-Adresse.<br>2. Hast du den Fingerabdruck-Login eingerichtet, melde dich damit an.<br>3. Findest du das Passwort nicht, kannst du neu anfangen: Die Daten dieses Benutzers werden auf diesem Gerät gelöscht, und du registrierst dich neu. Die alten Dokumente sind dann unwiederbringlich verloren.</p>'+(SBC()?'<p class="mu">Zur Sicherheit schickt dir die App eine E-Mail an deine Adresse. Erst wenn du darin den Bestätigungslink öffnest, werden dein Konto und alle Server-Daten gelöscht.</p>':'')+'<label>E-Mail des Benutzers<input id="fpm" type="email" value="'+esc(mail)+'"></label><p id="em" class="er"></p><div class="row" style="flex-direction:column">'+(SBC()?'<button class="dg" data-a="fpe">📧 Bestätigungs-E-Mail zum Löschen senden</button><button class="b2" data-a="fp2">Nur lokale Daten auf diesem Gerät löschen</button>':'<button class="dg" data-a="fp2">Daten dieses Benutzers auf diesem Gerät löschen</button>')+(lg?'<button class="dg" data-a="fp3">Alten Tresor ohne E-Mail löschen</button>':'')+'</div>')};
 A.fp2=async(i,b)=>{const mail=($('#fpm').value||'').trim().toLowerCase(),em=$('#em');
 if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)){em.textContent='Bitte die E-Mail-Adresse eingeben.';return}
 if(!b.dataset.s){b.dataset.s='1';b.textContent='Ja, endgültig löschen';em.textContent='Alle Dokumente dieses Benutzers gehen auf diesem Gerät verloren.';return}
@@ -499,6 +499,34 @@ if(!(navigator.canShare&&navigator.canShare({files:fs}))){em.className='er';em.t
 try{await navigator.share({files:fs,title:'Dokumente',text:'Dokumente aus dem Dokumentensafe'});em.className='mu';em.textContent='An die E-Mail-App übergeben. Dort noch auf „Senden“ tippen.'}
 catch(e){const ab=e&&e.name==='AbortError';em.className=ab?'mu':'er';em.textContent=ab?'Abgebrochen.':'Teilen fehlgeschlagen ('+(e&&e.name||'Fehler')+').'}};
 A.smsave=async()=>{const em=$('#em');try{for(const f of mailSel){const a=document.createElement('a');a.dataset.n=1;a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),60000);await new Promise(r=>setTimeout(r,400))}em.className='mu';em.textContent='Download gestartet. Hänge die Dateien aus dem Ordner „Download“ in einer E-Mail an.'}catch(e){em.className='er';em.textContent='Fehlgeschlagen: '+(e.message||e.name)}};
+let rcTmp=null;
+async function recoveryCheck(){const h=new URLSearchParams((location.hash||'').replace(/^#/,''));
+const clean=()=>{try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}};
+const bad='<h3>Link ungültig</h3><p class="er">Der Link aus der E-Mail ist abgelaufen oder wurde schon verwendet. Bitte fordere über „Passwort vergessen?“ eine neue E-Mail an.</p>';
+if(h.get('error')&&(h.get('error_code')||h.get('error_description'))){clean();show(bad);return}
+if(h.get('type')!=='recovery'||!h.get('access_token'))return;
+const at=h.get('access_token'),rt=h.get('refresh_token')||'';clean();
+try{if(!SBC())throw new Error('x');const r=await sbFetch('/auth/v1/user',{},at),u=await r.json().catch(()=>({}));if(!r.ok||!u.id)throw new Error('x');
+rcTmp={at,rt,uid:u.id,email:String(u.email||'').toLowerCase()};
+show('<h3>Konto löschen bestätigen</h3><p class="mu">Du hast gefordert, das Konto <b>'+esc(rcTmp.email)+'</b> zu löschen. Dabei werden <b>alle Dokumente dieses Kontos auf dem Server und auf diesem Gerät unwiderruflich gelöscht</b>. Danach kannst du dich mit derselben E-Mail neu registrieren. Hast du das nicht angefordert, schließe dieses Fenster. Dann passiert nichts.</p><p id="em" class="er"></p><div class="row" style="flex-direction:column"><button class="dg" data-a="rc2">Konto endgültig löschen</button></div>')}
+catch(e){show(bad)}}
+A.rc2=async(i,b)=>{const em=$('#em');if(!rcTmp||b.dataset.busy)return;b.dataset.busy='1';em.className='mu';em.textContent='Lösche Server-Daten …';
+try{SS={email:rcTmp.email,uid:rcTmp.uid,at:rcTmp.at,rt:rcTmp.rt,exp:Date.now()+3500*1000};
+const names=(await sList()).map(o=>o.name).filter(n=>n&&n!=='.emptyFolderPlaceholder');
+for(let k=0;k<names.length;k+=100)await sDel(names.slice(k,k+100));
+em.textContent='Lösche Konto …';
+const r=await sbFetch('/rest/v1/rpc/delete_my_account',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'},rcTmp.at);
+if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(r.status===404?'Die Funktion zum Löschen fehlt auf dem Server. Bitte supabase-setup.sql in Supabase erneut ausführen.':(j.message||'Konto konnte nicht gelöscht werden ('+r.status+')'))}
+const mail=rcTmp.email,ns=await nsOf(mail);await delKeys(k=>k.startsWith(ns));try{if(localStorage.getItem('ds_ns')===ns)localStorage.removeItem('ds_ns')}catch(e){}
+rcTmp=null;SS=null;hide();lockUI(true);$('#sm').value=mail;$('#le').textContent='Dein Konto wurde gelöscht. Du kannst dich jetzt mit dieser E-Mail neu registrieren.'}
+catch(e){b.dataset.busy='';em.className='er';em.textContent=e.message==='Failed to fetch'?'Keine Verbindung zum Server.':(e.message||'Fehler')}};
+A.fpe=async()=>{const em=$('#em'),mail=($('#fpm').value||'').trim().toLowerCase();
+if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)){em.className='er';em.textContent='Bitte die E-Mail-Adresse eingeben.';return}
+em.className='mu';em.textContent='Sende …';
+try{const r=await sbFetch('/auth/v1/recover?redirect_to='+encodeURIComponent(location.origin+location.pathname),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:mail})}),j=await r.json().catch(()=>({}));
+if(!r.ok){const c=j.error_code||'',m=j.msg||j.message||'';throw new Error(c==='over_email_send_rate_limit'||r.status===429?'Zu viele Anfragen. Bitte warte einige Minuten und versuche es dann erneut.':c==='email_address_not_authorized'?'Der E-Mail-Versand des Servers ist für diese Adresse nicht freigegeben. Der Betreiber muss in Supabase einen eigenen E-Mail-Dienst (SMTP) einrichten.':(m||'Fehler '+r.status))}
+em.textContent='Anfrage gesendet. Wenn es für '+mail+' ein Konto auf dem Server gibt, kommt in wenigen Minuten eine E-Mail. Öffne den Link darin auf diesem Gerät, um die Löschung zu bestätigen. Schau auch im Spam-Ordner nach.'}
+catch(e){em.className='er';em.textContent=e.message==='Failed to fetch'?'Keine Verbindung zum Server.':e.message}};
 let busy=false;
 const toBlob=u=>{const bin=atob(u.split(',')[1]),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:'image/jpeg'})};
 async function analyze(){const em=$('#em');if(busy||!em)return;if(!pend.length){em.textContent='Bitte zuerst eine Seite hinzufügen.';return}
