@@ -1,73 +1,143 @@
 <!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Dokumentensafe</title>
 <script src="config.js"></script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ef0"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
 <style>
-:root{--bg:#f5f6f8;--fg:#1b1f24;--cd:#fff;--ac:#1a6ef0;--mu:#6b7480;--bd:#dde1e6;--rd:#d33;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#121417;--fg:#e8eaed;--cd:#1c2025;--ac:#6ba3ff;--mu:#9aa3ad;--bd:#2d333a;--rd:#ff7b7b}}
+:root{--bg:#f3f5f9;--fg:#141922;--cd:#ffffff;--cd2:#f6f8fc;--ac:#2f6df6;--acf:#e9efff;--bt1:#2f6df6;--bt2:#5b8dff;--mu:#667085;--bd:#e3e8f0;--rd:#e5484d;--fol:#fff1cf;--sh:0 1px 2px rgba(16,24,40,.05),0 4px 14px rgba(16,24,40,.06);--sh2:0 10px 40px rgba(16,24,40,.14);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0d1015;--fg:#e9edf5;--cd:#161a21;--cd2:#1c212a;--ac:#7aa5ff;--acf:#1a2540;--mu:#98a2b3;--bd:#262c37;--rd:#ff7a80;--fol:#3a3220;--sh:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.3);--sh2:0 10px 40px rgba(0,0,0,.55)}}
 :root[data-theme="light"]{color-scheme:light}
-:root[data-theme="dark"]{color-scheme:dark;--bg:#121417;--fg:#e8eaed;--cd:#1c2025;--ac:#6ba3ff;--mu:#9aa3ad;--bd:#2d333a;--rd:#ff7b7b}
-html,body{margin:0;background:var(--bg);color:var(--fg);font:16px system-ui,sans-serif}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0d1015;--fg:#e9edf5;--cd:#161a21;--cd2:#1c212a;--ac:#7aa5ff;--acf:#1a2540;--mu:#98a2b3;--bd:#262c37;--rd:#ff7a80;--fol:#3a3220;--sh:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.3);--sh2:0 10px 40px rgba(0,0,0,.55)}
 *{box-sizing:border-box}[hidden]{display:none!important}
-main{max-width:640px;margin:0 auto;padding:12px}
-h1{font-size:20px;margin:0}h3{margin:0 0 8px}
-header{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;margin-bottom:10px}
-input,select,button{font:inherit;padding:11px;border-radius:10px;border:1px solid var(--bd);background:var(--cd);color:var(--fg);width:100%}
-button{background:var(--ac);color:#fff;border:0;font-weight:600;cursor:pointer}
-button.b2{background:var(--cd);color:var(--fg);border:1px solid var(--bd)}
-button.dg{background:var(--rd)}
-label{display:block;margin:8px 0;font-size:14px;color:var(--mu)}label input,label select{margin-top:4px;color:var(--fg)}
-.row{display:flex;gap:8px;margin:8px 0}.row>*{flex:1}
-.it{background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer}
-.it small{display:block;color:var(--mu);margin-top:4px}
-.cr{margin:8px 0;color:var(--mu)}.cr a{color:var(--ac);cursor:pointer}
-.mu{color:var(--mu)}.er{color:var(--rd);min-height:1.2em}
-#dlg{position:fixed;inset:0;background:#0009;display:flex;align-items:flex-end;justify-content:center;z-index:9}
-.box{background:var(--bg);width:100%;max-width:640px;max-height:92vh;overflow:auto;padding:16px;border-radius:16px 16px 0 0}
-#th{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.t{position:relative}.t img{height:80px;border-radius:8px}
-.t button{position:absolute;top:2px;right:2px;width:26px;padding:2px;border-radius:50%;background:#000a}
-.pg{width:100%;border-radius:8px;margin:6px 0;border:1px solid var(--bd)}
-#lock{max-width:360px;margin:12vh auto;padding:16px}
-#fs{position:fixed;inset:0;background:#000;z-index:20;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-#fsb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px;background:#111}#fsb button{width:auto;flex:0 0 auto;padding:10px 14px}#fsb .dg{margin-left:auto}#fsn{color:#fff}
-#fsi{flex:1;min-height:0;overflow:auto;display:flex;align-items:center;justify-content:center}#fsm{max-width:100%;max-height:calc(100vh - 90px);object-fit:contain}
-.pg,.t img{cursor:zoom-in}
+html,body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+a{color:var(--ac)}
+main{max-width:680px;margin:0 auto;padding:12px 14px 28px}
+h1{font-size:20px;margin:0;font-weight:750;letter-spacing:-.01em}h3{font-size:20px;margin:4px 0 10px;letter-spacing:-.01em}h4{margin:12px 0 6px}
+p{margin:8px 0}
+.mu{color:var(--mu)}.er{color:var(--rd);min-height:1.3em;font-size:14px;margin:4px 0}
+input,select{width:100%;min-height:46px;padding:11px 14px;border-radius:12px;border:1.5px solid var(--bd);background:var(--cd);color:var(--fg);font:inherit;transition:border-color .15s,box-shadow .15s}
+input::placeholder{color:var(--mu);opacity:.8}
+input:focus,select:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 4px var(--acf)}
+select{appearance:none;-webkit-appearance:none;padding-right:34px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%2398a2b3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;cursor:pointer}
+input[type=checkbox]{min-height:0;width:20px;height:20px;accent-color:var(--ac);margin:0 8px 0 0;vertical-align:middle}
+label{display:block;margin:14px 0 0;font-size:13px;font-weight:600;color:var(--mu)}label input,label select{margin-top:6px;font-weight:400;color:var(--fg)}
+button{font:inherit;font-weight:600;min-height:46px;padding:11px 16px;border-radius:12px;border:0;cursor:pointer;width:100%;color:#fff;background:linear-gradient(135deg,var(--bt1),var(--bt2));box-shadow:0 2px 8px rgba(47,109,246,.28);transition:transform .08s,filter .15s,background .15s,border-color .15s;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+button:hover{filter:brightness(1.07)}button:active{transform:scale(.97)}
+button:focus-visible{outline:3px solid var(--acf);outline-offset:2px;box-shadow:0 0 0 2px var(--ac)}
+button.b2{background:var(--cd);color:var(--fg);border:1.5px solid var(--bd);box-shadow:none}button.b2:hover{background:var(--cd2);filter:none}
+button.dg{background:var(--rd);box-shadow:0 2px 8px rgba(229,72,77,.25)}
+button.lnk{background:none;border:0;box-shadow:none;color:var(--ac);min-height:36px;padding:6px 10px;width:auto;font-weight:600}button.lnk:hover{background:var(--acf);filter:none}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.row{display:flex;gap:8px;margin:10px 0}.row>*{flex:1}.dc{display:contents}
+/* Kopfzeile */
+header.top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:2px 0 14px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--bt1),var(--bt2));display:grid;place-items:center;font-size:22px;box-shadow:0 4px 14px rgba(47,109,246,.35);flex:none}
+.logo.sm{width:40px;height:40px;font-size:19px}
+.sub{font-size:12.5px;color:var(--mu);min-height:1.1em;overflow:hidden;text-overflow:ellipsis;max-width:60vw}
+.tools{display:flex;gap:6px;flex-wrap:wrap}
+button.ib{width:44px;height:44px;min-height:44px;padding:0;border-radius:14px;font-size:20px;background:var(--cd);color:var(--fg);border:1.5px solid var(--bd);box-shadow:none}
+button.ib:hover{background:var(--acf);filter:none}
+/* Suche und Navigation */
+#q{padding-left:42px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%2398a2b3' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='8' cy='8' r='6'/%3E%3Cpath d='M13 13l4 4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:14px 50%;background-size:18px;box-shadow:var(--sh)}
+#nv{position:sticky;top:env(safe-area-inset-top,0px);z-index:4;background:var(--bg);padding:8px 0;margin:6px 0}
+#nv button{min-height:42px;font-size:14.5px}
+.cr{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:8px 0;font-size:14px}.cr a{padding:4px 9px;border-radius:9px;font-weight:600;cursor:pointer;text-decoration:none}.cr a:hover{background:var(--acf)}.sep{color:var(--mu)}
+.tb{display:flex;gap:8px;margin:10px 0}.tb select{flex:1 1 0;min-width:0;min-height:42px;padding:8px 30px 8px 12px;font-size:14px;border-radius:12px;background-position:right 10px center}
+/* Aktionen */
+.acts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+button.act{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:88px;border-radius:18px;font-size:15px;padding:10px 6px}
+button.act span{font-size:27px;line-height:1.1}
+button.act.acc{background:var(--acf);color:var(--ac);box-shadow:none;border:1.5px solid transparent}
+button.act.neu{background:var(--cd);color:var(--fg);border:1.5px solid var(--bd);box-shadow:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 6px}
+button.chip{width:auto;min-height:38px;padding:7px 11px;border-radius:999px;font-size:14px;background:var(--cd);color:var(--fg);border:1.5px solid var(--bd);box-shadow:none}
+button.chip:hover{background:var(--acf);filter:none}
+/* Listen */
+.it{display:flex;align-items:center;gap:12px;background:var(--cd);border:1px solid var(--bd);border-radius:16px;padding:12px;margin:8px 0;cursor:pointer;box-shadow:var(--sh);transition:transform .08s,border-color .15s,background .15s}
+.it:hover{border-color:var(--ac)}.it:active{transform:scale(.99)}
+.ic{flex:0 0 44px;height:44px;border-radius:12px;background:var(--acf);display:grid;place-items:center;font-size:22px}.ic.f{background:var(--fol)}
+.tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.tx b{font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tx small{display:flex;flex-wrap:wrap;gap:3px 10px;color:var(--mu);font-size:13px;align-items:center}
+.pill{background:var(--acf);color:var(--ac);padding:1px 9px;border-radius:999px;font-weight:600}
+.chev{color:var(--mu);font-size:24px;line-height:1}.chk{font-size:24px;color:var(--ac)}
+.cp{padding:8px 12px;margin:6px 0;gap:10px}.cp .ic{flex-basis:34px;height:34px;font-size:17px;border-radius:10px}.cp .d{color:var(--mu);font-size:13px;white-space:nowrap}
+.gh{margin:20px 4px 6px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);font-weight:700}
+.empty{text-align:center;padding:40px 16px;color:var(--mu)}.empty .ei{font-size:52px}.empty b{display:block;color:var(--fg);margin:10px 0 4px;font-size:18px}
+.sel{border-color:var(--ac);background:var(--acf);box-shadow:0 0 0 2px var(--ac) inset}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:10px 0}
+.tile{position:relative;background:var(--cd);border:1px solid var(--bd);border-radius:16px;padding:10px;cursor:pointer;overflow:hidden;box-shadow:var(--sh);transition:transform .08s,border-color .15s}
+.tile:hover{border-color:var(--ac)}.tile:active{transform:scale(.98)}
+.tile img,.ph{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px;display:block;background:var(--cd2);image-rendering:pixelated}
+.ph{display:flex;align-items:center;justify-content:center;font-size:34px}
+.tile b{display:block;margin-top:8px;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tile small{color:var(--mu);font-size:12.5px}
+.ck{position:absolute;top:8px;left:10px;z-index:1;font-size:20px;background:var(--cd);color:var(--ac);border-radius:8px;padding:0 5px;box-shadow:var(--sh)}
+#selbar{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:640px;margin:0 auto;z-index:8;display:flex;gap:8px;align-items:center;padding:8px 10px 8px 16px;background:var(--cd);border:1px solid var(--bd);border-radius:18px;box-shadow:var(--sh2)}
+#selbar button{width:auto;min-height:40px;padding:8px 14px}#seln{flex:1;font-weight:650}
+body.selmode main{padding-bottom:110px}
+/* Dialog (Bottom-Sheet) */
+#dlg{position:fixed;inset:0;background:rgba(10,14,22,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);display:flex;align-items:flex-end;justify-content:center;z-index:9;animation:fade .18s ease-out}
+.box{background:var(--bg);width:100%;max-width:600px;max-height:92vh;overflow:auto;border-radius:24px 24px 0 0;box-shadow:var(--sh2);animation:up .24s ease-out}
+.nav{position:sticky;top:0;z-index:3;background:var(--cd);border-bottom:1px solid var(--bd);padding:8px 16px 10px;border-radius:24px 24px 0 0}
+.grab{width:42px;height:5px;border-radius:3px;background:var(--bd);margin:0 auto}
+.nav .row{margin:8px 0 0}.nav button{min-height:42px;font-size:14.5px}
+.bd{padding:14px 16px 26px}
+@media (min-width:700px){#dlg{align-items:center}.box{border-radius:24px;max-height:88vh}}
+@keyframes up{from{transform:translateY(28px);opacity:0}to{transform:none;opacity:1}}@keyframes fade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+#th{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.t{position:relative}.t img{height:92px;border-radius:10px;border:1px solid var(--bd);cursor:zoom-in}
+.t button{position:absolute;top:3px;right:3px;width:28px;min-height:28px;height:28px;padding:0;border-radius:50%;background:rgba(0,0,0,.65);box-shadow:none;font-size:13px}
+.pg{width:100%;border-radius:12px;margin:8px 0;border:1px solid var(--bd);box-shadow:var(--sh);cursor:zoom-in}
+.fc{display:flex;align-items:center;gap:6px;background:var(--cd);border:1px solid var(--bd);border-radius:10px;padding:4px 6px 4px 10px;max-width:100%;font-size:14px}.fc button{width:28px;min-height:28px;height:28px;padding:0;margin-left:auto;border-radius:50%}
 .noai .ai{display:none}
-.vw{flex-wrap:wrap}.vw select{flex:1 1 40%;min-width:0}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin:8px 0}
-.tile{background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:8px;cursor:pointer;overflow:hidden}
-.tile img,.ph{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;display:block;background:var(--bg)}
-.ph{display:flex;align-items:center;justify-content:center;font-size:32px}
-.tile b{display:block;margin-top:6px;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tile small{color:var(--mu)}
-.gh{margin:14px 0 4px;color:var(--mu)}
-button:disabled{opacity:.4}
-.sel{outline:2px solid var(--ac);background:rgba(26,110,240,.12)}
-.tile{position:relative}.ck{position:absolute;top:6px;left:8px;z-index:1;font-size:20px;background:var(--bg);border-radius:6px;padding:0 4px}
-#selbar{position:fixed;left:0;right:0;bottom:0;z-index:8;display:flex;gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:var(--cd);border-top:1px solid var(--bd)}
-#selbar button{width:auto;padding:10px 14px}#seln{flex:1;font-weight:600}
-body.selmode main{padding-bottom:100px}
-.box>.row:first-child{position:sticky;top:0;z-index:3;background:var(--bg);margin:-16px -16px 10px;padding:12px 16px 8px;border-bottom:1px solid var(--bd);border-radius:16px 16px 0 0}
-#nv{position:sticky;top:env(safe-area-inset-top,0px);z-index:4;background:var(--bg);padding:6px 0;margin:0 0 6px}
-.tile img{image-rendering:pixelated}
-.fc{display:flex;align-items:center;gap:6px;background:var(--cd);border:1px solid var(--bd);border-radius:8px;padding:4px 8px;max-width:100%}.fc button{width:26px;padding:2px;margin-left:auto}
-.cp{display:flex;justify-content:space-between;gap:8px;padding:10px 12px;margin:5px 0}.cp b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cp span{color:var(--mu);white-space:nowrap}
+/* Anmeldung */
+.lkw{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(900px 420px at 50% -80px,var(--acf),transparent)}
+.lk{width:100%;max-width:400px;background:var(--cd);border:1px solid var(--bd);border-radius:28px;padding:28px 24px 20px;box-shadow:var(--sh2)}
+.lk .logo{margin:0 auto 14px;width:62px;height:62px;border-radius:20px;font-size:30px}
+.lk h1{text-align:center;font-size:26px}
+.lk #lm{text-align:center;font-size:13.5px;margin:6px 0 18px}
+.lk input{margin-bottom:10px}.lk #lb{margin-top:4px}
+.lk>button.b2{margin-top:10px}
+.lks{display:flex;justify-content:center;gap:2px;flex-wrap:wrap;margin-top:8px}
+#ver{text-align:center;font-size:12px;margin:12px 0 0}
+/* Vollbild */
+#fs{position:fixed;inset:0;background:#000;z-index:20;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+#fsb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px;background:#0d0f13}#fsb button{width:auto;flex:0 0 auto;padding:8px 14px;min-height:42px}#fsb .dg{margin-left:auto}#fsn{color:#fff}
+#fsi{flex:1;min-height:0;overflow:auto;display:flex;align-items:center;justify-content:center}#fsm{max-width:100%;max-height:calc(100vh - 90px);object-fit:contain}
+/* Hilfe */
+details{background:var(--cd);border:1px solid var(--bd);border-radius:14px;margin:8px 0}
+summary{cursor:pointer;padding:13px 14px;font-weight:650;list-style:none;display:flex;align-items:center;gap:10px}
+summary::-webkit-details-marker{display:none}summary::after{content:'›';margin-left:auto;font-size:22px;color:var(--mu);transition:transform .15s}details[open] summary::after{transform:rotate(90deg)}
+.dt{padding:0 14px 14px;color:var(--mu);font-size:14.5px;line-height:1.55}.dt ul{margin:6px 0;padding-left:20px}.dt li{margin:4px 0}.dt b{color:var(--fg)}
+.kb{display:inline-block;border:1px solid var(--bd);border-radius:8px;padding:0 7px;background:var(--cd2);font-size:13px;color:var(--fg)}
+@media (max-width:560px){.tools{width:100%;justify-content:space-between}}
+.tb select{font-size:13.5px}
+button.act{min-height:80px}#nv button{min-height:40px}
+/* Hinweisblase */
+#tip{position:fixed;z-index:60;max-width:270px;background:#1b212c;color:#fff;font-size:13.5px;line-height:1.35;padding:8px 12px;border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.4);pointer-events:none;border:1px solid rgba(255,255,255,.12)}
 </style></head><body>
-<div id="lock"><h1 id="lt"></h1><p id="lm" class="mu"></p>
-<input id="sm" type="email" placeholder="E-Mail-Adresse" autocomplete="email" style="margin-bottom:8px"><input id="pw" type="password" placeholder="Passwort" autocomplete="off"><div style="height:8px"></div>
-<input id="pw2" type="password" placeholder="Passwort wiederholen" autocomplete="off"><p id="le" class="er"></p><button id="lb">Anmelden</button><button id="lmode" class="b2" style="margin-top:8px">Neu hier? Registrieren</button><button id="lfp" class="b2" style="margin-top:8px">Passwort vergessen?</button><button id="lr" class="b2" style="margin-top:8px" hidden>Aus Backup wiederherstellen</button><button id="lbio" class="b2" style="margin-top:8px" hidden>👆 Mit Fingerabdruck entsperren</button><button id="lth" class="b2" style="margin-top:8px">Darstellung</button><p id="ver" class="mu" style="font-size:12px;margin-top:16px"></p></div>
+<div id="lock" class="lkw"><div class="lk">
+<div class="logo">🔒</div><h1 id="lt"></h1><p id="lm" class="mu"></p>
+<input id="sm" type="email" placeholder="E-Mail-Adresse" autocomplete="email" aria-label="E-Mail-Adresse">
+<input id="pw" type="password" placeholder="Passwort" autocomplete="off" aria-label="Passwort">
+<input id="pw2" type="password" placeholder="Passwort wiederholen" autocomplete="off" aria-label="Passwort wiederholen">
+<p id="le" class="er"></p><button id="lb">Anmelden</button>
+<div class="lks"><button id="lmode" class="lnk">Neu hier? Registrieren</button><button id="lfp" class="lnk">Passwort vergessen?</button></div>
+<button id="lr" class="b2" hidden>Aus Backup wiederherstellen</button>
+<button id="lbio" class="b2" hidden>👆 Mit Fingerabdruck entsperren</button>
+<div class="lks"><button id="lth" class="lnk">Darstellung</button><button class="lnk" data-a="help">❓ Hilfe</button></div>
+<p id="ver" class="mu"></p></div></div>
 <main id="app" hidden>
-<header><h1>🔒 Dokumentensafe</h1><span style="display:flex;gap:6px"><button class="b2" style="width:auto" data-a="th" id="hth" aria-label="Darstellung">🌓</button><button class="b2" style="width:auto" data-a="sy" aria-label="Server-Sync">☁️</button><button class="b2" style="width:auto" data-a="bio" aria-label="Fingerabdruck">👆</button><button class="b2" style="width:auto" data-a="lock">Sperren</button><button class="b2" style="width:auto" data-a="cl">🚪 Beenden</button></span></header>
-<div id="sst" class="mu" style="font-size:13px;margin:-4px 0 8px"></div>
-<input id="q" placeholder="🔍 Suchen (Name oder Kategorie)">
+<header class="top"><div class="brand"><span class="logo sm">🔒</span><div><h1>Dokumentensafe</h1><div id="sst" class="sub"></div></div></div>
+<div class="tools"><button class="ib" data-a="help" aria-label="Hilfe">❓</button><button class="ib" data-a="th" id="hth" aria-label="Darstellung">🌓</button><button class="ib" data-a="sy" aria-label="Server-Sync">☁️</button><button class="ib" data-a="bio" aria-label="Fingerabdruck">👆</button><button class="ib" data-a="lock" aria-label="Sperren">🔐</button><button class="ib" data-a="cl" aria-label="Beenden">🚪</button></div></header>
+<input id="q" type="search" placeholder="Suchen nach Name oder Kategorie" aria-label="Suchen" autocomplete="off">
 <div class="row" id="nv"><button class="b2" data-a="home">🏠 Startseite</button><button class="b2" data-a="back">← Zurück</button></div>
-<div class="row vw"><select id="sv"><option value="liste">Ansicht: Liste</option><option value="kompakt">Ansicht: Kompakt</option><option value="kacheln">Ansicht: Kacheln</option></select><select id="ss"><option value="dn">Datum: neueste zuerst</option><option value="da">Datum: älteste zuerst</option><option value="na">Name A–Z</option><option value="nz">Name Z–A</option><option value="cn">Erstellt: neueste zuerst</option><option value="ca">Erstellt: älteste zuerst</option></select><select id="sg"><option value="">Gruppierung: keine</option><option value="j">Gruppiert nach Jahr</option><option value="m">Gruppiert nach Monat</option></select></div>
-<div class="row"><button data-a="scan">📷 Scannen</button><button data-a="up">📁 Hochladen</button><button class="b2" data-a="nf">+ Ordner</button></div>
-<div class="row" id="fo" hidden><button class="b2" data-a="rf">Ordner umbenennen</button><button class="b2" data-a="df">Ordner löschen</button></div>
-<div class="row"><button class="b2" data-a="bk">💾 Backup exportieren</button><button class="b2" data-a="bi">📥 Backup importieren</button></div>
-<div class="row" id="mg" hidden><button class="b2" data-a="mg">✉️ E-Mail zum Login hinzufügen</button></div>
-<div class="row"><button class="b2" id="smb" data-a="sm">☑ Auswählen (mehrere Dokumente)</button></div>
+<div class="tb"><select id="sv" aria-label="Ansicht" title="Ansicht: Liste, Kompakt oder Kacheln"><option value="liste">☰ Liste</option><option value="kompakt">≡ Kompakt</option><option value="kacheln">▦ Kacheln</option></select><select id="ss" aria-label="Sortierung" title="Sortierung: ↓ neueste zuerst, ↑ älteste zuerst"><option value="dn">Datum ↓</option><option value="da">Datum ↑</option><option value="na">Name A–Z</option><option value="nz">Name Z–A</option><option value="cn">Erstellt ↓</option><option value="ca">Erstellt ↑</option></select><select id="sg" aria-label="Gruppierung" title="Gruppierung nach Jahr oder Monat"><option value="">Gruppe: –</option><option value="j">Nach Jahr</option><option value="m">Nach Monat</option></select></div>
+<div class="acts"><button class="act" data-a="scan"><span>📷</span>Scannen</button><button class="act acc" data-a="up"><span>📁</span>Hochladen</button><button class="act neu" data-a="nf"><span>＋</span>Ordner</button></div>
+<div class="chips"><span id="fo" class="dc" hidden><button class="chip" data-a="rf">✏️ Ordner umbenennen</button><button class="chip" data-a="df">🗑 Ordner löschen</button></span><button class="chip" data-a="bk">💾 Backup</button><button class="chip" data-a="bi">📥 Import</button><button class="chip" id="mg" data-a="mg" hidden>✉️ E-Mail zum Login hinzufügen</button><button class="chip" id="smb" data-a="sm">☑ Auswählen</button></div>
 <div id="list"></div></main>
-<div id="selbar" hidden><span id="seln">0 ausgewählt</span><button class="b2" data-a="sall">Alle</button><button data-a="sms">📧 Senden</button><button class="b2" data-a="sx">✕</button></div>
-<div id="fs" hidden><div id="fsb"><button class="b2" data-a="fr" data-i="-90">↺</button><button class="b2" data-a="fr" data-i="90">↻</button><button class="b2" data-a="fp" data-i="-1">‹</button><span id="fsn"></span><button class="b2" data-a="fp" data-i="1">›</button><button class="b2" data-a="fh">🏠 Start</button><button class="dg" data-a="fc">✕ Schließen</button></div><div id="fsi"><img id="fsm" alt=""></div></div>
+<div id="selbar" hidden><span id="seln">0 ausgewählt</span><button class="b2" data-a="sall">Alle</button><button data-a="sms">📧 Senden</button><button class="b2" data-a="sx" aria-label="Auswahl beenden">✕</button></div>
+<div id="fs" hidden><div id="fsb"><button class="b2" data-a="fr" data-i="-90" data-tip="Seite um 90° nach links drehen (wird gespeichert)" aria-label="Nach links drehen">↺</button><button class="b2" data-a="fr" data-i="90" data-tip="Seite um 90° nach rechts drehen (wird gespeichert)" aria-label="Nach rechts drehen">↻</button><button class="b2" data-a="fp" data-i="-1" data-tip="Vorherige Seite" aria-label="Vorherige Seite">‹</button><span id="fsn"></span><button class="b2" data-a="fp" data-i="1" data-tip="Nächste Seite" aria-label="Nächste Seite">›</button><button class="b2" data-a="fh">🏠 Start</button><button class="dg" data-a="fc">✕ Schließen</button></div><div id="fsi"><img id="fsm" alt=""></div></div>
 <div id="dlg" hidden></div>
+<div id="tip" role="tooltip" hidden></div>
 <input id="fi" type="file" accept="image/*" capture="environment" hidden><input id="fu" type="file" multiple hidden><input id="fb" type="file" hidden>
 <script>
 if(!window.claude)document.documentElement.classList.add('noai');
@@ -75,7 +145,7 @@ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceW
 const $=s=>document.querySelector(s),te=new TextEncoder(),td=new TextDecoder();
 const THEMES=['auto','light','dark'],THL={auto:'🌓 Automatisch',light:'☀️ Hell',dark:'🌙 Dunkel'},THI={auto:'🌓',light:'☀️',dark:'🌙'};
 function getTheme(){try{const t=localStorage.getItem('ds_theme');return THEMES.includes(t)?t:'auto'}catch(e){return 'auto'}}
-function applyTheme(t){const r=document.documentElement;if(t==='auto')r.removeAttribute('data-theme');else r.setAttribute('data-theme',t);const b=$('#lth');if(b)b.textContent='Darstellung: '+THL[t];const h=$('#hth');if(h)h.textContent=THI[t]}
+function applyTheme(t){const r=document.documentElement;if(t==='auto')r.removeAttribute('data-theme');else r.setAttribute('data-theme',t);const b=$('#lth');if(b)b.textContent=THL[t];const h=$('#hth');if(h)h.textContent=THI[t]}
 function cycleTheme(){const t=THEMES[(THEMES.indexOf(getTheme())+1)%3];try{localStorage.setItem('ds_theme',t)}catch(e){}applyTheme(t)}
 applyTheme(getTheme());
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -93,7 +163,7 @@ const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOStr
 const fd=d=>d?new Date(d+'T00:00').toLocaleDateString('de-DE'):'–',fdt=d=>new Date(d).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'});
 const path=id=>{const p=[];while(id){const f=meta.folders.find(x=>x.id===id);if(!f)break;p.unshift(f.name);id=f.parent}return p.join(' / ')};
 const opts=(sel,root)=>(root?`<option value="">${root}</option>`:'')+meta.folders.map(f=>({id:f.id,p:path(f.id)})).sort((a,b)=>a.p.localeCompare(b.p)).map(o=>`<option value="${o.id}"${o.id===sel?' selected':''}>${esc(o.p)}</option>`).join('');
-const D=$('#dlg'),show=h=>{D.innerHTML='<div class="box"><div class="row"><button class="b2" data-a="hx">🏠 Startseite</button><button class="b2" data-a="x">← Zurück</button></div>'+h+'</div>';D.hidden=false},hide=()=>{D.hidden=true;D.innerHTML=''};
+const D=$('#dlg'),show=h=>{D.innerHTML='<div class="box"><div class="nav"><div class="grab"></div><div class="row"><button class="b2" data-a="hx">🏠 Startseite</button><button class="b2" data-a="x">← Zurück</button></div></div><div class="bd">'+h+'</div></div>';D.hidden=false},hide=()=>{D.hidden=true;D.innerHTML=''};
 const nz=v=>v||null;
 
 async function boot(){db=await idb();try{navigator.storage?.persist?.()}catch(e){}try{NS=localStorage.getItem('ds_ns')||''}catch(e){}const c0=await get('cfg');cfgV=c0?(c0.v||1):2;lockUI(!c0&&!SBC()&&!(await rawGet('cfg')));await recoveryCheck()}
@@ -104,7 +174,7 @@ $('#lt').textContent=f?'Registrieren':'Anmelden';$('#lb').textContent=f?'Registr
 $('#pw2').hidden=!f;$('#lr').hidden=f;$('#lfp').hidden=f;$('#sm').hidden=false;$('#lbio').hidden=true;NS=lastNS();
 if(!f&&db)bioOK().then(async ok=>{if(ok&&await get('bio')&&!key)$('#lbio').hidden=false}).catch(()=>{});
 $('#lm').textContent=f?'Registriere dich mit E-Mail-Adresse und Passwort (mindestens 8 Zeichen, besser 12). Jeder Benutzer hat eigene, getrennte Dokumente. Es gibt keine Wiederherstellung: ohne Passwort sind die Daten unlesbar.'+(SBC()?'':' Ohne Server bleiben die Daten nur auf diesem Gerät.'):'Melde dich mit E-Mail und Passwort an.'+(SBC()?' Neues Handy? Einfach anmelden, deine Dokumente werden vom Server geladen.':'')+' Mit Backup: E-Mail und Passwort des Backups eingeben und „Aus Backup wiederherstellen“ tippen.';
-$('#pw').value='';$('#pw2').value='';$('#le').textContent='';$('#ver').textContent='Version 24'}
+$('#pw').value='';$('#pw2').value='';$('#le').textContent='';$('#ver').textContent='Version 27'}
 const rawGet=k=>tx('readonly',s=>s.get(k));
 async function nsOf(e){const h=await crypto.subtle.digest('SHA-256',te.encode('dokumentensafe-user|'+e.trim().toLowerCase()));return 'u'+Array.from(new Uint8Array(h).slice(0,10)).map(b=>b.toString(16).padStart(2,'0')).join('')+'/'}
 const adoptLegacy=nns=>new Promise((res,rej)=>{const t=db.transaction('kv','readwrite'),s=t.objectStore('kv'),rq=s.openCursor();
@@ -157,13 +227,14 @@ function bump(){clearTimeout(timer);if(key)timer=setTimeout(()=>lockUI(false),10
 $('#lb').onclick=unlock;$('#pw').onkeydown=$('#pw2').onkeydown=e=>{if(e.key==='Enter')unlock()};
 $('#q').oninput=render;
 
-function render(){const q=$('#q').value.trim().toLowerCase();let h='';
+function render(){const q=$('#q').value.trim().toLowerCase();let h='',nf=0;
 if(!q){const ch=[];let i=cur;while(i){const f=meta.folders.find(x=>x.id===i);if(!f)break;ch.unshift(f);i=f.parent}
-h+=`<div class="cr"><a data-a="open" data-i="">Start</a>`+ch.map(f=>` › <a data-a="open" data-i="${f.id}">${esc(f.name)}</a>`).join('')+`</div>`;
-meta.folders.filter(f=>(f.parent||null)===cur).sort((a,b)=>a.name.localeCompare(b.name)).forEach(f=>{h+=`<div class="it" data-a="open" data-i="${f.id}">📁 <b>${esc(f.name)}</b></div>`})}
+h+=`<nav class="cr"><a data-a="open" data-i="">🏠 Start</a>`+ch.map(f=>`<span class="sep">›</span><a data-a="open" data-i="${f.id}">${esc(f.name)}</a>`).join('')+`</nav>`;
+const fl=meta.folders.filter(f=>(f.parent||null)===cur).sort((a,b)=>a.name.localeCompare(b.name));nf=fl.length;
+fl.forEach(f=>{const nd=meta.docs.filter(d=>(d.folder||null)===f.id).length,ns=meta.folders.filter(x=>(x.parent||null)===f.id).length;h+=`<div class="it" data-a="open" data-i="${f.id}"><span class="ic f">📁</span><span class="tx"><b>${esc(f.name)}</b><small>${nd} Dokument${nd===1?'':'e'}${ns?' · '+ns+' Unterordner':''}</small></span><span class="chev">›</span></div>`})}
 const docs=meta.docs.filter(d=>q?(d.name+' '+path(d.folder)).toLowerCase().includes(q):(d.folder||null)===cur).sort(sorter());curDocIds=docs.map(d=>d.id);
 h+=docHtml(docs);
-if(!docs.length&&!h.includes('class="it"'))h+='<p class="mu">Noch nichts vorhanden.</p>';
+if(!docs.length&&!nf)h+=`<div class="empty"><div class="ei">${q?'🔎':'🗂️'}</div><b>${q?'Keine Treffer':(cur?'Dieser Ordner ist leer':'Noch keine Dokumente')}</b><p>${q?'Versuche einen anderen Suchbegriff.':'Tippe oben auf „Scannen“ oder „Hochladen“, um dein erstes Dokument hinzuzufügen.'}</p></div>`;
 $('#list').innerHTML=h;$('#fo').hidden=!cur||!!q;$('#mg').hidden=cfgV===2;$('#nv').lastElementChild.disabled=!cur&&!q;if(V.v==='kacheln')ensureTh(docs)}
 
 const A={
@@ -265,10 +336,10 @@ const gk=d=>V.g==='j'?d.date.slice(0,4):d.date.slice(0,7);
 const gl=k=>V.g==='j'?k:new Date(k+'-01T00:00').toLocaleDateString('de-DE',{month:'long',year:'numeric'});
 function sorter(){const c={dn:(a,b)=>b.date.localeCompare(a.date),da:(a,b)=>a.date.localeCompare(b.date),na:(a,b)=>a.name.localeCompare(b.name,'de'),nz:(a,b)=>b.name.localeCompare(a.name,'de'),cn:(a,b)=>b.created.localeCompare(a.created),ca:(a,b)=>a.created.localeCompare(b.created)}[V.s]||((a,b)=>b.date.localeCompare(a.date));
 if(!V.g)return c;const asc=V.s==='da'||V.s==='ca';return(a,b)=>{const x=gk(a),y=gk(b);return x!==y?(asc?x.localeCompare(y):y.localeCompare(x)):c(a,b)}}
-function card(d){const nm=esc(d.name);
-if(V.v==='kompakt')return `<div class="it cp${isel(d)}" data-a="vd" data-i="${d.id}">${selMark(d)}📄 <b>${nm}</b><span>${fd(d.date)}</span></div>`;
-if(V.v==='kacheln')return `<div class="tile${isel(d)}" data-a="vd" data-i="${d.id}">${selMode?'<span class="ck">'+(sel.has(d.id)?'☑':'☐')+'</span>':''}${d.thv===2&&d.th?`<img src="${d.th}" alt="">`:'<div class="ph">📄</div>'}<b>${nm}</b><small>${fd(d.date)}</small></div>`;
-return `<div class="it${isel(d)}" data-a="vd" data-i="${d.id}">${selMark(d)}📄 <b>${nm}</b><small>${esc(path(d.folder)||'Ohne Kategorie')}<br>Datum des Dokuments: ${fd(d.date)}<br>Erstellt: ${fdt(d.created)} · ${d.n} Seite(n)${d.f?' · '+d.f+' Datei(en)':''}</small></div>`}
+function card(d){const nm=esc(d.name),ic=d.n?'📄':'📎',mk=selMode?`<span class="chk">${sel.has(d.id)?'☑':'☐'}</span>`:'<span class="chev">›</span>';
+if(V.v==='kompakt')return `<div class="it cp${isel(d)}" data-a="vd" data-i="${d.id}"><span class="ic">${ic}</span><span class="tx"><b>${nm}</b></span><span class="d">${fd(d.date)}</span>${selMode?mk:''}</div>`;
+if(V.v==='kacheln')return `<div class="tile${isel(d)}" data-a="vd" data-i="${d.id}">${selMode?'<span class="ck">'+(sel.has(d.id)?'☑':'☐')+'</span>':''}${d.thv===2&&d.th?`<img src="${d.th}" alt="">`:'<div class="ph">'+ic+'</div>'}<b>${nm}</b><small>${fd(d.date)}</small></div>`;
+return `<div class="it${isel(d)}" data-a="vd" data-i="${d.id}"><span class="ic">${ic}</span><span class="tx"><b>${nm}</b><small><span class="pill">${esc(path(d.folder)||'Ohne Kategorie')}</span><span>📅 ${fd(d.date)}</span><span>${d.n} Seite${d.n===1?'':'n'}${d.f?' · '+d.f+' Datei'+(d.f===1?'':'en'):''}</span></small><small>Erstellt ${fdt(d.created)}</small></span>${mk}</div>`}
 function docHtml(docs){let h='',last=null,open=false;const t=V.v==='kacheln';
 for(const d of docs){if(V.g){const k=gk(d);if(k!==last){if(open){h+='</div>';open=false}h+=`<h4 class="gh">${esc(gl(k))}</h4>`;last=k}}
 if(t&&!open){h+='<div class="grid">';open=true}h+=card(d)}
@@ -415,7 +486,7 @@ catch(e){await cleanTmp(ids);say('Fehlgeschlagen: '+(e.message||e.name)+' Deine 
 const delKeys=test=>new Promise((res,rej)=>{const t=db.transaction('kv','readwrite'),s=t.objectStore('kv'),rq=s.openCursor();let n=0;
 rq.onsuccess=e=>{const c=e.target.result;if(!c)return;if(typeof c.key==='string'&&test(c.key)){c.delete();n++}c.continue()};
 t.oncomplete=()=>res(n);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)});
-A.fp=async()=>{const mail=$('#sm').value.trim(),lg=await rawGet('cfg');
+A.fpw=async()=>{const mail=$('#sm').value.trim(),lg=await rawGet('cfg');
 show('<h3>Passwort vergessen?</h3><p class="mu">Dein Passwort wird nirgends gespeichert. Deine Dokumente sind damit verschlüsselt. Deshalb kann niemand das Passwort zurücksetzen, auch nicht der Server. Eine E-Mail zum Zurücksetzen würde die Dokumente nicht wieder lesbar machen.</p><p class="mu"><b>Das kannst du tun:</b><br>1. Probiere deine üblichen Passwörter. Achte auf Groß-/Kleinschreibung und auf die richtige E-Mail-Adresse.<br>2. Hast du den Fingerabdruck-Login eingerichtet, melde dich damit an.<br>3. Findest du das Passwort nicht, kannst du neu anfangen: Die Daten dieses Benutzers werden auf diesem Gerät gelöscht, und du registrierst dich neu. Die alten Dokumente sind dann unwiederbringlich verloren.</p>'+(SBC()?'<p class="mu">Zur Sicherheit schickt dir die App eine E-Mail an deine Adresse. Erst wenn du darin den Bestätigungslink öffnest, werden dein Konto und alle Server-Daten gelöscht.</p>':'')+'<label>E-Mail des Benutzers<input id="fpm" type="email" value="'+esc(mail)+'"></label><p id="em" class="er"></p><div class="row" style="flex-direction:column">'+(SBC()?'<button class="dg" data-a="fpe">📧 Bestätigungs-E-Mail zum Löschen senden</button><button class="b2" data-a="fp2">Nur lokale Daten auf diesem Gerät löschen</button>':'<button class="dg" data-a="fp2">Daten dieses Benutzers auf diesem Gerät löschen</button>')+(lg?'<button class="dg" data-a="fp3">Alten Tresor ohne E-Mail löschen</button>':'')+'</div>')};
 A.fp2=async(i,b)=>{const mail=($('#fpm').value||'').trim().toLowerCase(),em=$('#em');
 if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)){em.textContent='Bitte die E-Mail-Adresse eingeben.';return}
@@ -426,7 +497,7 @@ $('#le').textContent=n?'Gelöscht. Du kannst dich jetzt mit dieser E-Mail neu re
 catch(e){em.textContent='Fehlgeschlagen: '+(e.message||e.name)}};
 A.fp3=async(i,b)=>{const em=$('#em');if(!b.dataset.s){b.dataset.s='1';b.textContent='Ja, alten Tresor endgültig löschen';em.textContent='Der alte Tresor ohne E-Mail wird unwiderruflich gelöscht.';return}
 try{await delKeys(k=>!k.includes('/'));hide();lockUI(false);$('#le').textContent='Der alte Tresor wurde gelöscht.'}catch(e){em.textContent='Fehlgeschlagen: '+(e.message||e.name)}};
-$('#lfp').onclick=()=>A.fp();
+$('#lfp').onclick=()=>A.fpw();
 async function syncPush(){if(syBusy)throw new Error('Es läuft gerade eine Synchronisierung. Bitte kurz warten.');if(!key||!meta)return;if(!(await sessGet()))throw new Error('Nicht angemeldet.');syBusy=true;
 try{st('☁️ Überschreibe Server …');const lc=await get('cfg'),lcj={salt:b64(lc.salt),chk:pk(lc.chk),v:lc.v||1};
 const names=(await sList()).map(o=>o.name);let rm=null;
@@ -461,7 +532,7 @@ em.className='mu';em.textContent='Lade …';try{await syncPull();em.textContent=
 A.th=()=>cycleTheme();$('#lth').onclick=cycleTheme;
 let selMode=false,mailSel=[],curDocIds=[];const sel=new Set();
 const isel=d=>selMode&&sel.has(d.id)?' sel':'',selMark=d=>selMode?(sel.has(d.id)?'☑ ':'☐ '):'';
-function selUI(){document.body.classList.toggle('selmode',selMode);$('#selbar').hidden=!selMode;$('#seln').textContent=sel.size+' ausgewählt';$('#smb').textContent=selMode?'✕ Auswahl beenden':'☑ Auswählen (mehrere Dokumente)';render()}
+function selUI(){document.body.classList.toggle('selmode',selMode);$('#selbar').hidden=!selMode;$('#seln').textContent=sel.size+' ausgewählt';$('#smb').textContent=selMode?'✕ Auswahl beenden':'☑ Auswählen';render()}
 A.sm=()=>{selMode=!selMode;if(!selMode)sel.clear();selUI()};
 A.sx=()=>{selMode=false;sel.clear();selUI()};
 A.sall=()=>{if(curDocIds.length&&curDocIds.every(id=>sel.has(id)))curDocIds.forEach(id=>sel.delete(id));else curDocIds.forEach(id=>sel.add(id));selUI()};
@@ -527,6 +598,38 @@ try{const r=await sbFetch('/auth/v1/recover?redirect_to='+encodeURIComponent(loc
 if(!r.ok){const c=j.error_code||'',m=j.msg||j.message||'';throw new Error(c==='over_email_send_rate_limit'||r.status===429?'Zu viele Anfragen. Bitte warte einige Minuten und versuche es dann erneut.':c==='email_address_not_authorized'?'Der E-Mail-Versand des Servers ist für diese Adresse nicht freigegeben. Der Betreiber muss in Supabase einen eigenen E-Mail-Dienst (SMTP) einrichten.':(m||'Fehler '+r.status))}
 em.textContent='Anfrage gesendet. Wenn es für '+mail+' ein Konto auf dem Server gibt, kommt in wenigen Minuten eine E-Mail. Öffne den Link darin auf diesem Gerät, um die Löschung zu bestätigen. Schau auch im Spam-Ordner nach.'}
 catch(e){em.className='er';em.textContent=e.message==='Failed to fetch'?'Keine Verbindung zum Server.':e.message}};
+/* ===== Hinweisblasen (Maus: Hover, Handy: gedrückt halten) ===== */
+const TIPS={help:'Hilfe: Anleitung, wie die App funktioniert',th:'Darstellung wechseln: Automatisch, Hell oder Dunkel',sy:'Cloud: mit deinem Server synchronisieren und Konto verwalten',bio:'Fingerabdruck-Login ein- oder ausschalten',lock:'App sperren. Danach ist die Anmeldung nötig',cl:'App beenden: erstellt zuerst ein Backup und sperrt dann',home:'Zur Startseite (oberste Ebene)',back:'Eine Ebene zurück oder Suche beenden',scan:'Dokument mit der Kamera scannen (mehrere Seiten möglich)',up:'Dateien vom Gerät hochladen: Bilder, PDF, Text und weitere',nf:'Neuen Ordner oder Unterordner anlegen',rf:'Diesen Ordner umbenennen',df:'Diesen Ordner mit allem Inhalt löschen',bk:'Backup exportieren: verschlüsselte Sicherung aller Dokumente speichern',bi:'Backup importieren: Dokumente aus einer Backup-Datei hinzufügen',mg:'E-Mail zum Login hinzufügen (verschlüsselt alle Dokumente neu)',sm:'Mehrere Dokumente zum Senden oder Weiterverarbeiten auswählen',sall:'Alle sichtbaren Dokumente auswählen oder abwählen',sms:'Ausgewählte Dokumente per E-Mail senden',sx:'Auswahl beenden',x:'Fenster schließen und zurück',hx:'Fenster schließen und zur Startseite',fh:'Vollbild schließen und zur Startseite',fc:'Vollbild schließen',add:'Mit der Kamera ein Foto aufnehmen und als Seite hinzufügen',addu:'Datei vom Gerät hinzufügen (Bild, PDF, Text, weitere)',an:'Datum und Betreff automatisch erkennen (sendet die Seiten an Claude)',sd:'Dokument verschlüsselt speichern',rm:'Diese Seite entfernen',rp:'Seite um 90° drehen',rf2:'Diese Datei entfernen',sf:'Ordner anlegen',rs:'Neuen Namen speichern',df2:'Ordner und alle Dokumente darin endgültig löschen',ud:'Änderungen am Dokument speichern',dd:'Dokument löschen (du musst zweimal tippen)',sm1:'Dieses Dokument per E-Mail senden',smsend:'Android-Auswahl öffnen (z. B. Gmail) mit den Anhängen',smsave:'Dateien auf das Gerät herunterladen',bsave:'Backup speichern und Speicherort wählen',bf:'Backup-Datei auswählen',mg2:'Alle Dokumente jetzt mit E-Mail und Passwort neu verschlüsseln',sy1:'Konto auf dem Server erstellen und hochladen',sy2:'Am Server anmelden und abgleichen',sy3:'Jetzt mit dem Server zusammenführen',sy4:'Vom Server abmelden (lokale Daten bleiben)',sy5:'Automatische Synchronisierung ein- oder ausschalten',sy6:'Server-Stand durch den Stand dieses Geräts ersetzen',sy7:'Stand dieses Geräts durch den Server-Stand ersetzen',rc2:'Konto und alle Server-Daten endgültig löschen',fpe:'Bestätigungs-E-Mail zum Löschen des Kontos senden',fp2:'Nur die lokalen Daten dieses Benutzers auf diesem Gerät löschen',fp3:'Alten Tresor ohne E-Mail löschen',bio0:'Fingerabdruck-Login ausschalten',bio1:'Fingerabdruck-Login einschalten',ex:'App sperren und beenden',lb:'Anmelden bzw. Registrieren',lmode:'Zwischen Anmeldung und Registrierung wechseln',lfp:'Hilfe, wenn du dein Passwort vergessen hast',lr:'Backup-Datei wiederherstellen (E-Mail und Passwort des Backups eingeben)',lbio:'Mit dem Fingerabdruck entsperren',lth:'Darstellung wechseln: Automatisch, Hell oder Dunkel'};
+let tipT=null,tipH=null,tipEl=null,tipLP=0,tipXY=null;
+const tipText=el=>el.dataset.tip||TIPS[el.dataset.a]||TIPS[el.id]||'';
+const tipFor=t=>{const el=t&&t.closest?t.closest('button'):null;return el&&tipText(el)?el:null};
+function showTip(el){const t=$('#tip');t.textContent=tipText(el);t.hidden=false;const r=el.getBoundingClientRect(),w=t.offsetWidth,h=t.offsetHeight;let x=r.left+r.width/2-w/2,y=r.bottom+10;if(y+h>innerHeight-8)y=r.top-h-10;t.style.left=Math.max(8,Math.min(x,innerWidth-w-8))+'px';t.style.top=Math.max(8,y)+'px';tipEl=el}
+function hideTip(){clearTimeout(tipT);clearTimeout(tipH);const t=$('#tip');if(t)t.hidden=true;tipEl=null}
+document.addEventListener('pointerover',e=>{if(e.pointerType!=='mouse')return;const el=tipFor(e.target);if(!el)return;clearTimeout(tipT);tipT=setTimeout(()=>showTip(el),350)},true);
+document.addEventListener('pointerout',e=>{if(e.pointerType==='mouse')hideTip()},true);
+document.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'){hideTip();return}
+const el=tipFor(e.target);hideTip();if(!el)return;tipXY=[e.clientX,e.clientY];
+tipT=setTimeout(()=>{showTip(el);tipLP=Date.now()+2500;tipH=setTimeout(hideTip,3000)},500)},true);
+document.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse'&&tipXY&&Math.hypot(e.clientX-tipXY[0],e.clientY-tipXY[1])>12&&!tipEl){clearTimeout(tipT);tipXY=null}},true);
+['pointerup','pointercancel'].forEach(n=>document.addEventListener(n,e=>{if(e.pointerType!=='mouse'&&!tipEl){clearTimeout(tipT)}tipXY=null},true));
+document.addEventListener('click',e=>{if(tipLP>Date.now()&&tipFor(e.target)){e.stopPropagation();e.preventDefault();tipLP=0;return}hideTip()},true);
+document.addEventListener('contextmenu',e=>{if(tipFor(e.target))e.preventDefault()},true);
+addEventListener('scroll',hideTip,true);document.addEventListener('keydown',hideTip,true);
+/* ===== Hilfe ===== */
+const HELP=[
+['🚀','Erste Schritte','<ul><li><b>Registrieren:</b> Auf dem Anmelde-Bildschirm „Neu hier? Registrieren“ wählen und E-Mail-Adresse und Passwort festlegen (mindestens 8 Zeichen, besser 12).</li><li><b>Anmelden:</b> Mit derselben E-Mail und demselben Passwort. Mehrere Personen können sich mit eigener E-Mail registrieren. Jede hat eigene, getrennte Dokumente.</li><li><b>Sperren 🔐:</b> Sperrt die App sofort. Nach 10 Minuten ohne Bedienung sperrt sie sich selbst.</li><li><b>Beenden 🚪:</b> Erstellt zuerst ein Backup und sperrt dann die App.</li></ul>'],
+['📷','Dokumente hinzufügen','<ul><li><b>Scannen:</b> Kamera öffnet sich. Für mehrere Seiten „📷 Foto“ erneut tippen. Mit ↻ drehst du Seiten, mit ✕ entfernst du sie. Dann Name, Kategorie (Ordner) und Datum des Dokuments eintragen und „Speichern“.</li><li><b>Hochladen:</b> Bilder, PDF, Textdateien (txt, csv, md …) und weitere Dateien aus dem Ordner deines Geräts, auch mehrere gleichzeitig. PDFs werden als Seitenbilder angezeigt, das Original-PDF bleibt gespeichert. Weitere Dateiarten (z. B. Word, Excel) werden nur gespeichert und lassen sich wieder herunterladen. Höchstens 25 MB pro Datei.</li><li><b>✨ Datum &amp; Betreff erkennen:</b> Nur im Claude-Link verfügbar. Die Seiten werden dazu an Claude gesendet.</li></ul>'],
+['📁','Ordner und Kategorien','<ul><li><b>＋ Ordner</b> legt einen Ordner an. Als „Übergeordnet“ wählst du einen anderen Ordner für Unterordner (z. B. Lohnabrechnungen → 2026).</li><li>Tippe einen Ordner an, um ihn zu öffnen. Mit „🏠 Startseite“ springst du nach oben, mit „← Zurück“ eine Ebene zurück.</li><li>Im geöffneten Ordner erscheinen „Ordner umbenennen“ und „Ordner löschen“. Beim Löschen verschwinden auch Unterordner und Dokumente darin.</li></ul>'],
+['📄','Dokumente ansehen und bearbeiten','<ul><li>Dokument antippen: Name, Kategorie und Datum ändern, Seiten ansehen, Dateien herunterladen.</li><li>Seite antippen: <b>Vollbild</b>. Dort drehst du mit ↺ ↻ (wird gespeichert) und blätterst mit ‹ ›.</li><li>Löschen: „Dokument löschen“ zweimal tippen. Das lässt sich nicht rückgängig machen.</li><li>In der Kachelansicht sind die Vorschaubilder absichtlich <b>verpixelt</b>, damit niemand mitlesen kann. Scharf siehst du sie erst im Dokument.</li></ul>'],
+['🔎','Suchen, Sortieren, Ansichten','<ul><li><b>Suchfeld:</b> Findet Dokumente nach Name oder Kategorie, auch in allen Ordnern.</li><li><b>Ansicht:</b> Liste, Kompakt oder Kacheln. <b>Sortierung:</b> nach Datum des Dokuments, Name oder Erstellungsdatum. <b>Gruppen:</b> nach Jahr oder Monat.</li><li>Deine Auswahl wird gemerkt.</li></ul>'],
+['☑','Mehrere auswählen und senden','<ul><li>„☑ Auswählen“ tippen, dann Dokumente antippen (✓). Mit „Alle“ wählst du alle sichtbaren aus.</li><li>„📧 Senden“ erstellt je Dokument ein PDF (bei hochgeladenen PDFs das Original) und übergibt die Dateien an deine E-Mail-App, z. B. Gmail. Das klappt in Chrome über https. Sonst bleibt „Dateien herunterladen“.</li><li><b>Achtung:</b> Per E-Mail gesendete Dateien sind nicht mehr verschlüsselt. Gmail erlaubt etwa 18 MB.</li></ul>'],
+['💾','Backup und Wiederherstellung','<ul><li><b>💾 Backup:</b> Speichert eine verschlüsselte Datei mit allen Dokumenten. Du brauchst dafür später dein Passwort.</li><li><b>📥 Import:</b> Fügt die Dokumente aus einer Backup-Datei zu deinen hinzu. Dafür E-Mail und Passwort des Backups eingeben.</li><li><b>Auf einem neuen Gerät:</b> Auf dem Anmelde-Bildschirm E-Mail und Passwort eingeben und „Aus Backup wiederherstellen“ tippen. Danach ist die Cloud-Synchronisierung zunächst aus.</li></ul>'],
+['☁️','Cloud und mehrere Geräte','<ul><li>Ist ein Server eingerichtet, werden deine Dokumente <b>verschlüsselt</b> gesichert. Der Server sieht nur unlesbare Daten.</li><li><b>Neues Gerät:</b> Einfach mit E-Mail und Passwort anmelden. Die Dokumente werden geladen.</li><li><b>☁️-Menü:</b> Synchronisierung ein- oder ausschalten, Jetzt synchronisieren, Server mit diesem Gerät überschreiben oder umgekehrt. Nutze das nach dem Einspielen eines Backups.</li><li>Gelöschtes wird auf allen Geräten gelöscht.</li></ul>'],
+['🔐','Sicherheit','<ul><li>Alles wird mit deinem Passwort verschlüsselt (AES-256). Das Passwort wird <b>nirgends gespeichert</b> und kann niemand zurücksetzen. Notiere es sicher.</li><li>Die E-Mail gehört zur Anmeldung, ist aber kein Geheimnis. Die Sicherheit kommt vom Passwort.</li><li><b>👆 Fingerabdruck:</b> Bequemer Login. Etwas weniger sicher als nur das Passwort. Nur in Chrome über https.</li><li>Ein Backup per E-Mail oder Cloud-Speicher bleibt verschlüsselt. Gesendete Dokumente nicht.</li></ul>'],
+['🔑','Passwort vergessen','<ul><li>Ohne Passwort sind die Dokumente für immer unlesbar. Probiere zuerst deine üblichen Passwörter und den Fingerabdruck.</li><li>Mit „Passwort vergessen?“ kannst du neu anfangen: Die App schickt dir eine E-Mail. Nach Bestätigung des Links werden das Konto und alle Server-Daten gelöscht. Danach kannst du dich mit derselben E-Mail neu registrieren.</li><li>Ohne Server: „Nur lokale Daten löschen“.</li></ul>'],
+['🖱️','Bedienung und Hinweise','<ul><li><b>Was macht ein Button?</b> Am Computer die Maus kurz über den Button halten. Am Handy den Button <b>etwa eine halbe Sekunde gedrückt halten</b>. Dann erscheint ein Hinweis und die Aktion wird nicht ausgelöst.</li><li><b>Darstellung 🌓:</b> Automatisch (wie dein Gerät), Hell oder Dunkel.</li><li>Dialoge schließt du mit „← Zurück“. „🏠 Startseite“ springt zur obersten Ebene. Beide Buttons bleiben beim Scrollen oben sichtbar.</li></ul>'],
+['🛟','Häufige Probleme','<ul><li><b>Download geht nicht:</b> Öffne die App in Chrome über ihre https-Adresse. In eingebetteten Ansichten (z. B. selbstgebaute APK) sind Downloads oft gesperrt.</li><li><b>Seite zeigt noch die alte Version:</b> Am Computer Strg + Umschalt + R drücken. Am Handy die App komplett schließen und neu öffnen. Browserdaten nicht löschen, dort liegen deine lokalen Dokumente.</li><li><b>Sync-Fehler:</b> Internet prüfen. Meldet sich der Server nicht, ist das Projekt eventuell pausiert.</li></ul>']];
+A.help=()=>show('<h3>Hilfe &amp; Anleitung</h3><p class="mu">Tippe auf ein Thema, um es aufzuklappen.</p>'+HELP.map((s,i)=>'<details'+(i===0?' open':'')+'><summary><span>'+s[0]+'</span>'+s[1]+'</summary><div class="dt">'+s[2]+'</div></details>').join('')+'<p class="mu" style="font-size:12px;text-align:center;margin-top:14px">Dokumentensafe · '+esc($('#ver').textContent||'')+'</p>');
 let busy=false;
 const toBlob=u=>{const bin=atob(u.split(',')[1]),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:'image/jpeg'})};
 async function analyze(){const em=$('#em');if(busy||!em)return;if(!pend.length){em.textContent='Bitte zuerst eine Seite hinzufügen.';return}
