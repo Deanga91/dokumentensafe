@@ -71,7 +71,7 @@ button.chip:hover{background:var(--acf);filter:none}
 .tile b{display:block;margin-top:8px;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tile small{color:var(--mu);font-size:12.5px}
 .ck{position:absolute;top:8px;left:10px;z-index:1;font-size:20px;background:var(--cd);color:var(--ac);border-radius:8px;padding:0 5px;box-shadow:var(--sh)}
 #selbar{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:640px;margin:0 auto;z-index:8;display:flex;gap:8px;align-items:center;padding:8px 10px 8px 16px;background:var(--cd);border:1px solid var(--bd);border-radius:18px;box-shadow:var(--sh2)}
-#selbar button{width:auto;min-height:40px;padding:8px 14px}#seln{flex:1;font-weight:650}
+#selbar{left:8px;right:8px;gap:5px;padding:8px 8px 8px 14px}#selbar button{width:42px;min-height:42px;padding:8px 0}#selbar [data-a=sall]{width:auto;padding:8px 12px}#seln{flex:1;font-weight:650;white-space:nowrap}
 body.selmode main{padding-bottom:110px}
 /* Dialog (Bottom-Sheet) */
 #dlg{position:fixed;inset:0;background:rgba(10,14,22,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);display:flex;align-items:flex-end;justify-content:center;z-index:9;animation:fade .18s ease-out}
@@ -130,11 +130,26 @@ button.act{min-height:80px}#nv button{min-height:40px}
 details.more{margin:14px 0 6px}.dt2{padding:0 14px 14px}.dt2 .row>label{flex:1;min-width:0}.dt2>label:first-child{margin-top:0}
 .fl{display:flex;flex-direction:column;gap:2px}label.ck2{display:flex;align-items:center;margin:4px 0;font-weight:500;color:var(--fg);font-size:14.5px}
 .tile .bg{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.tx small.bg{gap:4px 6px;margin:2px 0}.bg .pill{font-size:12.5px;padding:1px 9px}
+button.sm{width:auto;min-height:38px;padding:6px 12px;font-size:14px}
+.it.tr{cursor:default}.it.tr:hover{border-color:var(--bd)}
+.pgc{margin:14px 0}.pgt{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 0 4px}.pgb{display:flex;gap:6px}
+.mgl{margin:8px 0 4px;padding-left:22px}.mgl li{margin:4px 0}
+#ed{position:fixed;inset:0;z-index:25;background:#0b0d11;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+#edb{display:flex;gap:8px;padding:8px 10px}#edb button{min-height:42px}
+#edw{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;touch-action:none;overflow:hidden}#edc{touch-action:none;display:block}
+#edt{padding:6px 10px calc(10px + env(safe-area-inset-bottom,0px));background:#0d0f13}.edr{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}.edr button{flex:1 1 0;width:auto;min-height:42px;padding:6px 10px;font-size:14px}
+button.chip.on{background:linear-gradient(135deg,var(--bt1),var(--bt2));color:#fff;border-color:transparent}
+.apr{margin:10px 0 0}
+textarea{width:100%;min-height:80px;padding:11px 14px;border-radius:12px;border:1.5px solid var(--bd);background:var(--cd);color:var(--fg);font:inherit;resize:vertical}textarea:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 4px var(--acf)}label textarea{margin-top:6px;font-weight:400}
+.pws{margin:-2px 0 8px}.pws .bar{height:6px;border-radius:3px;background:var(--bd);overflow:hidden}.pws .bar i{display:block;height:100%;width:0;border-radius:3px;transition:width .2s,background .2s;background:#e5484d}
+.pws i.s1{background:#f59e0b}.pws i.s2{background:#eab308}.pws i.s3{background:#84cc16}.pws i.s4{background:#22c55e}.pws small{display:block;margin-top:4px;font-size:12.5px}
+.aw-r{display:flex;justify-content:space-between;gap:10px;padding:9px 12px;margin:5px 0;background:var(--cd);border:1px solid var(--bd);border-radius:12px;cursor:pointer;font-size:14.5px}.aw-r b{white-space:nowrap}.aw-t{font-size:18px;margin:12px 0}
+.rem.bkr button{width:auto;margin-left:auto}
 </style></head><body>
 <div id="lock" class="lkw"><div class="lk">
 <div class="logo">🔒</div><h1 id="lt"></h1><p id="lm" class="mu"></p>
 <input id="sm" type="email" placeholder="E-Mail-Adresse" autocomplete="email" aria-label="E-Mail-Adresse">
-<input id="pw" type="password" placeholder="Passwort" autocomplete="off" aria-label="Passwort">
+<input id="pw" type="password" placeholder="Passwort" autocomplete="off" aria-label="Passwort"><div class="pws" id="pws" hidden><div class="bar"><i></i></div><small class="mu"></small></div>
 <input id="pw2" type="password" placeholder="Passwort wiederholen" autocomplete="off" aria-label="Passwort wiederholen">
 <p id="le" class="er"></p><button id="lb">Anmelden</button>
 <div class="lks"><button id="lmode" class="lnk">Neu hier? Registrieren</button><button id="lfp" class="lnk">Passwort vergessen?</button></div>
@@ -144,15 +159,16 @@ details.more{margin:14px 0 6px}.dt2{padding:0 14px 14px}.dt2 .row>label{flex:1;m
 <p id="ver" class="mu"></p></div></div>
 <main id="app" hidden>
 <header class="top"><div class="brand"><span class="logo sm">🔒</span><div><h1>Dokumentensafe</h1><div id="sst" class="sub"></div></div></div>
-<div class="tools"><button class="ib" data-a="help" aria-label="Hilfe">❓</button><button class="ib" data-a="th" id="hth" aria-label="Darstellung">🌓</button><button class="ib" data-a="sy" aria-label="Server-Sync">☁️</button><button class="ib" data-a="bio" aria-label="Fingerabdruck">👆</button><button class="ib" data-a="lock" aria-label="Sperren">🔐</button><button class="ib" data-a="cl" aria-label="Beenden">🚪</button></div></header>
+<div class="tools"><button class="ib" data-a="set" aria-label="Einstellungen">⚙️</button><button class="ib" data-a="help" aria-label="Hilfe">❓</button><button class="ib" data-a="th" id="hth" aria-label="Darstellung">🌓</button><button class="ib" data-a="sy" aria-label="Server-Sync">☁️</button><button class="ib" data-a="bio" aria-label="Fingerabdruck">👆</button><button class="ib" data-a="lock" aria-label="Sperren">🔐</button><button class="ib" data-a="cl" aria-label="Beenden">🚪</button></div></header>
 <input id="q" type="search" placeholder="Suchen nach Name oder Kategorie" aria-label="Suchen" autocomplete="off">
 <div class="row" id="nv"><button class="b2" data-a="home">🏠 Startseite</button><button class="b2" data-a="back">← Zurück</button></div>
 <div class="tb"><select id="sv" aria-label="Ansicht" title="Ansicht: Liste, Kompakt oder Kacheln"><option value="liste">☰ Liste</option><option value="kompakt">≡ Kompakt</option><option value="kacheln">▦ Kacheln</option></select><select id="ss" aria-label="Sortierung" title="Sortierung: ↓ neueste zuerst, ↑ älteste zuerst"><option value="dn">Datum ↓</option><option value="da">Datum ↑</option><option value="na">Name A–Z</option><option value="nz">Name Z–A</option><option value="cn">Erstellt ↓</option><option value="ca">Erstellt ↑</option><option value="fa">Fällig ↑</option><option value="pr">Priorität</option></select><select id="sg" aria-label="Gruppierung" title="Gruppierung nach Jahr oder Monat"><option value="">Gruppe: –</option><option value="j">Nach Jahr</option><option value="m">Nach Monat</option></select><select id="sf" aria-label="Filter" title="Dokumente filtern: Status, Fristen, Priorität …"><option value="">Filter: alle Dokumente</option><option value="open">Offen / in Arbeit</option><option value="alert">⏰ Fristen &amp; Erinnerungen</option><option value="over">Überfällig</option><option value="urgent">Dringend</option><option value="unpaid">💶 Unbezahlt</option><option value="in">📥 Eingehend</option><option value="out">📤 Ausgehend</option><option value="tax">🧾 Steuerrelevant</option><option value="keep">⭐ Dauerhaft aufbewahren</option><option value="warr">🛡 Garantie / Beleg</option></select></div>
 <div class="acts"><button class="act" data-a="scan"><span>📷</span>Scannen</button><button class="act acc" data-a="up"><span>📁</span>Hochladen</button><button class="act neu" data-a="nf"><span>＋</span>Ordner</button></div>
-<div class="chips"><span id="fo" class="dc" hidden><button class="chip" data-a="rf">✏️ Ordner umbenennen</button><button class="chip" data-a="df">🗑 Ordner löschen</button></span><button class="chip" data-a="bk">💾 Backup</button><button class="chip" data-a="bi">📥 Import</button><button class="chip" id="mg" data-a="mg" hidden>✉️ E-Mail zum Login hinzufügen</button><button class="chip" id="smb" data-a="sm">☑ Auswählen</button></div>
+<div class="chips"><span id="fo" class="dc" hidden><button class="chip" data-a="rf">✏️ Ordner umbenennen</button><button class="chip" data-a="df">🗑 Ordner löschen</button></span><button class="chip" data-a="bk">💾 Backup</button><button class="chip" data-a="bi">📥 Import</button><button class="chip" id="mg" data-a="mg" hidden>✉️ E-Mail zum Login hinzufügen</button><button class="chip" id="smb" data-a="sm">☑ Auswählen</button><button class="chip" id="trb" data-a="tr">🗑 Papierkorb</button></div>
 <div id="list"></div></main>
-<div id="selbar" hidden><span id="seln">0 ausgewählt</span><button class="b2" data-a="sall">Alle</button><button data-a="sms">📧 Senden</button><button class="b2" data-a="sx" aria-label="Auswahl beenden">✕</button></div>
+<div id="selbar" hidden><span id="seln">0 ausgewählt</span><button class="b2" data-a="sall">Alle</button><button class="b2" data-a="sms" aria-label="Per E-Mail senden">📧</button><button class="b2" data-a="smg" aria-label="Zusammenführen">🔗</button><button class="b2" data-a="scal" aria-label="Fristen zum Kalender">📅</button><button class="b2" data-a="sdel" aria-label="In den Papierkorb">🗑</button><button class="b2" data-a="sx" aria-label="Auswahl beenden">✕</button></div>
 <div id="fs" hidden><div id="fsb"><button class="b2" data-a="fr" data-i="-90" data-tip="Seite um 90° nach links drehen (wird gespeichert)" aria-label="Nach links drehen">↺</button><button class="b2" data-a="fr" data-i="90" data-tip="Seite um 90° nach rechts drehen (wird gespeichert)" aria-label="Nach rechts drehen">↻</button><button class="b2" data-a="fp" data-i="-1" data-tip="Vorherige Seite" aria-label="Vorherige Seite">‹</button><span id="fsn"></span><button class="b2" data-a="fp" data-i="1" data-tip="Nächste Seite" aria-label="Nächste Seite">›</button><button class="b2" data-a="fh">🏠 Start</button><button class="dg" data-a="fc">✕ Schließen</button></div><div id="fsi"><img id="fsm" alt=""></div></div>
+<div id="ed" hidden><div id="edb"><button class="b2" data-a="edx">✕ Abbrechen</button><button data-a="edok">✓ Übernehmen</button></div><div id="edw"><canvas id="edc"></canvas></div><div id="edt"><div class="edr"><button class="b2" data-a="edauto">✨ Automatisch</button><button class="b2" data-a="edfull">⬜ Ganzes Bild</button><button class="b2" data-a="edrl" aria-label="Nach links drehen">↺</button><button class="b2" data-a="edrr" aria-label="Nach rechts drehen">↻</button></div><div class="edr" id="edf"><button class="chip on" data-a="edfl" data-i="orig" data-tip="Originalfarben ohne Filter">Original</button><button class="chip" data-a="edfl" data-i="scan" data-tip="Scan-Look: Hintergrund weiß, Farben bleiben, mehr Kontrast">Scan</button><button class="chip" data-a="edfl" data-i="gray" data-tip="Graustufen mit weißem Hintergrund">Grau</button><button class="chip" data-a="edfl" data-i="bw" data-tip="Schwarz-Weiß wie ein Kopierer">S/W</button></div><div class="edr"><button class="b2" id="edtg" data-a="edtg">👁 Vorschau</button></div></div></div>
 <div id="dlg" hidden></div>
 <div id="tip" role="tooltip" hidden></div>
 <input id="fi" type="file" accept="image/*" capture="environment" hidden><input id="fu" type="file" multiple hidden><input id="fb" type="file" hidden>
@@ -188,10 +204,10 @@ let first=false,cfgV=2,loginMail='';
 const lastNS=()=>{try{return localStorage.getItem('ds_ns')||''}catch(e){return ''}};
 function lockUI(f){selMode=false;sel.clear();document.body.classList.remove('selmode');$('#selbar').hidden=true;first=f;key=null;meta=null;SS=null;loginMail='';pend=[];pendF=[];vp=[];vf=[];fsA=[];$('#fs').hidden=true;hide();$('#app').hidden=true;$('#lock').hidden=false;
 $('#lt').textContent=f?'Registrieren':'Anmelden';$('#lb').textContent=f?'Registrieren':'Anmelden';$('#lmode').textContent=f?'Schon ein Konto? Anmelden':'Neu hier? Registrieren';
-$('#pw2').hidden=!f;$('#lr').hidden=f;$('#lfp').hidden=f;$('#sm').hidden=false;$('#lbio').hidden=true;NS=lastNS();
+$('#pw2').hidden=!f;$('#pws').hidden=!f;meterUpd('pws','');$('#lr').hidden=f;$('#lfp').hidden=f;$('#sm').hidden=false;$('#lbio').hidden=true;NS=lastNS();
 if(!f&&db)bioOK().then(async ok=>{if(ok&&await get('bio')&&!key)$('#lbio').hidden=false}).catch(()=>{});
 $('#lm').textContent=f?'Registriere dich mit E-Mail-Adresse und Passwort (mindestens 8 Zeichen, besser 12). Jeder Benutzer hat eigene, getrennte Dokumente. Es gibt keine Wiederherstellung: ohne Passwort sind die Daten unlesbar.'+(SBC()?'':' Ohne Server bleiben die Daten nur auf diesem Gerät.'):'Melde dich mit E-Mail und Passwort an.'+(SBC()?' Neues Handy? Einfach anmelden, deine Dokumente werden vom Server geladen.':'')+' Mit Backup: E-Mail und Passwort des Backups eingeben und „Aus Backup wiederherstellen“ tippen.';
-$('#pw').value='';$('#pw2').value='';$('#le').textContent='';$('#ver').textContent='Version 29'}
+$('#pw').value='';$('#pw2').value='';$('#le').textContent='';$('#ver').textContent='Version 32'}
 const rawGet=k=>tx('readonly',s=>s.get(k));
 async function nsOf(e){const h=await crypto.subtle.digest('SHA-256',te.encode('dokumentensafe-user|'+e.trim().toLowerCase()));return 'u'+Array.from(new Uint8Array(h).slice(0,10)).map(b=>b.toString(16).padStart(2,'0')).join('')+'/'}
 const adoptLegacy=nns=>new Promise((res,rej)=>{const t=db.transaction('kv','readwrite'),s=t.objectStore('kv'),rq=s.openCursor();
@@ -199,6 +215,7 @@ rq.onsuccess=e=>{const c=e.target.result;if(!c)return;const k=c.key;if(typeof k=
 t.oncomplete=()=>res();t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)});
 async function doRegister(mail,pw,er){
 if(pw.length<8){er('Mindestens 8 Zeichen.');return false}
+if(pwStrength(pw).s<1){er('Dieses Passwort ist zu einfach. Wähle ein längeres, weniger vorhersehbares Passwort.');return false}
 if(pw!==$('#pw2').value){er('Passwörter stimmen nicht überein.');return false}
 if(await get('cfg')){er('Diese E-Mail ist auf diesem Gerät schon registriert. Bitte anmelden.');return false}
 let note='';
@@ -216,7 +233,9 @@ if(!cfg){const lg=await rawGet('cfg');
 if(lg){try{const k=await derive(cred(mail,pw,lg.v||1),lg.salt);await crypto.subtle.decrypt({name:'AES-GCM',iv:lg.chk.iv},k,lg.chk.ct);await adoptLegacy(NS);cfg=await get('cfg')}catch(e){}}}
 if(!cfg){if(!SBC()){er('Für diese E-Mail gibt es hier kein Konto. Bitte registrieren.');return false}return await pullFromServer(mail,pw,er)}
 cfgV=cfg.v||1;key=await derive(cred(mail,pw,cfgV),cfg.salt);
-try{await dec(cfg.chk)}catch(e){key=null;await new Promise(r=>setTimeout(r,1200));er('Falsche E-Mail oder falsches Passwort.');return false}
+try{await dec(cfg.chk)}catch(e){key=null;
+if(SBC()){er('Prüfe Server …');try{await sbAuth(mail,pw,false);er('Das Passwort wurde auf einem anderen Gerät geändert. Lade Daten vom Server neu …');return await pullFromServer(mail,pw,er)}catch(x){}}
+await new Promise(r=>setTimeout(r,1200));er('Falsche E-Mail oder falsches Passwort.');return false}
 loginMail=mail;const m=await get('meta');meta=m?await dec(m):{folders:[],docs:[]};return true}
 async function pullFromServer(mail,pw,er){er('Melde am Server an …');
 try{SS=await sbAuth(mail,pw,false)}catch(e){SS=null;er(/Invalid login|invalid_credentials/i.test(e.message)?'Konto nicht gefunden oder Passwort falsch. Neu hier? Dann bitte registrieren.':(e.message==='Failed to fetch'?'Keine Verbindung zum Server.':e.message));return false}
@@ -237,23 +256,23 @@ catch(e){key=null;meta=null;SS=null;er(e.message==='Failed to fetch'?'Keine Verb
 finally{$('#lb').disabled=false}
 if(!ok||!key)return;
 try{localStorage.setItem('ds_ns',NS)}catch(e){}
-$('#lock').hidden=true;$('#app').hidden=false;cur=null;$('#q').value='';render();bump();syncOff=!!(await get('syncoff'));st(syncOff?'👤 '+loginMail+' · ☁️ Synchronisierung aus':(loginMail?'👤 '+loginMail:''));schedSync(800)}
+$('#lock').hidden=true;$('#app').hidden=false;cur=null;$('#q').value='';try{await purgeOld()}catch(e){}await loadMisc();render();bump();syncOff=!!(await get('syncoff'));st(syncOff?'👤 '+loginMail+' · ☁️ Synchronisierung aus':(loginMail?'👤 '+loginMail:''));schedSync(800)}
 $('#lmode').onclick=()=>lockUI(!first);
-function bump(){clearTimeout(timer);if(key)timer=setTimeout(()=>lockUI(false),10*60*1000)}
+function bump(){clearTimeout(timer);if(key)timer=setTimeout(()=>lockUI(false),LK.idle*60*1000)}
 ['click','keydown','touchstart'].forEach(e=>document.addEventListener(e,bump,{passive:true}));
 $('#lb').onclick=unlock;$('#pw').onkeydown=$('#pw2').onkeydown=e=>{if(e.key==='Enter')unlock()};
 $('#q').oninput=render;
 
-function render(){const q=$('#q').value.trim().toLowerCase();let h='',nf=0;
+function render(){const q=$('#q').value.trim().toLowerCase();let h=(!q&&!V.f)?banner():'',nf=0;
 if(!q&&!V.f){const ch=[];let i=cur;while(i){const f=meta.folders.find(x=>x.id===i);if(!f)break;ch.unshift(f);i=f.parent}
 h+=`<nav class="cr"><a data-a="open" data-i="">🏠 Start</a>`+ch.map(f=>`<span class="sep">›</span><a data-a="open" data-i="${f.id}">${esc(f.name)}</a>`).join('')+`</nav>`;
 const fl=meta.folders.filter(f=>(f.parent||null)===cur).sort((a,b)=>a.name.localeCompare(b.name));nf=fl.length;
-fl.forEach(f=>{const nd=meta.docs.filter(d=>(d.folder||null)===f.id).length,ns=meta.folders.filter(x=>(x.parent||null)===f.id).length;h+=`<div class="it" data-a="open" data-i="${f.id}"><span class="ic f">📁</span><span class="tx"><b>${esc(f.name)}</b><small>${nd} Dokument${nd===1?'':'e'}${ns?' · '+ns+' Unterordner':''}</small></span><span class="chev">›</span></div>`})}
-if(!q&&!V.f)h+=banner();if(V.f)h+=`<div class="fbar"><span>Filter: <b>${esc(FLT[V.f]||'')}</b></span><button class="b2" data-a="fx">✕ Aufheben</button></div>`;
-const docs=meta.docs.filter(d=>(q?(d.name+' '+path(d.folder)+' '+(d.wh||'')).toLowerCase().includes(q):(V.f?true:(d.folder||null)===cur))&&passFilter(d)).sort(sorter());curDocIds=docs.map(d=>d.id);
+fl.forEach(f=>{const nd=meta.docs.filter(d=>(d.folder||null)===f.id&&!d.del).length,ns=meta.folders.filter(x=>(x.parent||null)===f.id).length;h+=`<div class="it" data-a="open" data-i="${f.id}"><span class="ic f">📁</span><span class="tx"><b>${esc(f.name)}</b><small>${nd} Dokument${nd===1?'':'e'}${ns?' · '+ns+' Unterordner':''}</small></span><span class="chev">›</span></div>`})}
+if(V.f)h+=`<div class="fbar"><span>Filter: <b>${esc(FLT[V.f]||'')}</b></span><button class="b2" data-a="fx">✕ Aufheben</button></div>`;
+const docs=meta.docs.filter(d=>(q?(d.name+' '+path(d.folder)+' '+(d.wh||'')+' '+(d.no||'')+' '+(d.tx||'')).toLowerCase().includes(q):(V.f?true:(d.folder||null)===cur))&&passFilter(d)&&!d.del).sort(sorter());curDocIds=docs.map(d=>d.id);
 h+=docHtml(docs);
 if(!docs.length&&!nf)h+=`<div class="empty"><div class="ei">${q||V.f?'🔎':'🗂️'}</div><b>${q||V.f?'Keine Treffer':(cur?'Dieser Ordner ist leer':'Noch keine Dokumente')}</b><p>${q||V.f?'Versuche einen anderen Suchbegriff oder Filter.':'Tippe oben auf „Scannen“ oder „Hochladen“, um dein erstes Dokument hinzuzufügen.'}</p></div>`;
-$('#list').innerHTML=h;$('#fo').hidden=!cur||!!q||!!V.f;$('#mg').hidden=cfgV===2;$('#nv').lastElementChild.disabled=!cur&&!q&&!V.f;if(V.v==='kacheln')ensureTh(docs)}
+$('#list').innerHTML=h;$('#fo').hidden=!cur||!!q||!!V.f;$('#mg').hidden=cfgV===2;{const n=meta.docs.filter(d=>d.del).length;$('#trb').textContent='🗑 Papierkorb'+(n?' ('+n+')':'')}$('#nv').lastElementChild.disabled=!cur&&!q&&!V.f;if(V.v==='kacheln')ensureTh(docs)}
 
 const A={
 open:i=>{cur=nz(i);$('#q').value='';render()},
@@ -267,33 +286,33 @@ if(meta.folders.some(f=>(f.parent||null)===p&&f.name.toLowerCase()===n.toLowerCa
 meta.folders.push({id:uid(),name:n,parent:p,m:Date.now()});await saveMeta();hide();render()},
 rf:()=>{const f=meta.folders.find(x=>x.id===cur);show(`<h3>Ordner umbenennen</h3><label>Name<input id="n" value="${esc(f.name)}"></label><p id="em" class="er"></p><div class="row"><button class="b2" data-a="x">Abbrechen</button><button data-a="rs">Speichern</button></div>`)},
 rs:async()=>{const n=$('#n').value.trim();if(!n)return;{const f=meta.folders.find(x=>x.id===cur);f.name=n;f.m=Date.now()}await saveMeta();hide();render()},
-df:()=>{show(`<h3>Ordner löschen?</h3><p>„${esc(path(cur))}“ wird mit allen Unterordnern und allen darin enthaltenen Dokumenten unwiderruflich gelöscht.</p><div class="row"><button class="b2" data-a="x">Abbrechen</button><button class="dg" data-a="df2">Endgültig löschen</button></div>`)},
+df:()=>{show(`<h3>Ordner löschen?</h3><p>„${esc(path(cur))}“ wird mit allen Unterordnern gelöscht. Die Dokumente darin kommen in den Papierkorb und können 30 Tage lang wiederhergestellt werden.</p><div class="row"><button class="b2" data-a="x">Abbrechen</button><button class="dg" data-a="df2">Ordner löschen</button></div>`)},
 df2:async()=>{const ids=new Set([cur]);let c=true;while(c){c=false;meta.folders.forEach(f=>{if(f.parent&&ids.has(f.parent)&&!ids.has(f.id)){ids.add(f.id);c=true}})}
-const gone=meta.docs.filter(d=>ids.has(d.folder));const par=meta.folders.find(f=>f.id===cur).parent||null;
-{const tn=Date.now();meta.tomb=(meta.tomb||[]).concat([...ids].map(id=>({id,t:tn})),gone.map(d=>({id:d.id,t:tn})))}meta.folders=meta.folders.filter(f=>!ids.has(f.id));meta.docs=meta.docs.filter(d=>!ids.has(d.folder));await saveMeta();
-for(const d of gone)await del('doc:'+d.id);cur=par;hide();render()},
-scan:(i,b,up)=>{pend=[];pendF=[];show(`<h3>Dokument scannen</h3><label>Name<input id="n" placeholder="z. B. Lohnabrechnung Mai"></label><label>Kategorie<select id="f">${opts(cur,'Ohne Kategorie')}</select></label><label>Dokument-/Rechnungsdatum<input id="d" type="date" value="${today()}"></label>${fieldsHtml(null,false)}<div id="th"></div><div class="row"><button class="b2" data-a="add">📷 Foto</button><button class="b2" data-a="addu">📁 Datei (PDF, Text …)</button></div><div class="ai"><button class="b2" data-a="an">✨ Datum &amp; Betreff erkennen</button><label style="display:flex;gap:8px;align-items:center"><input id="au" type="checkbox" style="width:auto">Automatisch erkennen</label><small class="mu">Zum Erkennen werden die Seiten an Claude gesendet; sonst bleibt alles auf dem Gerät.</small></div><p id="em" class="er"></p><div class="row"><button class="b2" data-a="x">Abbrechen</button><button data-a="sd">Speichern</button></div>`);up?A.addu():A.add()},
-add:()=>$('#fi').click(),addu:()=>$('#fu').click(),up:()=>A.scan(0,0,true),an:()=>analyze(),
+const now=Date.now(),par=meta.folders.find(f=>f.id===cur).parent||null;
+meta.docs.forEach(d=>{if(ids.has(d.folder)){d.del=d.del||now;d.m=now;d.folder=null}});
+meta.tomb=(meta.tomb||[]).concat([...ids].map(id=>({id,t:now})));meta.folders=meta.folders.filter(f=>!ids.has(f.id));await saveMeta();cur=par;hide();render()},
+scan:(i,b,up)=>{addTo=null;pendTx='';pend=[];pendF=[];show(`<h3>Dokument scannen</h3><label>Name<input id="n" placeholder="z. B. Lohnabrechnung Mai"></label><label>Kategorie<select id="f">${opts(cur,'Ohne Kategorie')}</select></label><label>Dokument-/Rechnungsdatum<input id="d" type="date" value="${today()}"></label>${fieldsHtml(null,false)}<div id="th"></div><label>Nachbearbeitung neuer Fotos<select id="ap" title="Fotos automatisch zuschneiden und verbessern"><option value="">Keine (Original)</option><option value="crop">Automatisch zuschneiden</option><option value="scan">Zuschneiden + Scan-Look</option></select></label><div class="row"><button class="b2" data-a="add">📷 Foto</button><button class="b2" data-a="addu">📁 Datei (PDF, Text …)</button></div><div class="ai"><button class="b2" data-a="an">✨ Datum &amp; Betreff erkennen</button><label style="display:flex;gap:8px;align-items:center"><input id="au" type="checkbox" style="width:auto">Automatisch erkennen</label><small class="mu">Zum Erkennen werden die Seiten an Claude gesendet; sonst bleibt alles auf dem Gerät.</small></div><p id="em" class="er"></p><div class="row"><button class="b2" data-a="x">Abbrechen</button><button data-a="sd">Speichern</button></div>`);try{$('#ap').value=localStorage.getItem('ds_ap')||''}catch(e){}up?A.addu():A.add()},
+add:()=>{pick();$('#fi').click()},addu:()=>{pick();$('#fu').click()},up:()=>A.scan(0,0,true),an:()=>analyze(),
 rm:i=>{pend.splice(+i,1);thumbs()},
 sd:async()=>{const n=$('#n').value.trim(),em=m=>$('#em').textContent=m;if(!n)return em('Bitte einen Namen eingeben.');if(!pend.length&&!pendF.length)return em('Bitte mindestens eine Seite oder Datei hinzufügen.');
-const id=uid(),d={id,name:n,folder:nz($('#f').value),date:$('#d').value||today(),created:new Date().toISOString(),n:pend.length,f:pendF.length,m:Date.now(),r:0};d.th=(await mkth(pend[0]))||'';d.thv=2;applyFields(d,readFields());
+const id=uid(),d={id,name:n,folder:nz($('#f').value),date:$('#d').value||today(),created:new Date().toISOString(),n:pend.length,f:pendF.length,m:Date.now(),r:0};d.th=(await mkth(pend[0]))||'';d.thv=2;applyFields(d,readFields());if(pendTx)d.tx=pendTx;pendTx='';
 try{await put('doc:'+id,await enc({pages:pend,files:pendF}));meta.docs.push(d);await saveMeta()}catch(e){await del('doc:'+id).catch(()=>{});meta.docs=meta.docs.filter(x=>x.id!==id);return em('Speichern fehlgeschlagen: '+e.message)}
 pend=[];pendF=[];hide();render()},
 vd:async i=>{if(selMode){if(sel.has(i))sel.delete(i);else sel.add(i);selUI();return}const d=meta.docs.find(x=>x.id===i);vid=i;let pg=[],fl=[];try{const o=await dec(await get('doc:'+i));pg=o.pages||[];fl=o.files||[]}catch(e){}vp=pg;vf=fl;
-show(`<h3>${esc(d.name)}</h3><p class="mu">Erstellt: ${fdt(d.created)}<br>Bild antippen: Vollbild &amp; drehen</p><p id="dm" class="er"></p><label>Name<input id="n" value="${esc(d.name)}"></label><label>Kategorie<select id="f">${opts(d.folder,'Ohne Kategorie')}</select></label><label>Dokument-/Rechnungsdatum<input id="d" type="date" value="${d.date}"></label>${fieldsHtml(d,hasAny(d),true)}<div class="row"><button class="b2" data-a="x">Schließen</button><button data-a="ud">Änderungen speichern</button></div>`+pg.map((p,k)=>`<img class="pg" id="pg${k}" data-a="fs" data-i="${k}" src="${p}"><a class="mu" id="dl${k}" href="${p}" download="${esc(d.name)}-${k+1}.jpg">Seite ${k+1} herunterladen</a>`).join('')+(fl.length?'<h4 class="gh">Dateien</h4>'+fl.map(f=>`<a class="mu" style="display:block;margin:6px 0" href="${f.data}" download="${esc(f.name)}">⬇ ${esc(f.name)}</a>`).join(''):'')+`<div class="row"><button class="b2" data-a="sm1">📧 Dokument per E-Mail senden</button></div><div class="row"><button class="dg" data-a="dd">Dokument löschen</button></div>`)},
+show(`<h3>${esc(d.name)}</h3><p class="mu">Erstellt: ${fdt(d.created)}<br>Bild antippen: Vollbild &amp; drehen</p><p id="dm" class="er"></p><label>Name<input id="n" value="${esc(d.name)}"></label><label>Kategorie<select id="f">${opts(d.folder,'Ohne Kategorie')}</select></label><label>Dokument-/Rechnungsdatum<input id="d" type="date" value="${d.date}"></label>${fieldsHtml(d,hasAny(d),true)}<div class="row"><button class="b2" data-a="x">Schließen</button><button data-a="ud">Änderungen speichern</button></div>`+'<div id="pgs">'+pagesHtml()+'</div>'+`${calBtn(d)}<div class="row"><button class="b2" data-a="ocr">🔎 Text erkennen (für die Suche)</button></div><div class="row"><button class="b2" data-a="sm1">📧 Dokument per E-Mail senden</button></div><div class="row"><button class="dg" data-a="dd">🗑 In den Papierkorb</button></div>`)},
 ud:async()=>{const d=meta.docs.find(x=>x.id===vid),n=$('#n').value.trim();if(!n)return;d.name=n;d.folder=nz($('#f').value);d.date=$('#d').value||d.date;applyFields(d,readFields());d.m=Date.now();await saveMeta();hide();render()},
-dd:(i,b)=>{if(!b.dataset.s){b.dataset.s=1;b.textContent='Wirklich endgültig löschen?';return}A.dd2()},
-dd2:async()=>{await del('doc:'+vid);(meta.tomb=meta.tomb||[]).push({id:vid,t:Date.now()});meta.docs=meta.docs.filter(x=>x.id!==vid);await saveMeta();hide();render()}
+dd:()=>A.dd2(),
+dd2:async()=>{const d=meta.docs.find(x=>x.id===vid);if(d){d.del=Date.now();d.m=Date.now()}await saveMeta();hide();render()}
 };
 document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(t&&A[t.dataset.a])A[t.dataset.a](t.dataset.i,t)});
-function thumbs(){const t=$('#th');if(t)t.innerHTML=pendF.map((f,i)=>`<div class="fc">📎 ${esc(f.name)}<button data-a="rf2" data-i="${i}">✕</button></div>`).join('')+pend.map((p,i)=>`<div class="t"><img src="${p}" data-a="fsp" data-i="${i}"><button data-a="rm" data-i="${i}">✕</button><button data-a="rp" data-i="${i}" style="top:auto;bottom:2px">↻</button></div>`).join('')}
-$('#fi').onchange=$('#fu').onchange=async e=>{for(const f of e.target.files){try{if(!(f.type||'').startsWith('image/')){await addFile(f);continue}const b=await createImageBitmap(f),s=Math.min(1,1800/Math.max(b.width,b.height)),c=document.createElement('canvas');c.width=Math.round(b.width*s);c.height=Math.round(b.height*s);c.getContext('2d').drawImage(b,0,0,c.width,c.height);pend.push(c.toDataURL('image/jpeg',.75))}catch(x){const em=$('#em');if(em)em.textContent='Foto konnte nicht verarbeitet werden.'}}e.target.value='';thumbs();if($('#au')?.checked&&pend.length)analyze()};
+function thumbs(){const t=$('#th');if(t)t.innerHTML=pendF.map((f,i)=>`<div class="fc">📎 ${esc(f.name)}<button data-a="rf2" data-i="${i}">✕</button></div>`).join('')+pend.map((p,i)=>`<div class="t"><img src="${p}" data-a="fsp" data-i="${i}"><button data-a="rm" data-i="${i}">✕</button><button data-a="rp" data-i="${i}" style="top:auto;bottom:2px">↻</button><button data-a="pe" data-i="${i}" style="top:auto;bottom:2px;right:auto;left:2px">✂️</button></div>`).join('')}
+$('#fi').onchange=$('#fu').onchange=async e=>{for(const f of e.target.files){try{if(!(f.type||'').startsWith('image/')){await addFile(f);continue}const b=await createImageBitmap(f),s=Math.min(1,1800/Math.max(b.width,b.height)),c=document.createElement('canvas');c.width=Math.round(b.width*s);c.height=Math.round(b.height*s);c.getContext('2d').drawImage(b,0,0,c.width,c.height);pend.push(await postProc(c.toDataURL('image/jpeg',.75)))}catch(x){const em=$('#em');if(em)em.textContent='Foto konnte nicht verarbeitet werden.'}}e.target.value='';if(addTo){await finishAdd();return}thumbs();if($('#au')?.checked&&pend.length)analyze()};
 const b64=u=>{const a=new Uint8Array(u);let s='';for(let i=0;i<a.length;i+=8192)s+=String.fromCharCode.apply(null,a.subarray(i,i+8192));return btoa(s)};
 const unb=s=>{const b=atob(s),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a};
 const pk=r=>({iv:b64(r.iv),ct:b64(r.ct)}),upk=r=>({iv:unb(r.iv),ct:unb(r.ct).buffer});
 let fbMode=null,pwTmp='',mailTmp='';
 let bkBlob=null,bkFn='',bkEnd=false,bkDone=false;
-async function bkSave(mode,noEnd){const em=$('#em'),blob=bkBlob,fn=bkFn;if(!blob||!em)return;
+async function bkSave(mode,noEnd){pick();const em=$('#em'),blob=bkBlob,fn=bkFn;if(!blob||!em)return;
 const say=(m,bad)=>{em.className=bad?'er':'mu';em.textContent=m};
 try{let how='';
 if(mode==='pick'||mode==='auto'){
@@ -306,7 +325,7 @@ if(!how){let dl=null;try{dl=window.claude?await claude.use('downloads'):null}cat
 if(dl){await dl.save({filename:fn,data:blob});how='claude'}
 else{const a=document.createElement('a');a.dataset.n=1;const wv=/; wv\)/.test(navigator.userAgent);a.href=wv?await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error);r.readAsDataURL(blob)}):URL.createObjectURL(blob);a.download=fn;document.body.appendChild(a);a.click();a.remove();if(!wv)setTimeout(()=>URL.revokeObjectURL(a.href),60000);how='dl'}}
 const msg={picker:'Backup am gewählten Ort gespeichert.',share:'Backup übergeben. Gespeichert ist es dort, wo du es in der Auswahl abgelegt hast.',claude:'Backup gespeichert. Den Ort bestimmt dein Browser bzw. die Claude-App.',dl:'Download gestartet (Datei '+fn+'). Prüfe den Ordner „Download“. Kommt nichts an, erlaubt diese Ansicht keine Downloads: dann die App in Chrome über eine https-Adresse öffnen.'}[how];
-if(bkEnd&&!noEnd){say(msg+' Die App wird jetzt gesperrt und beendet.');setTimeout(A.ex,2500)}else say(msg);bkDone=true;return true}
+if(bkEnd&&!noEnd){say(msg+' Die App wird jetzt gesperrt und beendet.');setTimeout(A.ex,2500)}else say(msg);bkDone=true;lastBk=Date.now();try{await put('lastbk',lastBk)}catch(e){}return true}
 catch(e){say(e.code==='declined'?'Abgebrochen. Bitte erneut versuchen.':'Speichern fehlgeschlagen ('+(e.code||e.message||'Fehler')+').',1)}}
 A.bk=async end=>{bkEnd=end===true;bkBlob=null;bkDone=false;show('<h3>'+(bkEnd?'App beenden':'Backup exportieren')+'</h3><p class="mu">Erstellt eine Datei mit allen Ordnern und Dokumenten, verschlüsselt mit deinem aktuellen Passwort. Danach wählst du, wo sie gespeichert wird.</p><p id="em" class="mu">Wird erstellt …</p><div id="bb" class="row" style="flex-direction:column"></div>');const em=$('#em');
 try{const cfg=await get('cfg'),docs={};for(const d of meta.docs){const r=await get('doc:'+d.id);if(r)docs[d.id]=pk(r)}
@@ -382,7 +401,7 @@ try{const b=await get('bio');if(!b)return er('Nicht eingerichtet.');
 await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),allowCredentials:[{type:'public-key',id:b.cid,transports:['internal']}],userVerification:'required',timeout:60000}});
 key=b.key;const cfg=await get('cfg');cfgV=cfg.v||1;await dec(cfg.chk);const m=await get('meta');meta=m?await dec(m):{folders:[],docs:[]}}
 catch(e){key=null;meta=null;if(e&&e.name==='OperationError')await del('bio').catch(()=>{});return er(e&&e.name==='NotAllowedError'?'Abgebrochen oder Fingerabdruck nicht erkannt.':'Fingerabdruck-Login fehlgeschlagen. Bitte Passwort verwenden.')}
-syncOff=!!(await get('syncoff'));$('#lock').hidden=true;$('#app').hidden=false;cur=null;$('#q').value='';render();bump();st(syncOff?'☁️ Synchronisierung aus':'');schedSync(800)}
+syncOff=!!(await get('syncoff'));$('#lock').hidden=true;$('#app').hidden=false;cur=null;$('#q').value='';try{await purgeOld()}catch(e){}await loadMisc();render();bump();st(syncOff?'☁️ Synchronisierung aus':'');schedSync(800)}
 $('#lbio').onclick=bioUnlock;
 let pendF=[],vf=[];
 A.rf2=i=>{pendF.splice(+i,1);thumbs()};
@@ -390,19 +409,19 @@ const du=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.
 const ldJs=u=>new Promise((res,rej)=>{const s=document.createElement('script');s.src=u;s.onload=res;s.onerror=()=>rej(new Error('PDF-Bibliothek konnte nicht geladen werden (Internet nötig)'));document.head.appendChild(s)});
 const PJ='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
 async function pdfPages(f){if(!window.pdfjsLib){await ldJs(PJ+'pdf.min.js');pdfjsLib.GlobalWorkerOptions.workerSrc=PJ+'pdf.worker.min.js'}
-const pdf=await pdfjsLib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise,max=Math.min(pdf.numPages,50),pages=[];
-for(let i=1;i<=max;i++){const pg=await pdf.getPage(i),v0=pg.getViewport({scale:1}),v=pg.getViewport({scale:Math.min(4,1800/Math.max(v0.width,v0.height))}),c=document.createElement('canvas');c.width=Math.round(v.width);c.height=Math.round(v.height);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);await pg.render({canvasContext:x,viewport:v}).promise;pages.push(c.toDataURL('image/jpeg',.8));c.width=c.height=0}
-return{pages,cut:pdf.numPages>max}}
+const pdf=await pdfjsLib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise,max=Math.min(pdf.numPages,50),pages=[];let txt='';
+for(let i=1;i<=max;i++){const pg=await pdf.getPage(i),v0=pg.getViewport({scale:1}),v=pg.getViewport({scale:Math.min(4,1800/Math.max(v0.width,v0.height))}),c=document.createElement('canvas');c.width=Math.round(v.width);c.height=Math.round(v.height);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);await pg.render({canvasContext:x,viewport:v}).promise;pages.push(c.toDataURL('image/jpeg',.8));c.width=c.height=0;if(i<=8){try{const tc=await pg.getTextContent();txt+=' '+tc.items.map(x=>x.str).join(' ')}catch(e){}}}
+return{pages,cut:pdf.numPages>max,text:txt}}
 function textPages(t){const W=1240,H=1754,P=80,lh=36,out=[];let x;const np=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,W,H);x.fillStyle='#111';x.font='26px monospace';out.push(c)};np();
 const cols=Math.floor((W-2*P)/x.measureText('M').width),per=Math.floor((H-2*P)/lh),re=new RegExp('.{1,'+cols+'}','g');let n=0;
 outer:for(const raw of t.replace(/\t/g,'    ').split(/\r?\n/)){for(const s of (raw.match(re)||[''])){if(n===per){if(out.length>=20)break outer;np();n=0}x.fillText(s,P,P+(n+1)*lh);n++}}
 return out.map(c=>c.toDataURL('image/jpeg',.8))}
-const em2=(m,bad)=>{const e=$('#em');if(e){e.style.color=bad?'':'var(--mu)';e.textContent=m}};
+const em2=(m,bad)=>{const e=$('#em')||$('#dm');if(e){e.style.color=bad?'':'var(--mu)';e.textContent=m}};
 async function addFile(f){const ext=(f.name.split('.').pop()||'').toLowerCase(),t=f.type||'';
 if(f.size>25*1048576){em2(f.name+': zu groß (max. 25 MB).',1);return}
 pendF.push({name:f.name,type:t||'application/octet-stream',data:await du(f)});
-try{if(t==='application/pdf'||ext==='pdf'){em2('PDF wird gelesen …');const r=await pdfPages(f);pend.push(...r.pages);em2(r.cut?'PDF hinzugefügt: Vorschau der ersten 50 Seiten, das Original ist vollständig gespeichert.':'PDF hinzugefügt.')}
-else if(t.startsWith('text/')||['txt','csv','md','json','log','xml'].includes(ext)){pend.push(...textPages(await f.text()));em2('Text hinzugefügt.')}
+try{if(t==='application/pdf'||ext==='pdf'){em2('PDF wird gelesen …');const r=await pdfPages(f);pend.push(...r.pages);pendTx=(pendTx+' '+(r.text||'')).replace(/\s+/g,' ').trim().slice(0,4000);em2(r.cut?'PDF hinzugefügt: Vorschau der ersten 50 Seiten, das Original ist vollständig gespeichert.':'PDF hinzugefügt.')}
+else if(t.startsWith('text/')||['txt','csv','md','json','log','xml'].includes(ext)){const tx0=await f.text();pendTx=(pendTx+' '+tx0).replace(/\s+/g,' ').trim().slice(0,4000);pend.push(...textPages(tx0));em2('Text hinzugefügt.')}
 else em2(f.name+' wird nur gespeichert (keine Vorschau möglich).')}
 catch(x){em2(f.name+': Vorschau nicht möglich, die Datei wird nur gespeichert ('+(x.message||'Fehler')+').',1)}}
 const d2b=u=>{const[h,b]=u.split(','),m=(h.match(/:(.*?);/)||[])[1]||'application/octet-stream',bin=atob(b),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:m})};
@@ -453,8 +472,8 @@ async function syncNow(manual){if(syBusy||!key||!meta||!SBC()||(syncOff&&!manual
 try{st('☁️ Synchronisiere …');const rv0=metaRev;
 const lc=await get('cfg'),lcj={salt:b64(lc.salt),chk:pk(lc.chk),v:lc.v||1},rc=await sGet('cfg.json');
 if(!rc)await sPut('cfg.json',new Blob([JSON.stringify(lcj)],{type:'application/json'}));
-else{const j=JSON.parse(await rc.text());if(j.salt!==lcj.salt)throw new Error('Auf dem Server liegt ein anderer Tresor. Dieses Gerät muss zuerst mit „Vom Server laden“ eingerichtet werden (siehe Anleitung).')}
-const names=new Set((await sList()).map(o=>o.name));
+else{const j=JSON.parse(await rc.text());if(j.salt!==lcj.salt)throw new Error('Auf dem Server liegen Daten mit einem anderen Passwort (z. B. nach einer Passwortänderung auf einem anderen Gerät). Sperre die App und melde dich mit dem aktuellen Passwort an, dann werden die Daten vom Server neu geladen.')}
+const lst=await sList();srvUsed=lst.reduce((a,o)=>a+((o.metadata&&o.metadata.size)||0),0);const names=new Set(lst.map(o=>o.name));
 let rm=null;if(names.has('meta.bin')){const mb=await sGet('meta.bin');if(mb){try{rm=await dec(fromBin(await mb.arrayBuffer()))}catch(e){throw new Error('Das Passwort passt nicht zu den Server-Daten.')}}}
 if(!key||!meta)throw new Error('Gesperrt.');
 const lm=new Map(meta.docs.map(d=>[d.id,d])),rmm=new Map((rm?rm.docs:[]).map(d=>[d.id,d])),merged=rm?mergeMeta(meta,rm):{folders:meta.folders,docs:meta.docs,tomb:meta.tomb||[]},mids=new Set(merged.docs.map(d=>d.id));
@@ -483,9 +502,9 @@ A.sy4=async()=>{SS=null;await del('sess');hide();st('')};
 const cred=(mail,pw,v)=>v===2?((mail||'').trim().toLowerCase()+'\n'+pw):pw;
 const swapTmp=ids=>new Promise((res,rej)=>{const t=db.transaction('kv','readwrite'),s=t.objectStore('kv');
 const mv=(a,b)=>{s.get(NS+a).onsuccess=e=>{if(e.target.result!==undefined)s.put(e.target.result,NS+b);s.delete(NS+a)}};
-ids.forEach(id=>mv('tmp:doc:'+id,'doc:'+id));mv('tmp:meta','meta');mv('tmp:cfg','cfg');
+ids.forEach(id=>mv('tmp:doc:'+id,'doc:'+id));mv('tmp:meta','meta');mv('tmp:cfg','cfg');mv('tmp:sess','sess');
 t.oncomplete=()=>res();t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)});
-const cleanTmp=async ids=>{try{for(const id of ids)await del('tmp:doc:'+id);await del('tmp:meta');await del('tmp:cfg')}catch(e){}};
+const cleanTmp=async ids=>{try{for(const id of ids)await del('tmp:doc:'+id);await del('tmp:meta');await del('tmp:cfg');await del('tmp:sess')}catch(e){}};
 A.mg=()=>{show('<h3>E-Mail zum Login hinzufügen</h3><p class="mu">Danach meldest du dich mit E-Mail und Passwort an. Dafür werden alle Dokumente neu verschlüsselt. Das kann etwas dauern. Schließe die App währenddessen nicht. Mach vorher am besten ein Backup.</p><label>E-Mail<input id="mge" type="email" autocomplete="email"></label><label>Aktuelles App-Passwort<input id="mgp" type="password" autocomplete="off"></label><p id="em" class="er"></p><div class="row"><button data-a="mg2">Jetzt umstellen</button></div>')};
 A.mg2=async()=>{const em=$('#em'),mail=$('#mge').value.trim().toLowerCase(),pw=$('#mgp').value,say=(m,ok)=>{em.style.color=ok?'var(--mu)':'';em.textContent=m};
 if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail))return say('Bitte eine gültige E-Mail-Adresse eingeben.');
@@ -550,11 +569,11 @@ em.className='mu';em.textContent='Lade …';try{await syncPull();em.textContent=
 A.th=()=>cycleTheme();$('#lth').onclick=cycleTheme;
 let selMode=false,mailSel=[],curDocIds=[];const sel=new Set();
 const isel=d=>selMode&&sel.has(d.id)?' sel':'',selMark=d=>selMode?(sel.has(d.id)?'☑ ':'☐ '):'';
-function selUI(){document.body.classList.toggle('selmode',selMode);$('#selbar').hidden=!selMode;$('#seln').textContent=sel.size+' ausgewählt';$('#smb').textContent=selMode?'✕ Auswahl beenden':'☑ Auswählen';render()}
+function selUI(){document.body.classList.toggle('selmode',selMode);$('#selbar').hidden=!selMode;$('#seln').textContent=sel.size+' ✓';$('#smb').textContent=selMode?'✕ Auswahl beenden':'☑ Auswählen';render()}
 A.sm=()=>{selMode=!selMode;if(!selMode)sel.clear();selUI()};
 A.sx=()=>{selMode=false;sel.clear();selUI()};
 A.sall=()=>{if(curDocIds.length&&curDocIds.every(id=>sel.has(id)))curDocIds.forEach(id=>sel.delete(id));else curDocIds.forEach(id=>sel.add(id));selUI()};
-A.sms=()=>{if(!sel.size){$('#seln').textContent='Bitte erst Dokumente antippen';return}sendDocs([...sel])};
+A.sms=()=>{if(!sel.size){$('#seln').textContent='Erst antippen';return}sendDocs([...sel])};
 A.sm1=()=>sendDocs([vid]);
 async function makePdf(pages){const te2=new TextEncoder(),parts=[],offs=[];let len=0;
 const push=u=>{parts.push(u);len+=u.length},str=s=>push(te2.encode(s));
@@ -583,7 +602,7 @@ const tot=mailSel.reduce((a,f)=>a+f.size,0);
 em.textContent=ids.length+' Dokument(e), '+mailSel.length+' Datei(en), '+(tot/1048576).toFixed(1)+' MB bereit. Achtung: Die Dateien verlassen die verschlüsselte App und werden unverschlüsselt versendet.'+(tot>18*1048576?' Hinweis: über 18 MB. Gmail legt sehr große Anhänge automatisch als Google-Drive-Link an, andere Mail-Apps lehnen sie evtl. ab.':'');
 bb.innerHTML='<button data-a="smsend">📧 E-Mail-App wählen &amp; senden</button><button class="b2" data-a="smsave">📥 Dateien herunterladen</button>'}
 catch(e){em.className='er';em.textContent='Fehlgeschlagen: '+(e.message||e.name)}}
-A.smsend=async()=>{const em=$('#em'),fs=mailSel;if(!fs||!fs.length)return;
+A.smsend=async()=>{pick();const em=$('#em'),fs=mailSel;if(!fs||!fs.length)return;
 if(!(navigator.canShare&&navigator.canShare({files:fs}))){em.className='er';em.textContent='Dein Browser kann diese Dateien nicht direkt an die E-Mail-App übergeben. Nutze „Dateien herunterladen“ und hänge sie in der E-Mail an.';return}
 try{await navigator.share({files:fs,title:'Dokumente',text:'Dokumente aus dem Dokumentensafe'});em.className='mu';em.textContent='An die E-Mail-App übergeben. Dort noch auf „Senden“ tippen.'}
 catch(e){const ab=e&&e.name==='AbortError';em.className=ab?'mu':'er';em.textContent=ab?'Abgebrochen.':'Teilen fehlgeschlagen ('+(e&&e.name||'Fehler')+').'}};
@@ -617,7 +636,7 @@ if(!r.ok){const c=j.error_code||'',m=j.msg||j.message||'';throw new Error(c==='o
 em.textContent='Anfrage gesendet. Wenn es für '+mail+' ein Konto auf dem Server gibt, kommt in wenigen Minuten eine E-Mail. Öffne den Link darin auf diesem Gerät, um die Löschung zu bestätigen. Schau auch im Spam-Ordner nach.'}
 catch(e){em.className='er';em.textContent=e.message==='Failed to fetch'?'Keine Verbindung zum Server.':e.message}};
 /* ===== Hinweisblasen (Maus: Hover, Handy: gedrückt halten) ===== */
-const TIPS={fx:'Filter aufheben und wieder alle Dokumente zeigen',help:'Hilfe: Anleitung, wie die App funktioniert',th:'Darstellung wechseln: Automatisch, Hell oder Dunkel',sy:'Cloud: mit deinem Server synchronisieren und Konto verwalten',bio:'Fingerabdruck-Login ein- oder ausschalten',lock:'App sperren. Danach ist die Anmeldung nötig',cl:'App beenden: erstellt zuerst ein Backup und sperrt dann',home:'Zur Startseite (oberste Ebene)',back:'Eine Ebene zurück oder Suche beenden',scan:'Dokument mit der Kamera scannen (mehrere Seiten möglich)',up:'Dateien vom Gerät hochladen: Bilder, PDF, Text und weitere',nf:'Neuen Ordner oder Unterordner anlegen',rf:'Diesen Ordner umbenennen',df:'Diesen Ordner mit allem Inhalt löschen',bk:'Backup exportieren: verschlüsselte Sicherung aller Dokumente speichern',bi:'Backup importieren: Dokumente aus einer Backup-Datei hinzufügen',mg:'E-Mail zum Login hinzufügen (verschlüsselt alle Dokumente neu)',sm:'Mehrere Dokumente zum Senden oder Weiterverarbeiten auswählen',sall:'Alle sichtbaren Dokumente auswählen oder abwählen',sms:'Ausgewählte Dokumente per E-Mail senden',sx:'Auswahl beenden',x:'Fenster schließen und zurück',hx:'Fenster schließen und zur Startseite',fh:'Vollbild schließen und zur Startseite',fc:'Vollbild schließen',add:'Mit der Kamera ein Foto aufnehmen und als Seite hinzufügen',addu:'Datei vom Gerät hinzufügen (Bild, PDF, Text, weitere)',an:'Datum und Betreff automatisch erkennen (sendet die Seiten an Claude)',sd:'Dokument verschlüsselt speichern',rm:'Diese Seite entfernen',rp:'Seite um 90° drehen',rf2:'Diese Datei entfernen',sf:'Ordner anlegen',rs:'Neuen Namen speichern',df2:'Ordner und alle Dokumente darin endgültig löschen',ud:'Änderungen am Dokument speichern',dd:'Dokument löschen (du musst zweimal tippen)',sm1:'Dieses Dokument per E-Mail senden',smsend:'Android-Auswahl öffnen (z. B. Gmail) mit den Anhängen',smsave:'Dateien auf das Gerät herunterladen',bsave:'Backup speichern und Speicherort wählen',bf:'Backup-Datei auswählen',mg2:'Alle Dokumente jetzt mit E-Mail und Passwort neu verschlüsseln',sy1:'Konto auf dem Server erstellen und hochladen',sy2:'Am Server anmelden und abgleichen',sy3:'Jetzt mit dem Server zusammenführen',sy4:'Vom Server abmelden (lokale Daten bleiben)',sy5:'Automatische Synchronisierung ein- oder ausschalten',sy6:'Server-Stand durch den Stand dieses Geräts ersetzen',sy7:'Stand dieses Geräts durch den Server-Stand ersetzen',rc2:'Konto und alle Server-Daten endgültig löschen',fpe:'Bestätigungs-E-Mail zum Löschen des Kontos senden',fp2:'Nur die lokalen Daten dieses Benutzers auf diesem Gerät löschen',fp3:'Alten Tresor ohne E-Mail löschen',bio0:'Fingerabdruck-Login ausschalten',bio1:'Fingerabdruck-Login einschalten',ex:'App sperren und beenden',lb:'Anmelden bzw. Registrieren',lmode:'Zwischen Anmeldung und Registrierung wechseln',lfp:'Hilfe, wenn du dein Passwort vergessen hast',lr:'Backup-Datei wiederherstellen (E-Mail und Passwort des Backups eingeben)',lbio:'Mit dem Fingerabdruck entsperren',lth:'Darstellung wechseln: Automatisch, Hell oder Dunkel'};
+const TIPS={set:'Einstellungen: Passwort ändern, Sperren, Auswertung, Export, Speicher',pwc:'Passwort ändern',pwc2:'Passwort jetzt ändern (alle Dokumente werden neu verschlüsselt)',lkd:'Sperr-Einstellungen: Zeit und Verhalten beim Verlassen der App',ausw:'Auswertung der Beträge nach Jahr und Kategorie',zip:'Alles als ZIP mit PDFs exportieren (unverschlüsselt)',stg:'Speicherplatz auf dem Gerät und beim Server anzeigen',cal1:'Fristen dieses Dokuments als Kalendertermine exportieren',scal:'Fristen der ausgewählten Dokumente zum Kalender hinzufügen',calsend:'Kalender-App öffnen und Termine übernehmen',calsave:'Kalenderdatei (.ics) herunterladen',awcsv:'Auswertung als CSV-Datei speichern',zipsave:'ZIP-Datei speichern',zipshare:'ZIP-Datei an eine andere App übergeben',ocr:'Text auf den Seiten erkennen, damit die Suche auch Inhalte findet',bkz:'Backup-Erinnerung 7 Tage ausblenden',edx:'Ohne Änderung schließen',edok:'Zuschnitt und Filter übernehmen',edauto:'Dokumentkanten automatisch erkennen',edfull:'Das ganze Bild verwenden',edrl:'Bild nach links drehen',edrr:'Bild nach rechts drehen',edtg:'Vorschau des Ergebnisses ein- oder ausblenden',pe:'Seite zuschneiden und verbessern',tr:'Papierkorb: gelöschte Dokumente wiederherstellen oder endgültig löschen',trr:'Dokument wiederherstellen',trd:'Dokument endgültig löschen (zweimal tippen)',tre:'Papierkorb leeren (zweimal tippen)',pmu:'Seite nach oben verschieben',pmd:'Seite nach unten verschieben',ped:'Seite zuschneiden und verbessern',pdl:'Seite löschen (zweimal tippen)',pad:'Mit der Kamera eine Seite hinzufügen',paf:'Datei oder Bild zu diesem Dokument hinzufügen',smg:'Ausgewählte Dokumente zu einem Dokument zusammenführen',smg2:'Jetzt zusammenführen',sdel:'Ausgewählte Dokumente in den Papierkorb (zweimal tippen)',fx:'Filter aufheben und wieder alle Dokumente zeigen',help:'Hilfe: Anleitung, wie die App funktioniert',th:'Darstellung wechseln: Automatisch, Hell oder Dunkel',sy:'Cloud: mit deinem Server synchronisieren und Konto verwalten',bio:'Fingerabdruck-Login ein- oder ausschalten',lock:'App sperren. Danach ist die Anmeldung nötig',cl:'App beenden: erstellt zuerst ein Backup und sperrt dann',home:'Zur Startseite (oberste Ebene)',back:'Eine Ebene zurück oder Suche beenden',scan:'Dokument mit der Kamera scannen (mehrere Seiten möglich)',up:'Dateien vom Gerät hochladen: Bilder, PDF, Text und weitere',nf:'Neuen Ordner oder Unterordner anlegen',rf:'Diesen Ordner umbenennen',df:'Diesen Ordner mit allem Inhalt löschen',bk:'Backup exportieren: verschlüsselte Sicherung aller Dokumente speichern',bi:'Backup importieren: Dokumente aus einer Backup-Datei hinzufügen',mg:'E-Mail zum Login hinzufügen (verschlüsselt alle Dokumente neu)',sm:'Mehrere Dokumente zum Senden oder Weiterverarbeiten auswählen',sall:'Alle sichtbaren Dokumente auswählen oder abwählen',sms:'Ausgewählte Dokumente per E-Mail senden',sx:'Auswahl beenden',x:'Fenster schließen und zurück',hx:'Fenster schließen und zur Startseite',fh:'Vollbild schließen und zur Startseite',fc:'Vollbild schließen',add:'Mit der Kamera ein Foto aufnehmen und als Seite hinzufügen',addu:'Datei vom Gerät hinzufügen (Bild, PDF, Text, weitere)',an:'Datum und Betreff automatisch erkennen (sendet die Seiten an Claude)',sd:'Dokument verschlüsselt speichern',rm:'Diese Seite entfernen',rp:'Seite um 90° drehen',rf2:'Diese Datei entfernen',sf:'Ordner anlegen',rs:'Neuen Namen speichern',df2:'Ordner und alle Dokumente darin endgültig löschen',ud:'Änderungen am Dokument speichern',dd:'Dokument in den Papierkorb verschieben (30 Tage wiederherstellbar)',sm1:'Dieses Dokument per E-Mail senden',smsend:'Android-Auswahl öffnen (z. B. Gmail) mit den Anhängen',smsave:'Dateien auf das Gerät herunterladen',bsave:'Backup speichern und Speicherort wählen',bf:'Backup-Datei auswählen',mg2:'Alle Dokumente jetzt mit E-Mail und Passwort neu verschlüsseln',sy1:'Konto auf dem Server erstellen und hochladen',sy2:'Am Server anmelden und abgleichen',sy3:'Jetzt mit dem Server zusammenführen',sy4:'Vom Server abmelden (lokale Daten bleiben)',sy5:'Automatische Synchronisierung ein- oder ausschalten',sy6:'Server-Stand durch den Stand dieses Geräts ersetzen',sy7:'Stand dieses Geräts durch den Server-Stand ersetzen',rc2:'Konto und alle Server-Daten endgültig löschen',fpe:'Bestätigungs-E-Mail zum Löschen des Kontos senden',fp2:'Nur die lokalen Daten dieses Benutzers auf diesem Gerät löschen',fp3:'Alten Tresor ohne E-Mail löschen',bio0:'Fingerabdruck-Login ausschalten',bio1:'Fingerabdruck-Login einschalten',ex:'App sperren und beenden',lb:'Anmelden bzw. Registrieren',lmode:'Zwischen Anmeldung und Registrierung wechseln',lfp:'Hilfe, wenn du dein Passwort vergessen hast',lr:'Backup-Datei wiederherstellen (E-Mail und Passwort des Backups eingeben)',lbio:'Mit dem Fingerabdruck entsperren',lth:'Darstellung wechseln: Automatisch, Hell oder Dunkel'};
 let tipT=null,tipH=null,tipEl=null,tipLP=0,tipXY=null;
 const tipText=el=>el.dataset.tip||TIPS[el.dataset.a]||TIPS[el.id]||'';
 const tipFor=t=>{const el=t&&t.closest?t.closest('button'):null;return el&&tipText(el)?el:null};
@@ -636,10 +655,13 @@ addEventListener('scroll',hideTip,true);document.addEventListener('keydown',hide
 /* ===== Hilfe ===== */
 const HELP=[
 ['🚀','Erste Schritte','<ul><li><b>Registrieren:</b> Auf dem Anmelde-Bildschirm „Neu hier? Registrieren“ wählen und E-Mail-Adresse und Passwort festlegen (mindestens 8 Zeichen, besser 12).</li><li><b>Anmelden:</b> Mit derselben E-Mail und demselben Passwort. Mehrere Personen können sich mit eigener E-Mail registrieren. Jede hat eigene, getrennte Dokumente.</li><li><b>Sperren 🔐:</b> Sperrt die App sofort. Nach 10 Minuten ohne Bedienung sperrt sie sich selbst.</li><li><b>Beenden 🚪:</b> Erstellt zuerst ein Backup und sperrt dann die App.</li></ul>'],
-['📷','Dokumente hinzufügen','<ul><li><b>Scannen:</b> Kamera öffnet sich. Für mehrere Seiten „📷 Foto“ erneut tippen. Mit ↻ drehst du Seiten, mit ✕ entfernst du sie. Dann Name, Kategorie (Ordner) und Datum des Dokuments eintragen und „Speichern“.</li><li><b>Hochladen:</b> Bilder, PDF, Textdateien (txt, csv, md …) und weitere Dateien aus dem Ordner deines Geräts, auch mehrere gleichzeitig. PDFs werden als Seitenbilder angezeigt, das Original-PDF bleibt gespeichert. Weitere Dateiarten (z. B. Word, Excel) werden nur gespeichert und lassen sich wieder herunterladen. Höchstens 25 MB pro Datei.</li><li><b>✨ Datum &amp; Betreff erkennen:</b> Nur im Claude-Link verfügbar. Die Seiten werden dazu an Claude gesendet.</li></ul>'],
+['📷','Dokumente hinzufügen','<ul><li><b>Scannen:</b> Kamera öffnet sich. Für mehrere Seiten „📷 Foto“ erneut tippen. Mit ↻ drehst du Seiten, mit ✕ entfernst du sie. Dann Name, Kategorie (Ordner) und Datum des Dokuments eintragen und „Speichern“.</li><li><b>Hochladen:</b> Bilder, PDF, Textdateien (txt, csv, md …) und weitere Dateien aus dem Ordner deines Geräts, auch mehrere gleichzeitig. PDFs werden als Seitenbilder angezeigt, das Original-PDF bleibt gespeichert. Weitere Dateiarten (z. B. Word, Excel) werden nur gespeichert und lassen sich wieder herunterladen. Höchstens 25 MB pro Datei.</li><li><b>Zuschneiden und Scan-Look:</b> Mit ✂️ an einer Seite ziehst du die vier Ecken auf das Papier, „✨ Automatisch“ erkennt es selbst. Filter: Original, Scan (weißer Hintergrund, Farben bleiben), Grau, S/W. Mit „Nachbearbeitung neuer Fotos“ geschieht das bei jedem neuen Foto automatisch.</li><li><b>✨ Datum &amp; Betreff erkennen:</b> Nur im Claude-Link verfügbar. Die Seiten werden dazu an Claude gesendet.</li></ul>'],
 ['📁','Ordner und Kategorien','<ul><li><b>＋ Ordner</b> legt einen Ordner an. Als „Übergeordnet“ wählst du einen anderen Ordner für Unterordner (z. B. Lohnabrechnungen → 2026).</li><li>Tippe einen Ordner an, um ihn zu öffnen. Mit „🏠 Startseite“ springst du nach oben, mit „← Zurück“ eine Ebene zurück.</li><li>Im geöffneten Ordner erscheinen „Ordner umbenennen“ und „Ordner löschen“. Beim Löschen verschwinden auch Unterordner und Dokumente darin.</li></ul>'],
-['📄','Dokumente ansehen und bearbeiten','<ul><li>Dokument antippen: Name, Kategorie und Datum ändern, Seiten ansehen, Dateien herunterladen.</li><li>Seite antippen: <b>Vollbild</b>. Dort drehst du mit ↺ ↻ (wird gespeichert) und blätterst mit ‹ ›.</li><li>Löschen: „Dokument löschen“ zweimal tippen. Das lässt sich nicht rückgängig machen.</li><li>In der Kachelansicht sind die Vorschaubilder absichtlich <b>verpixelt</b>, damit niemand mitlesen kann. Scharf siehst du sie erst im Dokument.</li></ul>'],
+['📄','Dokumente ansehen und bearbeiten','<ul><li>Dokument antippen: Name, Kategorie und Datum ändern, Seiten ansehen, Dateien herunterladen.</li><li>Seite antippen: <b>Vollbild</b>. Dort drehst du mit ↺ ↻ (wird gespeichert) und blätterst mit ‹ ›.</li><li>Löschen: „In den Papierkorb“. Dort bleibt es 30 Tage und lässt sich wiederherstellen.</li><li>In der Kachelansicht sind die Vorschaubilder absichtlich <b>verpixelt</b>, damit niemand mitlesen kann. Scharf siehst du sie erst im Dokument.</li></ul>'],
 ['📌','Status, Fristen und Priorität','<ul><li>Beim Scannen, Hochladen und Bearbeiten gibt es „📋 Weitere Angaben“. Alles ist optional und lässt sich später jederzeit ändern: Dokument öffnen, Angaben ändern, „Änderungen speichern“.</li><li><b>Status:</b> Offen / Neu, In Bearbeitung / In Prüfung, Wartend / Warten auf Antwort, Erledigt, Abgeschlossen / Archiviert, Storniert / Obsolet / Abgelehnt.</li><li><b>Datumsfelder:</b> Dokument-/Rechnungsdatum, Eingangsdatum, Fällig am / Frist bis, Wiedervorlage am, Gültig bis / Ablauf, Späteste Kündigung am.</li><li><b>Priorität:</b> Dringend, Hoch, Normal, Niedrig, Info / Nur Auskunft.</li><li><b>Zuordnung:</b> Eingehend oder Ausgehend, Zuständig / Ansprechpartner, Zahlungsstatus (Offen, Bezahlt, Teilbezahlt, Erstattet).</li><li><b>Aufbewahrung:</b> ⭐ dauerhaft aufbewahren, 🧾 steuerrelevant, 🛡 Garantie / Beleg.</li><li><b>Erinnerungen:</b> Fristen und Wiedervorlagen erscheinen beim Öffnen der App oben als Hinweis „🔔 … brauchen Aufmerksamkeit“. Antippen zeigt sie alle. Es gibt keine Benachrichtigungen im Hintergrund. Erledigte, abgeschlossene und stornierte Dokumente erinnern nicht mehr.</li><li><b>Filter:</b> Unter der Suche kannst du nach Status, Fristen, Dringend, Unbezahlt, Eingehend / Ausgehend, Steuerrelevant, Dauerhaft aufbewahren oder Garantie / Beleg filtern. Mit „✕ Aufheben“ oder „🏠 Startseite“ siehst du wieder alles.</li></ul>'],
+['🗑','Papierkorb, Seiten und Zusammenführen','<ul><li><b>Löschen:</b> „In den Papierkorb“ im Dokument oder 🗑 in der Auswahlleiste. Gelöschtes bleibt <b>30 Tage</b> im „🗑 Papierkorb“ (unter den Chips). Dort stellst du es mit ↩ wieder her oder löschst es endgültig. Ordner löschen verschiebt die Dokumente darin ebenfalls in den Papierkorb.</li><li><b>Seiten ändern:</b> Im geöffneten Dokument kannst du jede Seite mit ↑ ↓ verschieben, mit ✂️ zuschneiden und verbessern, mit 🗑 löschen (zweimal tippen). „➕ Seite (Foto)“ und „📁 Datei hinzufügen“ ergänzen das Dokument.</li><li><b>Zusammenführen:</b> „☑ Auswählen“, mindestens zwei Dokumente antippen, dann 🔗. Alle Seiten kommen in ein Dokument, die anderen landen im Papierkorb.</li></ul>'],
+['⚙️','Einstellungen, Passwort und Sicherheit','<ul><li><b>⚙️ Einstellungen:</b> Passwort ändern, Sperr-Einstellungen, Auswertung, Export, Speicherplatz, Papierkorb.</li><li><b>Passwort ändern:</b> Alle Dokumente werden neu verschlüsselt. Ist ein Server verbunden, wird auch dort alles neu hochgeladen. Auf anderen Geräten meldest du dich danach mit dem neuen Passwort an, die App lädt die Daten dann vom Server neu. Beim Registrieren zeigt eine Anzeige, wie stark dein Passwort ist.</li><li><b>Sperren:</b> Du stellst die Zeit bis zur Auto-Sperre ein (1 bis 60 Minuten) und ob die App beim Verlassen sofort sperrt.</li><li><b>Backup-Erinnerung:</b> Nach 30 Tagen ohne Backup erscheint oben ein Hinweis. „Später“ blendet ihn 7 Tage aus.</li><li><b>Speicherplatz:</b> Zeigt den Speicher auf dem Gerät und beim Server. Ab 80 % warnt die App.</li></ul>'],
+['📅','Kalender, Beträge, Export und Textsuche','<ul><li><b>Kalender:</b> Im Dokument „📅 Fristen zum Kalender hinzufügen“ oder in der Auswahlleiste 📅. Die App erstellt ganztägige Termine (Frist, Wiedervorlage, Kündigung, Ablauf) mit Erinnerung am Vortag und am Tag selbst um 9 Uhr. Dokumentnamen stehen danach unverschlüsselt im Kalender.</li><li><b>Betrag und Notiz:</b> In „Weitere Angaben“. Unter ⚙️ → „Auswertung“ siehst du die Summe pro Jahr und Kategorie, auf Wunsch nur steuerrelevante Belege, und kannst sie als CSV speichern.</li><li><b>Alles exportieren:</b> ⚙️ → „Alles exportieren“ erstellt eine ZIP-Datei mit einem PDF je Dokument (bei hochgeladenen PDFs das Original), nach Kategorien in Ordnern, plus Übersicht als CSV. Der Inhalt ist <b>nicht verschlüsselt</b>.</li><li><b>Textsuche:</b> Die Suche findet Namen, Kategorien, Ansprechpartner, Notizen und erkannten Text. Text aus Textdateien und aus PDFs mit Textebene wird automatisch übernommen. Für Fotos gibt es im Dokument „🔎 Text erkennen“ (Texterkennung, einmalig Internet nötig).</li></ul>'],
 ['🔎','Suchen, Sortieren, Ansichten','<ul><li><b>Suchfeld:</b> Findet Dokumente nach Name oder Kategorie, auch in allen Ordnern.</li><li><b>Ansicht:</b> Liste, Kompakt oder Kacheln. <b>Sortierung:</b> nach Datum des Dokuments, Name, Erstellungsdatum, Fälligkeit oder Priorität. <b>Gruppen:</b> nach Jahr oder Monat.</li><li>Deine Auswahl wird gemerkt.</li></ul>'],
 ['☑','Mehrere auswählen und senden','<ul><li>„☑ Auswählen“ tippen, dann Dokumente antippen (✓). Mit „Alle“ wählst du alle sichtbaren aus.</li><li>„📧 Senden“ erstellt je Dokument ein PDF (bei hochgeladenen PDFs das Original) und übergibt die Dateien an deine E-Mail-App, z. B. Gmail. Das klappt in Chrome über https. Sonst bleibt „Dateien herunterladen“.</li><li><b>Achtung:</b> Per E-Mail gesendete Dateien sind nicht mehr verschlüsselt. Gmail erlaubt etwa 18 MB.</li></ul>'],
 ['💾','Backup und Wiederherstellung','<ul><li><b>💾 Backup:</b> Speichert eine verschlüsselte Datei mit allen Dokumenten. Du brauchst dafür später dein Passwort.</li><li><b>📥 Import:</b> Fügt die Dokumente aus einer Backup-Datei zu deinen hinzu. Dafür E-Mail und Passwort des Backups eingeben.</li><li><b>Auf einem neuen Gerät:</b> Auf dem Anmelde-Bildschirm E-Mail und Passwort eingeben und „Aus Backup wiederherstellen“ tippen. Danach ist die Cloud-Synchronisierung zunächst aus.</li></ul>'],
@@ -656,7 +678,7 @@ PR=[['urg','Dringend / Sehr hoch'],['hoch','Hoch'],['normal','Normal'],['niedrig
 RI=[['','–'],['ein','Eingehend'],['aus','Ausgehend']],ZA=[['','–'],['offen','Offen'],['bez','Bezahlt'],['teil','Teilbezahlt'],['erst','Erstattet']],
 FL=[['wi','⭐ Wichtig / dauerhaft aufbewahren'],['st','🧾 Steuerrelevant'],['ga','🛡 Garantie / Beleg']],
 FLT={'':'Alle Dokumente',open:'Offen / in Arbeit',alert:'Fristen & Erinnerungen',over:'Überfällig',urgent:'Dringend',unpaid:'Unbezahlt',in:'Eingehend',out:'Ausgehend',tax:'Steuerrelevant',keep:'Dauerhaft aufbewahren',warr:'Garantie / Beleg'};
-const FKEYS=['st','pr','du','re','ei','gu','kd','ri','za','wh'];
+const FKEYS=['st','pr','du','re','ei','gu','kd','ri','za','wh','am','no'];
 const hasAny=d=>FKEYS.some(k=>d[k]&&!(k==='pr'&&d[k]==='normal'))||(d.fl&&d.fl.length>0);
 function fieldsHtml(d,open,ex){d=d||{};const o=(arr,v)=>arr.map(x=>`<option value="${x[0]}"${(v||'')===x[0]?' selected':''}>${esc(x[1])}</option>`).join('');
 const sto=(ex&&!d.st?[['','– nicht gesetzt –']]:[]).concat(ST);
@@ -668,10 +690,12 @@ return `<details class="more"${open?' open':''}><summary><span>📋</span>Weiter
 <label>Späteste Kündigung am<input id="fkd" type="date" value="${d.kd||''}"></label>
 <div class="row"><label>Richtung (Post)<select id="fri">${o(RI,d.ri)}</select></label><label>Zahlungsstatus<select id="fza">${o(ZA,d.za)}</select></label></div>
 <label>Zuständig / Ansprechpartner<input id="fwh" value="${esc(d.wh||'')}" placeholder="Behörde, Firma oder Person"></label>
+<label>Betrag (€)<input id="fam" inputmode="decimal" value="${fmtIn(d.am)}" placeholder="z. B. 123,45"></label>
 <label>Aufbewahrung</label><div class="fl">${FL.map(x=>`<label class="ck2"><input type="checkbox" id="fk_${x[0]}"${(d.fl||[]).includes(x[0])?' checked':''}>${x[1]}</label>`).join('')}</div>
+<label>Notiz<textarea id="fno" rows="3" placeholder="Eigene Anmerkungen">${esc(d.no||'')}</textarea></label>
 </div></details>`}
 function readFields(){const g=id=>{const e=$('#'+id);return e?String(e.value||''):''};
-return{st:g('fst'),pr:g('fpr'),du:g('fdu'),re:g('fre'),ei:g('fei'),gu:g('fgu'),kd:g('fkd'),ri:g('fri'),za:g('fza'),wh:g('fwh').trim(),fl:FL.map(x=>x[0]).filter(k=>{const e=$('#fk_'+k);return e&&e.checked})}}
+return{st:g('fst'),pr:g('fpr'),du:g('fdu'),re:g('fre'),ei:g('fei'),gu:g('fgu'),kd:g('fkd'),ri:g('fri'),za:g('fza'),wh:g('fwh').trim(),am:parseAmt(g('fam')),no:g('fno').trim(),fl:FL.map(x=>x[0]).filter(k=>{const e=$('#fk_'+k);return e&&e.checked})}}
 function applyFields(d,f){for(const k of Object.keys(f)){const v=f[k];if(v===''||(Array.isArray(v)&&!v.length)||(k==='pr'&&v==='normal'))delete d[k];else d[k]=v}}
 function alertsOf(d,t){t=t||today();if(CLOSED.includes(d.st))return[];const out=[],dd=s=>Math.round((new Date(s+'T00:00')-new Date(t+'T00:00'))/864e5);
 if(d.du){const n=dd(d.du);if(n<0)out.push({k:'over',t:'⏰ '+(-n)+(n===-1?' Tag':' Tage')+' überfällig'});else if(n===0)out.push({k:'today',t:'⏰ Heute fällig'});else if(n<=7)out.push({k:'soon',t:'⏰ Fällig in '+n+(n===1?' Tag':' Tagen')})}
@@ -683,12 +707,242 @@ function passFilter(d){const f=V.f;if(!f)return true;switch(f){case'open':return
 function badges(d){let h='';if(d.st)h+=`<span class="pill s-${d.st}">${STS[d.st]||''}</span>`;if(d.pr&&d.pr!=='normal')h+=`<span class="pill p-${d.pr}">${PRS[d.pr]||''}</span>`;
 alertsOf(d).slice(0,2).forEach(a=>{h+=`<span class="pill a-${a.k}">${a.t}</span>`});
 if(d.za==='offen'||d.za==='teil')h+=`<span class="pill a-soon">💶 ${d.za==='teil'?'Teilbezahlt':'Unbezahlt'}</span>`;
-const fl=(d.fl||[]).map(k=>({wi:'⭐',st:'🧾',ga:'🛡'}[k]||'')).join('');if(fl)h+=`<span>${fl}</span>`;return h}
-function banner(){const al=meta.docs.map(d=>alertsOf(d)).filter(a=>a.length);if(!al.length)return '';const ov=al.filter(a=>a.some(x=>x.k==='over')).length,sn=al.filter(a=>a.some(x=>x.k==='today'||x.k==='soon')).length,rm=al.filter(a=>a.some(x=>x.k==='rem')).length;
+if(d.am!==undefined&&d.am!=='')h+=`<span class="pill">${fmtAmt(d.am)}</span>`;const fl=(d.fl||[]).map(k=>({wi:'⭐',st:'🧾',ga:'🛡'}[k]||'')).join('');if(fl)h+=`<span>${fl}</span>`;return h}
+function alertBanner(){const al=meta.docs.filter(d=>!d.del).map(d=>alertsOf(d)).filter(a=>a.length);if(!al.length)return '';const ov=al.filter(a=>a.some(x=>x.k==='over')).length,sn=al.filter(a=>a.some(x=>x.k==='today'||x.k==='soon')).length,rm=al.filter(a=>a.some(x=>x.k==='rem')).length;
 const p=[];if(ov)p.push(ov+' überfällig');if(sn)p.push(sn+' bald fällig');if(rm)p.push(rm+' Wiedervorlage');
 return `<div class="rem" data-a="rem"><span class="ei2">🔔</span><span><b>${al.length} Dokument${al.length===1?'':'e'} brauchen Aufmerksamkeit</b><br><small>${p.join(' · ')} · antippen zum Anzeigen</small></span></div>`}
 A.rem=()=>{V.f='alert';$('#sf').value='alert';render()};
 A.fx=()=>{V.f='';$('#sf').value='';render()};
+/* ===== Papierkorb, Seiten bearbeiten, Dokumente zusammenführen ===== */
+const TRASH_DAYS=30;let addTo=null;
+const trashed=()=>meta.docs.filter(d=>d.del);
+function trashHtml(){const l=trashed().sort((a,b)=>b.del-a.del);
+if(!l.length)return '<div class="empty"><div class="ei">🗑</div><b>Papierkorb ist leer</b><p>Gelöschte Dokumente bleiben hier '+TRASH_DAYS+' Tage und können wiederhergestellt werden.</p></div>';
+return '<p class="mu">Gelöschte Dokumente werden nach '+TRASH_DAYS+' Tagen endgültig entfernt.</p>'+l.map(d=>{const left=Math.max(0,TRASH_DAYS-Math.floor((Date.now()-d.del)/864e5));
+return `<div class="it tr"><span class="ic">${d.n?'📄':'📎'}</span><span class="tx"><b>${esc(d.name)}</b><small>Gelöscht ${fdt(new Date(d.del).toISOString())} · noch ${left} Tag${left===1?'':'e'}</small></span><button class="b2 sm" data-a="trr" data-i="${d.id}">↩</button><button class="dg sm" data-a="trd" data-i="${d.id}">🗑</button></div>`}).join('')+'<div class="row"><button class="dg" data-a="tre">Papierkorb leeren</button></div>'}
+A.tr=()=>show('<h3>Papierkorb</h3><div id="trl">'+trashHtml()+'</div>');
+const trRefresh=()=>{const e=$('#trl');if(e)e.innerHTML=trashHtml();render()};
+A.trr=async i=>{const d=meta.docs.find(x=>x.id===i);if(!d)return;delete d.del;if(d.folder&&!meta.folders.some(f=>f.id===d.folder))d.folder=null;d.m=Date.now();await saveMeta();trRefresh()};
+async function purgeDocs(ids){const now=Date.now();for(const id of ids)await del('doc:'+id);meta.tomb=(meta.tomb||[]).concat(ids.map(id=>({id,t:now})));meta.docs=meta.docs.filter(d=>!ids.includes(d.id));await saveMeta()}
+A.trd=async(i,b)=>{if(!b.dataset.s){b.dataset.s='1';b.textContent='Sicher?';return}await purgeDocs([i]);trRefresh()};
+A.tre=async(i,b)=>{if(!b.dataset.s){b.dataset.s='1';b.textContent='Ja, alles endgültig löschen';return}await purgeDocs(trashed().map(d=>d.id));trRefresh()};
+async function purgeOld(){const old=trashed().filter(d=>Date.now()-d.del>TRASH_DAYS*864e5).map(d=>d.id);if(old.length)await purgeDocs(old)}
+A.sdel=async(i,b)=>{if(!sel.size)return;if(!b.dataset.s){b.dataset.s='1';b.textContent='Sicher?';setTimeout(()=>{b.dataset.s='';b.textContent='🗑'},3000);return}
+const now=Date.now();for(const id of sel){const d=meta.docs.find(x=>x.id===id);if(d){d.del=now;d.m=now}}sel.clear();await saveMeta();selUI()};
+function pagesHtml(){const d=meta.docs.find(x=>x.id===vid);if(!d)return '';
+return vp.map((p,k)=>`<div class="pgc"><img class="pg" id="pg${k}" data-a="fs" data-i="${k}" src="${p}"><div class="pgt"><span class="mu">Seite ${k+1} von ${vp.length}</span><span class="pgb"><button class="b2 sm" data-a="pmu" data-i="${k}"${k===0?' disabled':''}>↑</button><button class="b2 sm" data-a="pmd" data-i="${k}"${k===vp.length-1?' disabled':''}>↓</button><button class="b2 sm" data-a="ped" data-i="${k}">✂️</button><button class="b2 sm" data-a="pdl" data-i="${k}">🗑</button></span></div><a class="mu" id="dl${k}" href="${p}" download="${esc(d.name)}-${k+1}.jpg">Seite ${k+1} herunterladen</a></div>`).join('')
++(vf.length?'<h4 class="gh">Dateien</h4>'+vf.map(f=>`<a class="mu" style="display:block;margin:6px 0" href="${f.data}" download="${esc(f.name)}">⬇ ${esc(f.name)}</a>`).join(''):'')
++'<div class="row"><button class="b2" data-a="pad">➕ Seite (Foto)</button><button class="b2" data-a="paf">📁 Datei hinzufügen</button></div>'}
+async function savePages(){const d=meta.docs.find(x=>x.id===vid);if(!d)return;await put('doc:'+vid,await enc({pages:vp,files:vf}));d.n=vp.length;d.f=vf.length;d.r=(d.r||0)+1;d.m=Date.now();d.th=(vp[0]?await mkth(vp[0]):'')||'';d.thv=2;await saveMeta();const e=$('#pgs');if(e)e.innerHTML=pagesHtml();render()}
+A.pmu=async i=>{i=+i;if(i<1)return;[vp[i-1],vp[i]]=[vp[i],vp[i-1]];await savePages()};
+A.pmd=async i=>{i=+i;if(i>=vp.length-1)return;[vp[i+1],vp[i]]=[vp[i],vp[i+1]];await savePages()};
+A.pdl=async(i,b)=>{if(!b.dataset.s){b.dataset.s='1';b.textContent='Sicher?';return}vp.splice(+i,1);await savePages()};
+A.pad=()=>{pick();addTo=vid;pend=[];pendF=[];$('#fi').click()};
+A.paf=()=>{pick();addTo=vid;pend=[];pendF=[];$('#fu').click()};
+async function finishAdd(){const id=addTo;addTo=null;if(!id||id!==vid||(!pend.length&&!pendF.length)){pend=[];pendF=[];return}vp.push(...pend);vf.push(...pendF);pend=[];pendF=[];if(pendTx){const dd=meta.docs.find(x=>x.id===id);if(dd)dd.tx=((dd.tx||'')+' '+pendTx).trim().slice(0,4000)}pendTx='';await savePages()}
+async function mergeDocs(ids,name){const base=meta.docs.find(d=>d.id===ids[0]);if(!base)return;const pages=[],files=[];
+for(const id of ids){const r=await get('doc:'+id);if(!r)continue;const o=await dec(r);pages.push(...(o.pages||[]));files.push(...(o.files||[]))}
+await put('doc:'+base.id,await enc({pages,files}));const now=Date.now();base.name=name||base.name;base.n=pages.length;base.f=files.length;base.r=(base.r||0)+1;base.m=now;base.th=(pages[0]?await mkth(pages[0]):'')||'';base.thv=2;
+for(const id of ids.slice(1)){const d=meta.docs.find(x=>x.id===id);if(d){d.del=now;d.m=now}}await saveMeta()}
+A.smg=()=>{const ids=[...sel];if(ids.length<2){$('#seln').textContent='Mind. 2 wählen';return}
+const ds=ids.map(id=>meta.docs.find(d=>d.id===id)).filter(Boolean);
+show('<h3>Dokumente zusammenführen</h3><p class="mu">Alle Seiten und Dateien kommen in der Reihenfolge deiner Auswahl in <b>ein</b> Dokument. Die Angaben (Status, Fristen …) stammen vom ersten Dokument. Die übrigen kommen in den Papierkorb.</p><ol class="mgl">'+ds.map(d=>'<li>'+esc(d.name)+' <span class="mu">('+d.n+' Seite'+(d.n===1?'':'n')+')</span></li>').join('')+'</ol><label>Name des neuen Dokuments<input id="mgn" value="'+esc(ds[0].name)+'"></label><p id="em" class="er"></p><div class="row"><button class="b2" data-a="x">Abbrechen</button><button data-a="smg2">🔗 Zusammenführen</button></div>')};
+A.smg2=async(i,b)=>{const ids=[...sel],em=$('#em');b.disabled=true;try{await mergeDocs(ids,($('#mgn').value||'').trim());sel.clear();selMode=false;hide();selUI()}catch(e){b.disabled=false;em.textContent='Fehlgeschlagen: '+(e.message||e.name)}};
+/* ===== Zuschneiden, Perspektive begradigen, Scan-Look ===== */
+const edDone=new Set(),ED={src:null,pts:[],sc:1,drag:-1,flt:'orig',cb:null,prev:false,pv:null};
+const loadImg=u=>new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>rej(new Error('Bild nicht lesbar'));im.src=u});
+function srcCanvas(im,maxSide){const iw=im.naturalWidth||im.width,ih=im.naturalHeight||im.height,s=Math.min(1,maxSide/Math.max(iw,ih)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(iw*s));c.height=Math.max(1,Math.round(ih*s));c.getContext('2d').drawImage(im,0,0,c.width,c.height);return c}
+function homography(src,dst){const A=[],b=[];for(let i=0;i<4;i++){const x=src[i][0],y=src[i][1],u=dst[i][0],v=dst[i][1];A.push([x,y,1,0,0,0,-u*x,-u*y]);b.push(u);A.push([0,0,0,x,y,1,-v*x,-v*y]);b.push(v)}
+const n=8;for(let i=0;i<n;i++){let p=i;for(let r=i+1;r<n;r++)if(Math.abs(A[r][i])>Math.abs(A[p][i]))p=r;const t=A[i];A[i]=A[p];A[p]=t;const tb=b[i];b[i]=b[p];b[p]=tb;const d=A[i][i];if(Math.abs(d)<1e-12)return null;
+for(let r=i+1;r<n;r++){const f=A[r][i]/d;for(let c=i;c<n;c++)A[r][c]-=f*A[i][c];b[r]-=f*b[i]}}
+const h=new Array(n);for(let i=n-1;i>=0;i--){let s=b[i];for(let c=i+1;c<n;c++)s-=A[i][c]*h[c];h[i]=s/A[i][i]}return h}
+function warp(srcC,pts,maxSide){const d=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);let W=Math.max(d(pts[0],pts[1]),d(pts[3],pts[2])),H=Math.max(d(pts[0],pts[3]),d(pts[1],pts[2]));const k=Math.min(1,maxSide/Math.max(W,H));W=Math.max(8,Math.round(W*k));H=Math.max(8,Math.round(H*k));
+const h=homography([[0,0],[W,0],[W,H],[0,H]],pts);if(!h)return null;
+const out=document.createElement('canvas');out.width=W;out.height=H;const ox=out.getContext('2d'),od=ox.createImageData(W,H),sw=srcC.width,sh=srcC.height,S=srcC.getContext('2d').getImageData(0,0,sw,sh).data,O=od.data;
+for(let y=0;y<H;y++)for(let x=0;x<W;x++){const w=h[6]*x+h[7]*y+1,sx=(h[0]*x+h[1]*y+h[2])/w,sy=(h[3]*x+h[4]*y+h[5])/w,x0=Math.floor(sx),y0=Math.floor(sy),o=(y*W+x)*4;
+if(x0<0||y0<0||x0>=sw-1||y0>=sh-1){const cx=Math.min(sw-1,Math.max(0,x0)),cy=Math.min(sh-1,Math.max(0,y0)),i=(cy*sw+cx)*4;O[o]=S[i];O[o+1]=S[i+1];O[o+2]=S[i+2];O[o+3]=255;continue}
+const fx=sx-x0,fy=sy-y0,i=(y0*sw+x0)*4,j=i+4,k2=i+sw*4,l=k2+4;for(let c=0;c<3;c++)O[o+c]=(S[i+c]*(1-fx)+S[j+c]*fx)*(1-fy)+(S[k2+c]*(1-fx)+S[l+c]*fx)*fy;O[o+3]=255}
+ox.putImageData(od,0,0);return out}
+function bgMap(g,W,H){const B=16,cw=Math.ceil(W/B),ch=Math.ceil(H/B);let m=new Float32Array(cw*ch);for(let by=0;by<ch;by++)for(let bx=0;bx<cw;bx++){let mx=0;for(let y=by*B;y<Math.min(H,by*B+B);y++)for(let x=bx*B;x<Math.min(W,bx*B+B);x++){const v=g[y*W+x];if(v>mx)mx=v}m[by*cw+bx]=mx||1}
+for(let pass=0;pass<2;pass++){const t=new Float32Array(m.length);for(let y=0;y<ch;y++)for(let x=0;x<cw;x++){let s=0,n=0;for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++){const xx=x+dx,yy=y+dy;if(xx>=0&&yy>=0&&xx<cw&&yy<ch){s+=m[yy*cw+xx];n++}}t[y*cw+x]=s/n}m=t}
+return(x,y)=>{const fx=Math.min(cw-1,Math.max(0,x/B-.5)),fy=Math.min(ch-1,Math.max(0,y/B-.5)),x0=Math.floor(fx),y0=Math.floor(fy),x1=Math.min(cw-1,x0+1),y1=Math.min(ch-1,y0+1),ax=fx-x0,ay=fy-y0;return(m[y0*cw+x0]*(1-ax)+m[y0*cw+x1]*ax)*(1-ay)+(m[y1*cw+x0]*(1-ax)+m[y1*cw+x1]*ax)*ay}}
+function filterCanvas(c,mode){if(!mode||mode==='orig')return c;const W=c.width,H=c.height,x=c.getContext('2d'),id=x.getImageData(0,0,W,H),D=id.data,n=W*H,g=new Float32Array(n);
+for(let i=0;i<n;i++)g[i]=.299*D[i*4]+.587*D[i*4+1]+.114*D[i*4+2];
+const bg=bgMap(g,W,H),lv=v=>{v=(v-70)*255/(228-70);return v<0?0:v>255?255:v};
+for(let y=0;y<H;y++)for(let xx=0;xx<W;xx++){const i=y*W+xx,o=i*4,f=255/Math.max(40,bg(xx,y));
+if(mode==='scan'){D[o]=lv(D[o]*f);D[o+1]=lv(D[o+1]*f);D[o+2]=lv(D[o+2]*f)}
+else{const v=lv(g[i]*f),w=mode==='bw'?(v<165?0:255):v;D[o]=D[o+1]=D[o+2]=w}}
+x.putImageData(id,0,0);return c}
+function cornersFromMask(mask,w,h,s){const N=w*h,lab=new Int32Array(N),q=new Int32Array(N);let L=0,bestL=0,bestS=0;
+for(let i=0;i<N;i++){if(!mask[i]||lab[i])continue;L++;let qs=0,qe=0,sz=0;q[qe++]=i;lab[i]=L;while(qs<qe){const p=q[qs++];sz++;const px=p%w,py=(p/w)|0;
+if(px>0&&mask[p-1]&&!lab[p-1]){lab[p-1]=L;q[qe++]=p-1}if(px<w-1&&mask[p+1]&&!lab[p+1]){lab[p+1]=L;q[qe++]=p+1}if(py>0&&mask[p-w]&&!lab[p-w]){lab[p-w]=L;q[qe++]=p-w}if(py<h-1&&mask[p+w]&&!lab[p+w]){lab[p+w]=L;q[qe++]=p+w}}
+if(sz>bestS){bestS=sz;bestL=L}}
+if(bestS<N*.15||bestS>N*.97)return null;
+let tl=null,tr=null,br=null,bl=null,a=1e9,b2=-1e9,c2=-1e9,d2=1e9;
+for(let i=0;i<N;i++){if(lab[i]!==bestL)continue;const px=i%w,py=(i/w)|0,s1=px+py,s2=px-py;if(s1<a){a=s1;tl=[px,py]}if(s1>c2){c2=s1;br=[px,py]}if(s2>b2){b2=s2;tr=[px,py]}if(s2<d2){d2=s2;bl=[px,py]}}
+return[tl,tr,br,bl].map(p=>[(p[0]+.5)/s,(p[1]+.5)/s])}
+function autoCorners(c){const s=Math.min(1,320/Math.max(c.width,c.height)),w=Math.max(8,Math.round(c.width*s)),h=Math.max(8,Math.round(c.height*s)),t=document.createElement('canvas');t.width=w;t.height=h;const x=t.getContext('2d');x.drawImage(c,0,0,w,h);const D=x.getImageData(0,0,w,h).data,N=w*h;
+/* 1) Unterschied zur Farbe am Bildrand (Papier hebt sich vom Untergrund ab) */
+const ring=Math.max(2,Math.round(Math.min(w,h)*.03)),R=[],G=[],B=[];
+for(let y=0;y<h;y++)for(let xx=0;xx<w;xx++){if(y<ring||y>=h-ring||xx<ring||xx>=w-ring){const o=(y*w+xx)*4;R.push(D[o]);G.push(D[o+1]);B.push(D[o+2])}}
+const med=a=>{const b=a.slice().sort((p,q)=>p-q);return b[b.length>>1]},mr=med(R),mg=med(G),mb=med(B),mad=med(R.map(v=>Math.abs(v-mr)))+med(G.map(v=>Math.abs(v-mg)))+med(B.map(v=>Math.abs(v-mb))),thr=Math.max(60,2.5*mad);
+const m1=new Uint8Array(N);for(let i=0;i<N;i++){const dr=D[i*4]-mr,dg=D[i*4+1]-mg,db=D[i*4+2]-mb;m1[i]=Math.sqrt(dr*dr+dg*dg+db*db)>thr?1:0}
+let r=cornersFromMask(m1,w,h,s);if(r)return r;
+/* 2) Helligkeit: Papier ist heller als der Untergrund (Otsu) */
+const g=new Uint8Array(N);for(let i=0;i<N;i++)g[i]=(.299*D[i*4]+.587*D[i*4+1]+.114*D[i*4+2])|0;
+const hist=new Array(256).fill(0);for(let i=0;i<N;i++)hist[g[i]]++;let sum=0;for(let i=0;i<256;i++)sum+=i*hist[i];let sB=0,wB=0,best=0,th=128;
+for(let i=0;i<256;i++){wB+=hist[i];if(!wB)continue;const wF=N-wB;if(!wF)break;sB+=i*hist[i];const mB=sB/wB,mF=(sum-sB)/wF,v=wB*wF*(mB-mF)*(mB-mF);if(v>best){best=v;th=i}}
+const m2=new Uint8Array(N);for(let i=0;i<N;i++)m2[i]=g[i]>th?1:0;
+if([0,w-1,(h-1)*w,N-1].filter(i=>m2[i]).length>=3)for(let i=0;i<N;i++)m2[i]^=1;
+return cornersFromMask(m2,w,h,s)}
+const fullPts=c=>[[0,0],[c.width,0],[c.width,c.height],[0,c.height]];
+function apMode(){const e=$('#ap');if(e)return e.value||'';try{return localStorage.getItem('ds_ap')||''}catch(x){return ''}}
+document.addEventListener('change',e=>{if(e.target&&e.target.id==='ap'){try{localStorage.setItem('ds_ap',e.target.value)}catch(x){}}});
+async function postProc(u){const m=apMode();if(!m)return u;try{const im=await loadImg(u),c=srcCanvas(im,2000),p=autoCorners(c)||fullPts(c),w=warp(c,p,1800);if(!w)return u;const out=(m==='scan'?filterCanvas(w,'scan'):w).toDataURL('image/jpeg',.85);edDone.add(out);return out}catch(e){return u}}
+const PAD=18;
+function edLayout(){const r=$('#edw').getBoundingClientRect(),c=$('#edc');ED.sc=Math.min((r.width-2*PAD)/ED.src.width,(r.height-2*PAD)/ED.src.height);c.width=Math.max(8,Math.round(ED.src.width*ED.sc)+2*PAD);c.height=Math.max(8,Math.round(ED.src.height*ED.sc)+2*PAD);c.style.width=c.width+'px';c.style.height=c.height+'px'}
+function edDraw(){const c=$('#edc'),x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);
+const iw=c.width-2*PAD,ih=c.height-2*PAD;if(ED.prev&&ED.pv){x.drawImage(ED.pv,PAD,PAD,iw,ih);return}
+x.drawImage(ED.src,PAD,PAD,iw,ih);const p=ED.pts.map(q=>[q[0]*ED.sc+PAD,q[1]*ED.sc+PAD]);
+x.save();x.fillStyle='rgba(0,0,0,.55)';x.beginPath();x.rect(PAD,PAD,iw,ih);x.moveTo(p[0][0],p[0][1]);for(let i=1;i<4;i++)x.lineTo(p[i][0],p[i][1]);x.closePath();x.fill('evenodd');x.restore();
+x.strokeStyle='#4f86ff';x.lineWidth=2.5;x.beginPath();p.forEach((q,i)=>i?x.lineTo(q[0],q[1]):x.moveTo(q[0],q[1]));x.closePath();x.stroke();
+p.forEach(q=>{x.fillStyle='#fff';x.strokeStyle='#2f6df6';x.lineWidth=3;x.beginPath();x.arc(q[0],q[1],13,0,7);x.fill();x.stroke()})}
+function edPreview(){const w=warp(ED.src,ED.pts,700);ED.pv=w?filterCanvas(w,ED.flt):null;ED.prev=!!ED.pv;edBtns();edDraw()}
+function edBtns(){const f=$('#edf');if(f&&f.children)[...f.children].forEach(b=>b.classList.toggle('on',b.dataset.i===ED.flt));const t=$('#edtg');if(t)t.textContent=ED.prev?'✂️ Ecken anpassen':'👁 Vorschau'}
+async function openEditor(u,cb,auto){try{const im=await loadImg(u);ED.src=srcCanvas(im,2600)}catch(e){return}
+ED.cb=cb;ED.flt='orig';ED.prev=false;ED.pv=null;ED.drag=-1;$('#ed').hidden=false;edLayout();ED.pts=(auto&&autoCorners(ED.src))||fullPts(ED.src);edBtns();edDraw()}
+function edRot(dir){const s=ED.src,c=document.createElement('canvas');c.width=s.height;c.height=s.width;const x=c.getContext('2d');if(dir>0){x.translate(c.width,0);x.rotate(Math.PI/2)}else{x.translate(0,c.height);x.rotate(-Math.PI/2)}x.drawImage(s,0,0);ED.src=c;ED.prev=false;edLayout();ED.pts=autoCorners(c)||fullPts(c);edBtns();edDraw()}
+A.edx=()=>{$('#ed').hidden=true;ED.cb=null;ED.src=null;ED.pv=null};
+A.edok=async()=>{if(!ED.src||!ED.cb)return A.edx();const w=warp(ED.src,ED.pts,1800);if(!w)return;const out=filterCanvas(w,ED.flt).toDataURL('image/jpeg',.85),cb=ED.cb;A.edx();await cb(out)};
+A.edauto=()=>{ED.prev=false;ED.pts=autoCorners(ED.src)||fullPts(ED.src);edBtns();edDraw()};
+A.edfull=()=>{ED.prev=false;ED.pts=fullPts(ED.src);edBtns();edDraw()};
+A.edrl=()=>edRot(-1);A.edrr=()=>edRot(1);
+A.edfl=i=>{ED.flt=i;edPreview()};
+A.edtg=()=>{if(ED.prev){ED.prev=false;edBtns();edDraw()}else edPreview()};
+A.pe=i=>openEditor(pend[+i],r=>{edDone.add(r);pend[+i]=r;thumbs()},!edDone.has(pend[+i]));
+A.ped=i=>openEditor(vp[+i],async r=>{vp[+i]=r;await savePages()});
+{const c=$('#edc');const pos=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left-PAD)/ED.sc,(e.clientY-r.top-PAD)/ED.sc]};
+c.addEventListener('pointerdown',e=>{if(ED.prev||!ED.src)return;const p=pos(e);let bi=-1,bd=40/ED.sc;ED.pts.forEach((q,i)=>{const d=Math.hypot(q[0]-p[0],q[1]-p[1]);if(d<bd){bd=d;bi=i}});if(bi>=0){ED.drag=bi;try{c.setPointerCapture(e.pointerId)}catch(x){}e.preventDefault()}});
+c.addEventListener('pointermove',e=>{if(ED.drag<0)return;const p=pos(e);ED.pts[ED.drag]=[Math.max(0,Math.min(ED.src.width,p[0])),Math.max(0,Math.min(ED.src.height,p[1]))];edDraw()});
+['pointerup','pointercancel'].forEach(n=>c.addEventListener(n,()=>{ED.drag=-1}))}
+/* ===== Einstellungen, Passwort ändern, Backup-Hinweis, Sperren, Speicher ===== */
+let lastBk=0,bkSnz=0,srvUsed=0,hiddenAt=0,pickUntil=0;
+const LK=(()=>{const o={idle:10,leave:'off'};try{Object.assign(o,JSON.parse(localStorage.getItem('ds_lk')||'{}'))}catch(e){}return o})();
+const saveLK=()=>{try{localStorage.setItem('ds_lk',JSON.stringify(LK))}catch(e){}};
+const pick=()=>{pickUntil=Date.now()+180000};
+document.addEventListener('visibilitychange',()=>{if(!key)return;if(document.hidden)hiddenAt=Date.now();else{const away=hiddenAt?(Date.now()-hiddenAt)/1000:0;if(LK.leave!=='off'&&hiddenAt&&Date.now()>pickUntil&&away>=+LK.leave)lockUI(false);hiddenAt=0}});
+function pwStrength(p){p=p||'';const L=p.length;let s=0;if(L>=8)s=1;if(L>=12)s=2;if(L>=16)s=3;
+const cls=[/[a-zäöüß]/,/[A-ZÄÖÜ]/,/\d/,/[^A-Za-z0-9äöüÄÖÜß]/].filter(r=>r.test(p)).length;if(cls>=3&&L>=10)s++;
+if(/^(.)\1+$/.test(p)||(/^\d+$/.test(p)&&L<14)||/(passwort|password|qwert|asdf|12345|abcdef|admin|letmein)/i.test(p))s=Math.max(0,s-2);
+if(L<8)s=0;s=Math.min(4,s);return{s,t:['Sehr schwach','Schwach','Okay','Gut','Stark'][s]}}
+const meterHtml=id=>'<div class="pws" id="'+id+'"><div class="bar"><i></i></div><small class="mu"></small></div>';
+function meterUpd(id,pw){const e=$('#'+id);if(!e)return;const r=pwStrength(pw),i=e.querySelector?e.querySelector('i'):null,l=e.querySelector?e.querySelector('small'):null;if(i){i.style.width=pw?(r.s+1)*20+'%':'0';i.className='s'+r.s}if(l)l.textContent=pw?'Passwortstärke: '+r.t+(r.s<2?' (länger und gemischter ist besser)':''):''}
+document.addEventListener('input',e=>{const id=e.target&&e.target.id;if(id==='pcn')meterUpd('pcm',e.target.value);if(id==='pw'&&first)meterUpd('pws',e.target.value)});
+const ageTxt=ts=>{if(!ts)return 'noch nie';const d=Math.floor((Date.now()-ts)/864e5);return d<1?'heute':d===1?'gestern':'vor '+d+' Tagen'};
+A.bkz=()=>{bkSnz=Date.now()+7*864e5;put('bksnz',bkSnz).catch(()=>{});render()};
+A.bkr=()=>A.bk();
+function bkBanner(){if(!meta.docs.length)return '';if(Date.now()<bkSnz)return '';const days=lastBk?(Date.now()-lastBk)/864e5:1e9;if(days<=30)return '';
+return `<div class="rem bkr" data-a="bkr"><span class="ei2">🛟</span><span><b>Zeit für ein Backup</b><br><small>Letztes Backup: ${ageTxt(lastBk)} · antippen zum Sichern</small></span><button class="b2 sm" data-a="bkz">Später</button></div>`}
+function stoBanner(){const q=quotaMB()*1048576;if(!srvUsed||srvUsed<q*.8)return '';return `<div class="rem" data-a="stg"><span class="ei2">⚠️</span><span><b>Server-Speicher zu ${Math.round(srvUsed/q*100)} % voll</b><br><small>Lösche alte Dokumente oder erhöhe den Speicher beim Anbieter</small></span></div>`}
+A.set=()=>show(`<h3>Einstellungen</h3><p class="mu">👤 ${esc(loginMail||'ohne E-Mail')}<br>Letztes Backup: ${ageTxt(lastBk)}</p><div class="row" style="flex-direction:column">
+<button class="b2" data-a="pwc">🔑 Passwort ändern</button><button class="b2" data-a="lkd">🔐 Sperr-Einstellungen</button><button class="b2" data-a="ausw">📊 Auswertung (Beträge)</button><button class="b2" data-a="zip">📦 Alles exportieren (ZIP mit PDFs)</button><button class="b2" data-a="stg">💾 Speicherplatz</button><button class="b2" data-a="tr">🗑 Papierkorb</button><button class="b2" data-a="help">❓ Hilfe</button></div>`);
+A.lkd=()=>{const o=(arr,v)=>arr.map(a=>`<option value="${a[0]}"${String(v)===String(a[0])?' selected':''}>${a[1]}</option>`).join('');
+show(`<h3>Sperr-Einstellungen</h3><label>Automatisch sperren nach<select id="lki">${o([[1,'1 Minute'],[2,'2 Minuten'],[5,'5 Minuten'],[10,'10 Minuten'],[30,'30 Minuten'],[60,'60 Minuten']],LK.idle)}</select></label><label>Beim Verlassen der App sperren<select id="lkl">${o([['off','Nie'],[0,'Sofort'],[30,'Nach 30 Sekunden'],[120,'Nach 2 Minuten']],LK.leave)}</select></label><p class="mu">„Beim Verlassen“ sperrt die App, wenn du zu einer anderen App wechselst. Kamera, Dateiauswahl und Teilen zählen dabei nicht als Verlassen. Die Einstellung gilt für dieses Gerät.</p>`)};
+document.addEventListener('change',e=>{if(e.target&&e.target.id==='lki'){LK.idle=+e.target.value;saveLK();bump()}if(e.target&&e.target.id==='lkl'){LK.leave=e.target.value==='off'?'off':+e.target.value;saveLK()}});
+A.pwc=()=>show(`<h3>Passwort ändern</h3><p class="mu">Alle Dokumente werden mit dem neuen Passwort neu verschlüsselt. Das kann etwas dauern, schließe die App nicht. Andere Geräte melden sich danach mit dem neuen Passwort an und laden die Daten vom Server neu.</p>${cfgV===2&&!loginMail?'<label>E-Mail<input id="pce" type="email" autocomplete="email"></label>':''}<label>Aktuelles Passwort<input id="pcu" type="password" autocomplete="off"></label><label>Neues Passwort<input id="pcn" type="password" autocomplete="off"></label>${meterHtml('pcm')}<label>Neues Passwort wiederholen<input id="pcr" type="password" autocomplete="off"></label><p id="em" class="er"></p><div class="row"><button class="b2" data-a="x">Abbrechen</button><button data-a="pwc2">Passwort ändern</button></div>`);
+async function reKey(mail,newPw,v,prog){const ids=meta.docs.map(d=>d.id),rv0=metaRev,nsalt=crypto.getRandomValues(new Uint8Array(16)),nk=await derive(cred(mail,newPw,v),nsalt);
+const encN=async o=>{const iv=crypto.getRandomValues(new Uint8Array(12));return{iv,ct:await crypto.subtle.encrypt({name:'AES-GCM',iv},nk,te.encode(JSON.stringify(o)))}};
+let i=0;for(const id of ids){const r=await get('doc:'+id);if(!r)continue;await put('tmp:doc:'+id,await encN(await dec(r)));i++;if(prog)prog(i,ids.length)}
+if(metaRev!==rv0)throw new Error('Während der Umstellung wurde etwas geändert. Bitte erneut versuchen.');
+await put('tmp:meta',await encN(meta));await put('tmp:cfg',{salt:nsalt,chk:await encN({ok:1}),v});if(SS)await put('tmp:sess',await encN(SS));return{ids,nk}}
+A.pwc2=async(i,b)=>{const em=$('#em'),say=(m,ok)=>{em.className=ok?'mu':'er';em.textContent=m},cur0=$('#pcu').value,np=$('#pcn').value,nr=$('#pcr').value,mail=cfgV===2?(loginMail||(($('#pce')||{}).value||'').trim().toLowerCase()):'';
+if(cfgV===2&&!mail)return say('Bitte deine E-Mail eingeben.');
+if(!(await pwOK(cur0,mail)))return say('Das aktuelle Passwort (oder die E-Mail) stimmt nicht.');
+if(np.length<8)return say('Das neue Passwort braucht mindestens 8 Zeichen.');if(pwStrength(np).s<1)return say('Dieses Passwort ist zu einfach.');
+if(np!==nr)return say('Die neuen Passwörter stimmen nicht überein.');if(np===cur0)return say('Das neue Passwort muss anders sein als das alte.');
+b.disabled=true;let ids=[],committed=false;
+try{say('Verschlüssele neu … bitte warten',1);let s=null;try{s=await sessGet()}catch(e){}
+const r0=await reKey(mail,np,cfgV,(k,n)=>say('Verschlüssele neu … '+k+'/'+n,1));ids=r0.ids;
+if(s&&SBC()){const ap=await authPw(s.email,np),r=await sbFetch('/auth/v1/user',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:ap})},s.at);if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.msg||j.message||('Das Server-Passwort konnte nicht geändert werden ('+r.status+')'))}}
+await swapTmp(ids);committed=true;key=r0.nk;try{await del('bio')}catch(e){}metaRev++;
+if(s&&SBC()){say('Lade neu verschlüsselte Daten zum Server …',1);await syncPush()}
+say('Fertig. Dein Passwort wurde geändert. Merke es dir gut.',1)}
+catch(e){if(!committed){await cleanTmp(ids);b.disabled=false;say('Fehlgeschlagen: '+(e.message||e.name)+' Deine Daten sind unverändert.')}else say('Das Passwort wurde geändert, aber der Upload zum Server ist fehlgeschlagen ('+(e.message||e.name)+'). Tippe später im ☁️-Menü auf „Server mit diesem Gerät überschreiben“.')}};
+A.stg=async()=>{show('<h3>Speicherplatz</h3><div id="stgb"><p class="mu">Ermittle …</p></div>');const o=[];
+try{if(navigator.storage&&navigator.storage.estimate){const e=await navigator.storage.estimate();o.push('<p><b>Dieses Gerät</b><br>'+fmtMB(e.usage||0)+' belegt'+(e.quota?' von etwa '+fmtMB(e.quota)+' verfügbar':'')+'</p>')}}catch(e){}
+let s=null;try{s=await sessGet()}catch(e){}
+if(s&&SBC()){try{const l=await sList();srvUsed=l.reduce((a,x)=>a+((x.metadata&&x.metadata.size)||0),0);const q=quotaMB()*1048576,p=Math.min(100,Math.round(srvUsed/q*100));
+o.push('<p><b>Server</b><br>'+fmtMB(srvUsed)+' von '+fmtMB(q)+' ('+p+' %)</p><div class="pws"><div class="bar"><i class="s'+(p>90?0:p>80?1:3)+'" style="width:'+p+'%"></i></div></div>'+(p>80?'<p class="er">Der Server-Speicher wird knapp. Lösche nicht benötigte Dokumente (Papierkorb leeren) oder erhöhe den Speicher beim Anbieter.</p>':''))}catch(e){o.push('<p class="mu">Server-Speicher konnte nicht ermittelt werden.</p>')}}
+else o.push('<p class="mu">Server nicht verbunden. Melde dich im ☁️-Menü an, um den Server-Speicher zu sehen.</p>');
+const live=meta.docs.filter(d=>!d.del).length,tr=meta.docs.filter(d=>d.del).length;o.push('<p><b>Dokumente</b><br>'+live+' Dokument'+(live===1?'':'e')+(tr?', '+tr+' im Papierkorb':'')+'</p>');
+const e=$('#stgb');if(e)e.innerHTML=o.join('')};
+const quotaMB=()=>{const c=window.DS_CONFIG;return(c&&c.quotaMB)||1024};
+const fmtMB=n=>n>=1073741824?(n/1073741824).toFixed(2)+' GB':(n/1048576).toFixed(1)+' MB';
+let pendTx='';async function loadMisc(){lastBk=(await get('lastbk'))||0;bkSnz=(await get('bksnz'))||0}
+function banner(){return alertBanner()+bkBanner()+stoBanner()}
+
+/* ===== Kalender, Beträge, Auswertung, ZIP-Export, Textsuche ===== */
+const parseAmt=s=>{s=String(s==null?'':s).trim().replace(/[€\s]/g,'');if(!s)return '';if(s.includes(','))s=s.replace(/\./g,'').replace(',','.');else if(/^\d{1,3}(\.\d{3})+$/.test(s))s=s.replace(/\./g,'');const n=parseFloat(s);return isFinite(n)?Math.round(n*100)/100:''};
+const fmtAmt=n=>new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(n),fmtIn=n=>(n===undefined||n===''||n===null)?'':String(n).replace('.',',');
+const csv=rows=>rows.map(r=>r.map(c=>'"'+String(c==null?'':c).replace(/"/g,'""')+'"').join(';')).join('\r\n');
+function dlFile(f){const a=document.createElement('a');a.dataset.n=1;a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),60000)}
+/* --- Kalender (.ics) --- */
+const icsEsc=s=>String(s||'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n');
+function icsFold(l){const parts=[];let cur='',n=0,lim=75;for(const ch of l){const w=te.encode(ch).length;if(n+w>lim){parts.push(cur);cur='';n=0;lim=74}cur+=ch;n+=w}parts.push(cur);return parts.join('\r\n ')}
+const ICS_KINDS=[['du','Frist: '],['re','Wiedervorlage: '],['kd','Kündigung bis: '],['gu','Läuft ab: ']];
+function icsFor(docs){const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Dokumentensafe//DE','CALSCALE:GREGORIAN','METHOD:PUBLISH'],now=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');let n=0;
+for(const d of docs)for(const k of ICS_KINDS){const v=d[k[0]];if(!v)continue;const nx=new Date(v+'T00:00:00Z');nx.setUTCDate(nx.getUTCDate()+1);
+const desc=[d.wh?'Zuständig: '+d.wh:'',path(d.folder)?'Kategorie: '+path(d.folder):'',d.st?'Status: '+STS[d.st]:'',d.am!==undefined&&d.am!==''?'Betrag: '+fmtAmt(d.am):''].filter(Boolean).join('\n'),title=k[1]+d.name;
+L.push('BEGIN:VEVENT','UID:'+d.id+'-'+k[0]+'@dokumentensafe','DTSTAMP:'+now,'DTSTART;VALUE=DATE:'+v.replace(/-/g,''),'DTEND;VALUE=DATE:'+nx.toISOString().slice(0,10).replace(/-/g,''),'SUMMARY:'+icsEsc(title),'DESCRIPTION:'+icsEsc(desc),'TRANSP:TRANSPARENT','BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+icsEsc(title),'TRIGGER:-PT15H','END:VALARM','BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+icsEsc(title),'TRIGGER:PT9H','END:VALARM','END:VEVENT');n++}
+L.push('END:VCALENDAR');return{text:L.map(icsFold).join('\r\n')+'\r\n',n}}
+let calFile=null;
+const calBtn=d=>(d.du||d.re||d.kd||d.gu)?'<div class="row"><button class="b2" data-a="cal1">📅 Fristen zum Kalender hinzufügen</button></div>':'';
+function calDialog(ids){const docs=ids.map(id=>meta.docs.find(d=>d.id===id)).filter(d=>d&&!d.del),r=icsFor(docs);
+if(!r.n){show('<h3>Zum Kalender</h3><p class="mu">Bei den gewählten Dokumenten sind keine Fristen eingetragen (Fällig am, Wiedervorlage, Kündigung, Gültig bis).</p>');return}
+calFile=new File([r.text],'Dokumentensafe-Fristen.ics',{type:'text/calendar'});
+show('<h3>Zum Kalender hinzufügen</h3><p class="mu"><b>'+r.n+' Termin'+(r.n===1?'':'e')+'</b> aus '+docs.length+' Dokument'+(docs.length===1?'':'en')+', ganztägig, mit Erinnerung am Vortag um 9 Uhr und am Tag selbst um 9 Uhr. Achtung: Die Dokumentnamen stehen danach unverschlüsselt in deinem Kalender.</p><p id="em" class="mu"></p><div class="row" style="flex-direction:column"><button data-a="calsend">📅 In Kalender-App öffnen</button><button class="b2" data-a="calsave">📥 .ics-Datei herunterladen</button></div>')}
+A.cal1=()=>calDialog([vid]);A.scal=()=>{if(!sel.size){$('#seln').textContent='Erst antippen';return}calDialog([...sel])};
+A.calsend=async()=>{pick();const em=$('#em');if(!(navigator.canShare&&navigator.canShare({files:[calFile]}))){em.className='er';em.textContent='Dein Browser kann die Datei nicht direkt weitergeben. Nutze „.ics-Datei herunterladen“ und öffne sie danach.';return}
+try{await navigator.share({files:[calFile],title:'Fristen'});em.className='mu';em.textContent='An die Kalender-App übergeben.'}catch(e){const ab=e&&e.name==='AbortError';em.className=ab?'mu':'er';em.textContent=ab?'Abgebrochen.':'Teilen fehlgeschlagen ('+(e&&e.name||'Fehler')+').'}};
+A.calsave=()=>{dlFile(calFile);const em=$('#em');em.className='mu';em.textContent='Download gestartet. Öffne die Datei „Dokumentensafe-Fristen.ics“ danach mit deiner Kalender-App.'};
+/* --- Auswertung --- */
+const awRows=(year,tax)=>meta.docs.filter(d=>!d.del&&d.am!==undefined&&d.am!==''&&(!year||d.date.slice(0,4)===String(year))&&(!tax||(d.fl||[]).includes('st'))).sort((a,b)=>a.date.localeCompare(b.date));
+function awHtml(year,tax){const rows=awRows(year,tax),tot=rows.reduce((a,d)=>a+d.am,0),by={};rows.forEach(d=>{const k=path(d.folder)||'Ohne Kategorie';(by[k]=by[k]||[]).push(d)});
+return '<p class="aw-t">Summe: <b>'+fmtAmt(tot)+'</b> <span class="mu">('+rows.length+' Beleg'+(rows.length===1?'':'e')+')</span></p>'+(rows.length?Object.keys(by).sort().map(k=>'<h4 class="gh">'+esc(k)+' · '+fmtAmt(by[k].reduce((a,d)=>a+d.am,0))+'</h4>'+by[k].map(d=>'<div class="aw-r" data-a="vd" data-i="'+d.id+'"><span>'+fd(d.date)+' · '+esc(d.name)+'</span><b>'+fmtAmt(d.am)+'</b></div>').join('')).join(''):'<p class="mu">Keine Belege mit Betrag für diese Auswahl.</p>')}
+A.ausw=()=>{const ys=[...new Set(meta.docs.filter(d=>!d.del&&d.am!==undefined&&d.am!=='').map(d=>d.date.slice(0,4)))].sort().reverse(),cy=String(new Date().getFullYear()),y0=ys.includes(cy)?cy:(ys[0]||cy);
+show('<h3>Auswertung</h3><p class="mu">Summe der Beträge, die du bei Dokumenten eingetragen hast, gruppiert nach Kategorie.</p><label>Jahr (Datum des Dokuments)<select id="awy"><option value="">Alle Jahre</option>'+ys.map(y=>'<option value="'+y+'"'+(y===y0?' selected':'')+'>'+y+'</option>').join('')+'</select></label><label class="ck2"><input type="checkbox" id="awt" checked>Nur 🧾 steuerrelevante Belege</label><div id="awb">'+awHtml(y0,true)+'</div><div class="row"><button class="b2" data-a="awcsv">📥 Als CSV speichern</button></div>')};
+document.addEventListener('change',e=>{if(e.target&&(e.target.id==='awy'||e.target.id==='awt')){const b=$('#awb');if(b)b.innerHTML=awHtml($('#awy').value,$('#awt').checked)}});
+A.awcsv=()=>{const rows=awRows($('#awy').value,$('#awt').checked);dlFile(new File(['\ufeff'+csv([['Datum','Name','Kategorie','Betrag']].concat(rows.map(d=>[d.date,d.name,path(d.folder)||'Ohne Kategorie',String(d.am).replace('.',',')])))],'Auswertung.csv',{type:'text/csv'}))};
+/* --- ZIP-Export --- */
+const CRCT=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+const crc32=u=>{let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRCT[(c^u[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0};
+function zipBlob(entries){const parts=[],cen=[];let off=0;const dt=new Date(),dd=((dt.getFullYear()-1980)<<9)|((dt.getMonth()+1)<<5)|dt.getDate(),tt=(dt.getHours()<<11)|(dt.getMinutes()<<5)|(dt.getSeconds()>>1);
+for(const e of entries){const nm=te.encode(e.name),crc=crc32(e.data),sz=e.data.length,h=new DataView(new ArrayBuffer(30));
+h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(8,0,true);h.setUint16(10,tt,true);h.setUint16(12,dd,true);h.setUint32(14,crc,true);h.setUint32(18,sz,true);h.setUint32(22,sz,true);h.setUint16(26,nm.length,true);h.setUint16(28,0,true);
+parts.push(new Uint8Array(h.buffer),nm,e.data);
+const c=new DataView(new ArrayBuffer(46));c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(8,0x0800,true);c.setUint16(10,0,true);c.setUint16(12,tt,true);c.setUint16(14,dd,true);c.setUint32(16,crc,true);c.setUint32(20,sz,true);c.setUint32(24,sz,true);c.setUint16(28,nm.length,true);c.setUint32(42,off,true);cen.push(new Uint8Array(c.buffer),nm);off+=30+nm.length+sz}
+const cs=cen.reduce((a,p)=>a+p.length,0),end=new DataView(new ArrayBuffer(22));end.setUint32(0,0x06054b50,true);end.setUint16(8,entries.length,true);end.setUint16(10,entries.length,true);end.setUint32(12,cs,true);end.setUint32(16,off,true);
+return new Blob(parts.concat(cen,[new Uint8Array(end.buffer)]),{type:'application/zip'})}
+const safeSeg=s=>String(s||'').replace(/[\\\/:*?"<>|]+/g,' ').replace(/\s+/g,' ').trim().slice(0,60)||'Ordner';
+async function buildZip(prog){const docs=meta.docs.filter(d=>!d.del).sort((a,b)=>a.date.localeCompare(b.date)),entries=[],used=new Set(),rows=[['Name','Kategorie','Dokumentdatum','Status','Priorität','Fällig am','Wiedervorlage','Eingang','Gültig bis','Kündigung bis','Richtung','Zahlung','Zuständig','Betrag','Aufbewahrung','Notiz','Erstellt','Dateien']];let i=0;
+for(const d of docs){i++;if(prog)prog(i,docs.length);const dir=(path(d.folder)||'Ohne Kategorie').split(' / ').map(safeSeg).join('/'),files=await mailFiles([d.id]),names=[];
+for(const f of files){const base=d.date+' '+safeSeg(f.name);let nm=dir+'/'+base,k=2;while(used.has(nm.toLowerCase())){const dot=base.lastIndexOf('.');nm=dir+'/'+(dot>0?base.slice(0,dot)+' ('+k+')'+base.slice(dot):base+' ('+k+')');k++}used.add(nm.toLowerCase());entries.push({name:nm,data:new Uint8Array(await f.arrayBuffer())});names.push(nm)}
+rows.push([d.name,path(d.folder)||'',d.date,d.st?STS[d.st]:'',d.pr&&d.pr!=='normal'?PRS[d.pr]:'',d.du||'',d.re||'',d.ei||'',d.gu||'',d.kd||'',d.ri==='ein'?'Eingehend':d.ri==='aus'?'Ausgehend':'',({offen:'Offen',bez:'Bezahlt',teil:'Teilbezahlt',erst:'Erstattet'})[d.za]||'',d.wh||'',d.am!==undefined?String(d.am).replace('.',','):'',(d.fl||[]).map(k=>({wi:'Dauerhaft aufbewahren',st:'Steuerrelevant',ga:'Garantie/Beleg'})[k]).join(', '),d.no||'',(d.created||'').slice(0,10),names.join(' | ')])}
+entries.push({name:'Übersicht.csv',data:te.encode('\ufeff'+csv(rows))});return{blob:zipBlob(entries),count:docs.length}}
+let zipFileObj=null;
+A.zip=async()=>{show('<h3>Alles exportieren</h3><p id="em" class="mu">Erstelle ZIP … bitte warten</p><div id="bb" class="row" style="flex-direction:column"></div>');const em=$('#em');
+try{const r=await buildZip((i,n)=>{em.textContent='Erstelle ZIP … '+i+'/'+n});zipFileObj=new File([r.blob],'Dokumentensafe-Export-'+new Date().toISOString().slice(0,10)+'.zip',{type:'application/zip'});
+em.textContent=r.count+' Dokument'+(r.count===1?'':'e')+', '+fmtMB(zipFileObj.size)+'. Die ZIP-Datei enthält PDFs und Originaldateien nach Kategorien sortiert plus eine Übersicht (CSV). Achtung: Der Inhalt ist NICHT verschlüsselt. Bewahre die Datei sicher auf.'+(zipFileObj.size>300*1048576?' Hinweis: Die Datei ist sehr groß, das Speichern kann auf dem Handy scheitern.':'');
+$('#bb').innerHTML='<button data-a="zipsave">📥 ZIP speichern</button><button class="b2" data-a="zipshare">📤 Teilen</button>'}
+catch(e){em.className='er';em.textContent='Fehlgeschlagen: '+(e.message||e.name)}};
+A.zipsave=()=>{dlFile(zipFileObj);const em=$('#em');em.className='mu';em.textContent='Download gestartet. Du findest die Datei im Ordner „Download“.'};
+A.zipshare=async()=>{pick();const em=$('#em');if(!(navigator.canShare&&navigator.canShare({files:[zipFileObj]}))){em.className='er';em.textContent='Teilen geht in dieser Ansicht nicht. Nutze „ZIP speichern“.';return}try{await navigator.share({files:[zipFileObj],title:'Dokumentensafe-Export'})}catch(e){}};
+/* --- Text für die Suche (Texterkennung) --- */
+async function ocrDoc(id,prog){const d=meta.docs.find(x=>x.id===id);if(!d)throw new Error('Dokument nicht gefunden');const o=await dec(await get('doc:'+id)),pages=(o.pages||[]).slice(0,6);if(!pages.length)throw new Error('Keine Seiten zum Lesen');
+if(!window.Tesseract)await ldJs('https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js');
+const w=await Tesseract.createWorker('deu');let txt='';try{for(let i=0;i<pages.length;i++){if(prog)prog(i+1,pages.length);const r=await w.recognize(pages[i]);txt+=' '+r.data.text}}finally{await w.terminate()}
+d.tx=txt.replace(/\s+/g,' ').trim().slice(0,4000);d.m=Date.now();await saveMeta();return d.tx.length}
+A.ocr=async(i,b)=>{const em=$('#dm');b.disabled=true;try{em.className='mu';em.textContent='Lade Texterkennung (einmalig, braucht Internet) …';const n=await ocrDoc(vid,(k,m)=>{em.textContent='Lese Seite '+k+' von '+m+' …'});em.textContent=n?'Fertig: '+n+' Zeichen erkannt. Das Dokument ist jetzt über den Inhalt durchsuchbar.':'Es wurde kein Text erkannt.'}catch(e){em.className='er';em.textContent='Texterkennung nicht möglich: '+(e.message||e.name)}b.disabled=false};
 let busy=false;
 const toBlob=u=>{const bin=atob(u.split(',')[1]),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:'image/jpeg'})};
 async function analyze(){const em=$('#em');if(busy||!em)return;if(!pend.length){em.textContent='Bitte zuerst eine Seite hinzufügen.';return}
